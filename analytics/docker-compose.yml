@@ -1,0 +1,56 @@
+name: agent-analytics
+
+services:
+  umami:
+    image: ghcr.io/umami-software/umami:postgresql-latest
+    container_name: agent-umami
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3002:3000"
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_TYPE: postgresql
+      APP_SECRET: ${APP_SECRET}
+      TRACKER_SCRIPT_NAME: script.js
+    depends_on:
+      umami-db:
+        condition: service_healthy
+    networks:
+      - analytics_net
+    labels:
+      - "com.omer.project=agent-icerik"
+      - "com.omer.env=prod"
+      - "com.omer.role=analytics"
+
+  umami-db:
+    image: postgres:15-alpine
+    container_name: agent-umami-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - umami_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - analytics_net
+    labels:
+      - "com.omer.project=agent-icerik"
+      - "com.omer.env=prod"
+      - "com.omer.role=db"
+      - "com.omer.backup.volumes=agent-analytics_umami_db_data"
+
+networks:
+  analytics_net:
+    name: agent_analytics_net
+
+volumes:
+  umami_db_data:
+    name: agent-analytics_umami_db_data

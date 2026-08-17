@@ -1,0 +1,16 @@
+# secrets
+.env
+*.env
+.env.*
+!.env.example
+
+# dependencies and build
+node_modules/
+dist/
+.astro/
+
+# logs / OS
+*.log
+.DS_Store
+.idea/
+.vscode/

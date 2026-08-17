@@ -1,0 +1,24 @@
+=== DOSYA: anthropic-in-yeni-filigran-sistemi-kullanicilari-kizdirdi-i-ste-ve-derslerde-kullanim-yakalanacak-20260813-100616.md ===
+---
+title: "Anthropic'in Yeni Filigran Sistemi Kullanıcıları Kızdırdı: İşte ve Derslerde Kullanım Yakalanacak"
+pubDate: 2026-08-13T10:06:16.139+03:00
+description: "Yapay zeka şirketi Anthropic, Claude modeline eklediği filigran (watermark) sistemine karşı bazı kullanıcılar sosyal medyada tepki gösteriyor. Bu teknoloji, Claude'un iş ortamında veya akademik derslerde kullanıldığını tespit edebilir."
+kaynak: "https://techcrunch.com/2026/08/12/some-claude-users-are-mad-that-anthropics-new-watermarks-will-catch-them-cheating-at-their-jobs-classes/"
+---
+
+Yapay zeka şirketi Anthropic, Claude modeline eklediği filigran (watermark) sistemine karşı bazı kullanıcılar sosyal medyada tepki gösteriyor. Bu teknoloji, Claude'un iş ortamında veya akademik derslerde kullanıldığını tespit edebilir ve bunu ortaya çıkarabilir.
+
+**Yorum:** Bu gelişme, AI araçlarının etik kullanımı konusunda önemli bir adım olsa da, meşru kullanıcıları da endişelendirebilir. Şeffaflık ve gizlilik arasında denge kurmak, AI endüstrisinin karşı karşıya olduğu temel sorunlardan biri. Filigran teknolojisi, yetkisiz veya akademik dürüstlüğe aykırı kullanımları önlemede faydalı olabilir, ancak kullanıcıların haklarının korunması da eşit derecede önemlidir.
+
+*Kaynak: [Lucas Ropek - TechCrunch](https://techcrunch.com/2026/08/12/some-claude-users-are-mad-that-anthropics-new-watermarks-will-catch-them-cheating-at-their-jobs-classes/)*
+
+=== DOSYA: hosgeldiniz.md ===
+---
+title: "Hoş geldiniz"
+pubDate: 2026-08-13T00:00:00.000+03:00
+description: "Agent içerik sistemi blog başlangıç yazısı"
+kaynak: "https://blog.omerfarukturegun.com.tr/"
+---
+
+Bu site n8n + Astro içerik otomasyonu ile yayınlanacak.
+

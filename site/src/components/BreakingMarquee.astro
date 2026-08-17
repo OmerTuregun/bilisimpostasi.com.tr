@@ -1,0 +1,108 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatDateTime, categoryBadgeColor, DEFAULT_CATEGORY } from '../lib/categories';
+
+interface Props {
+  posts: CollectionEntry<'posts'>[];
+  secPerItem?: number;
+}
+
+const { posts, secPerItem = 4.5 } = Astro.props;
+
+// A short window can yield 1-2 posts, which would leave a visible gap while
+// scrolling; repeat them until the band is wide enough to look continuous.
+const MIN_CARDS_PER_GROUP = 5;
+const repeats = Math.max(1, Math.ceil(MIN_CARDS_PER_GROUP / Math.max(1, posts.length)));
+const groupPosts = Array.from({ length: repeats }, () => posts).flat();
+const duration = Math.max(20, groupPosts.length * secPerItem);
+---
+<div class="marquee-wrap">
+  <div class="marquee-track" style={`--marquee-duration: ${duration}s`}>
+    {[false, true].map((duplicate) => (
+      <div class="marquee-group" aria-hidden={duplicate ? 'true' : undefined}>
+        {groupPosts.map((post) => {
+          const kategori = post.data.kategori ?? DEFAULT_CATEGORY;
+          const badgeColor = categoryBadgeColor(kategori);
+          return (
+            <a class="marquee-card" href={`/posts/${post.id}/`} tabindex={duplicate ? '-1' : undefined}>
+              <span class="badge" style={`--badge-color: ${badgeColor}`}>{kategori}</span>
+              <span class="marquee-title">{post.data.title}</span>
+              <time datetime={post.data.pubDate.toISOString()}>{formatDateTime(post.data.pubDate)}</time>
+            </a>
+          );
+        })}
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .marquee-wrap {
+    overflow: hidden;
+    padding: 0.85rem 0;
+    mask-image: linear-gradient(90deg, transparent, #000 2%, #000 98%, transparent);
+  }
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee-scroll var(--marquee-duration, 40s) linear infinite;
+  }
+  .marquee-track:hover { animation-play-state: paused; }
+  .marquee-group {
+    display: flex;
+    flex-shrink: 0;
+    gap: 1rem;
+    padding-right: 1rem;
+  }
+  .marquee-card {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    width: 280px;
+    min-height: 128px;
+    padding: 0.85rem 1rem;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .marquee-card:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+  }
+  .badge {
+    align-self: flex-start;
+    font-size: 0.62rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--badge-color) 14%, white);
+    color: var(--badge-color);
+    margin-bottom: 0.5rem;
+  }
+  .marquee-title {
+    font-family: var(--font-heading);
+    font-size: 0.88rem;
+    font-weight: 700;
+    line-height: 1.35;
+    margin-bottom: 0.45rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  time { font-size: 0.72rem; color: var(--muted); margin-top: auto; }
+  @keyframes marquee-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track { animation: none; flex-wrap: wrap; width: 100%; }
+    .marquee-group:last-child { display: none; }
+    .marquee-wrap { mask-image: none; }
+  }
+</style>

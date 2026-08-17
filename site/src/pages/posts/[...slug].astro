@@ -1,0 +1,118 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { formatDateTime, slugifyCategory, categoryBadgeColor, DEFAULT_CATEGORY } from '../../lib/categories';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const kategori = post.data.kategori ?? DEFAULT_CATEGORY;
+const kategoriSlug = slugifyCategory(kategori);
+const badgeColor = categoryBadgeColor(kategori);
+
+const siteBase = Astro.site ?? new URL(Astro.url.origin);
+const postUrl = new URL(`/posts/${post.id}/`, siteBase).href;
+const ogImage = post.data.coverImage
+  ? (post.data.coverImage.startsWith('http://') || post.data.coverImage.startsWith('https://')
+      ? post.data.coverImage
+      : new URL(post.data.coverImage, siteBase).href)
+  : new URL('/og-default.png', siteBase).href;
+const datePublished = post.data.pubDate.toISOString();
+const dateModified = (post.data.updatedDate ?? post.data.pubDate).toISOString();
+
+const relatedPosts = (await getCollection('posts'))
+  .filter((p) => p.id !== post.id && (p.data.kategori ?? DEFAULT_CATEGORY) === kategori)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'NewsArticle',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished,
+  dateModified,
+  image: [ogImage],
+  author: [{ '@type': 'Organization', name: 'blog.omerfarukturegun.com.tr' }],
+  publisher: {
+    '@type': 'Organization',
+    name: 'blog.omerfarukturegun.com.tr',
+  },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': postUrl },
+};
+---
+<Layout
+  title={`${post.data.title} — Blog`}
+  description={post.data.description}
+  ogType="article"
+  image={ogImage}
+  jsonLd={jsonLd}
+>
+  <main>
+    <article class="post-detail" data-pagefind-body>
+      <a class="back" href="/">← Ana sayfa</a>
+      <a class="badge" href={`/kategori/${kategoriSlug}/`} style={`--badge-color: ${badgeColor}`}>
+        {kategori}
+      </a>
+      <h1>{post.data.title}</h1>
+      <p class="meta">
+        <time datetime={datePublished}>{formatDateTime(post.data.pubDate)}</time>
+        {' · '}
+        <a href={post.data.kaynak} rel="noopener noreferrer" target="_blank">Kaynak</a>
+      </p>
+      <div class="content"><Content /></div>
+    </article>
+
+    {relatedPosts.length > 0 && (
+      <section class="related" aria-label="İlgili yazılar">
+        <h2>İlgili Yazılar</h2>
+        <div class="card-grid">
+          {relatedPosts.map((related) => <PostCard post={related} />)}
+        </div>
+      </section>
+    )}
+  </main>
+</Layout>
+
+<style>
+  .post-detail { max-width: 42rem; }
+  .back { display: block; margin-bottom: 1.25rem; color: var(--muted); text-decoration: none; }
+  .badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--badge-color) 15%, white);
+    color: var(--badge-color);
+    text-decoration: none;
+  }
+  h1 { font-size: clamp(1.6rem, 4vw, 2.2rem); line-height: 1.25; margin: 0.85rem 0; }
+  .meta {
+    color: var(--muted);
+    margin: 0 0 1.75rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .content :global(p) { margin: 0 0 1rem; }
+  .related {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--rule);
+  }
+  .related h2 {
+    font-size: 1.35rem;
+    margin: 0 0 1.25rem;
+  }
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+  }
+</style>
