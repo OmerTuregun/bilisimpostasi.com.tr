@@ -130,22 +130,33 @@ const viewsLabel = (n: number) =>
   }
   .all:hover { text-decoration: underline; }
   @media (max-width: 1099px) {
-    .popular { padding: 0.55rem 0.45rem 0.6rem; }
+    .popular { padding: 0.8rem 0.7rem 0.75rem; }
     h2 {
-      font-size: 0.92rem;
+      font-size: 1.12rem;
       line-height: 1.25;
       overflow-wrap: break-word;
     }
-    .sub { font-size: 0.68rem; overflow-wrap: break-word; }
+    .sub { font-size: 0.8rem; overflow-wrap: break-word; }
     li {
       flex-direction: column;
-      gap: 0.2rem;
-      padding: 0.55rem 0;
+      gap: 0.28rem;
+      padding: 0.7rem 0;
     }
-    .rank { font-size: 1.55rem; min-width: 0; }
-    .badge { font-size: 0.58rem; padding: 0.15rem 0.35rem; }
-    a { font-size: 0.82rem; overflow-wrap: break-word; }
-    .views { font-size: 0.68rem; }
-    .all { font-size: 0.75rem; overflow-wrap: break-word; padding-top: 0.5rem; }
+    .rank { font-size: 1.9rem; min-width: 0; }
+    .badge { font-size: 0.72rem; padding: 0.22rem 0.48rem; }
+    a { font-size: 0.98rem; overflow-wrap: break-word; }
+    .views { font-size: 0.8rem; }
+    .all { font-size: 0.9rem; overflow-wrap: break-word; padding-top: 0.65rem; }
+  }
+  @media (max-width: 768px) {
+    .popular { padding: 0.85rem 0.65rem 0.75rem; }
+    h2 { font-size: 1.22rem; }
+    .sub { font-size: 0.88rem; }
+    li { padding: 0.7rem 0; }
+    .rank { font-size: 2rem; }
+    .badge { font-size: 0.72rem; padding: 0.22rem 0.48rem; }
+    a { font-size: 1.05rem; }
+    .views { font-size: 0.88rem; }
+    .all { font-size: 0.98rem; padding-top: 0.6rem; }
   }
 </style>

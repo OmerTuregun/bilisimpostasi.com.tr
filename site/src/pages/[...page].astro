@@ -263,7 +263,7 @@ const nextUrl = pageNum < totalPages ? `/${pageNum + 1}/` : null;
   @media (max-width: 1099px) {
     .home-layout {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 124px;
+      grid-template-columns: minmax(0, 65fr) minmax(0, 35fr);
       grid-template-areas: "main sidebar";
       gap: 0.75rem;
       align-items: start;
@@ -279,6 +279,24 @@ const nextUrl = pageNum < totalPages ? `/${pageNum + 1}/` : null;
       gap: 1.1rem;
     }
     h1 { font-size: 1.85rem; margin: 0 0 1rem; }
+  }
+  @media (max-width: 768px) {
+    .site-search { --pagefind-ui-scale: 1.22; margin-bottom: 1.25rem; }
+    .site-search :global(.pagefind-ui__message) { font-size: 1rem; }
+    .site-search :global(.pagefind-ui__result-title) { font-size: 1.15rem !important; }
+    .site-search :global(.pagefind-ui__result-excerpt) { font-size: 1rem !important; }
+    .breaking-label {
+      font-size: 1rem;
+      padding: 0.55rem 1.1rem;
+    }
+    .breaking :global(.marquee-wrap) { padding: 0.95rem 0.55rem; }
+    .home-layout {
+      grid-template-columns: minmax(0, 65fr) minmax(0, 35fr);
+      gap: 0.45rem;
+    }
+    h1 { font-size: 2.05rem; }
+    .home-sidebar { top: 6.25rem; }
+    .pager { font-size: 1.05rem; }
   }
   @media (min-width: 1100px) {
     .home-layout {
