@@ -1,0 +1,151 @@
+---
+import { categoryBadgeColor, DEFAULT_CATEGORY } from '../lib/categories';
+
+interface Item {
+  title: string;
+  href: string;
+  views: number;
+  kategori?: string;
+}
+
+interface Props {
+  posts: Item[];
+}
+
+const { posts } = Astro.props;
+const top = posts.slice(0, 2);
+const viewsLabel = (n: number) =>
+  `${new Intl.NumberFormat('tr-TR').format(n)} görüntülenme`;
+---
+<section class="popular" aria-label="Bu hafta en çok okunanlar">
+  <h2>🔥 Bu Hafta En Çok Okunanlar</h2>
+  <p class="sub">Son 7 gün, Umami istatistiklerine göre</p>
+  {top.length === 0 ? (
+    <p class="empty">Henüz yeterli veri yok</p>
+  ) : (
+    <ol>
+      {top.map((post, index) => {
+        const kategori = post.kategori ?? DEFAULT_CATEGORY;
+        const badgeColor = categoryBadgeColor(kategori);
+        return (
+          <li>
+            <span class="rank" aria-hidden="true">{index + 1}</span>
+            <div class="body">
+              <span class="badge" style={`--badge-color: ${badgeColor}`}>{kategori}</span>
+              <a href={post.href}>{post.title}</a>
+              <span class="views">{viewsLabel(post.views)}</span>
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+  )}
+  <a class="all" href="/en-cok-okunanlar/">Tüm En Çok Okunanları Gör →</a>
+</section>
+
+<style>
+  .popular {
+    padding: 1.05rem 1.1rem 0.95rem;
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: 0.5rem;
+  }
+  h2 {
+    margin: 0;
+    font-size: 1.18rem;
+    line-height: 1.3;
+  }
+  .sub {
+    margin: 0.35rem 0 0;
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+  .empty {
+    margin: 1rem 0 0.85rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  ol {
+    list-style: none;
+    margin: 0.85rem 0 0;
+    padding: 0;
+  }
+  li {
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+    padding: 0.75rem 0;
+    border-top: 1px solid var(--rule);
+  }
+  li:first-child { border-top: 0; padding-top: 0.55rem; }
+  .rank {
+    flex: 0 0 auto;
+    min-width: 1.6rem;
+    font-family: var(--font-heading);
+    font-size: 2.35rem;
+    font-weight: 700;
+    line-height: 0.9;
+    color: color-mix(in srgb, var(--accent) 38%, white);
+  }
+  .body {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    padding-top: 0.15rem;
+  }
+  .badge {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.22rem 0.58rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--badge-color) 14%, white);
+    color: var(--badge-color);
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+    font-weight: 600;
+    line-height: 1.4;
+    font-size: 0.95rem;
+  }
+  a:hover { color: var(--accent); }
+  .views {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .all {
+    display: block;
+    margin-top: 0.7rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--rule);
+    color: var(--accent);
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  .all:hover { text-decoration: underline; }
+  @media (max-width: 1099px) {
+    .popular { padding: 0.55rem 0.45rem 0.6rem; }
+    h2 {
+      font-size: 0.92rem;
+      line-height: 1.25;
+      overflow-wrap: break-word;
+    }
+    .sub { font-size: 0.68rem; overflow-wrap: break-word; }
+    li {
+      flex-direction: column;
+      gap: 0.2rem;
+      padding: 0.55rem 0;
+    }
+    .rank { font-size: 1.55rem; min-width: 0; }
+    .badge { font-size: 0.58rem; padding: 0.15rem 0.35rem; }
+    a { font-size: 0.82rem; overflow-wrap: break-word; }
+    .views { font-size: 0.68rem; }
+    .all { font-size: 0.75rem; overflow-wrap: break-word; padding-top: 0.5rem; }
+  }
+</style>

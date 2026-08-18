@@ -1,0 +1,75 @@
+---
+import { categoryBadgeColor, slugifyCategory } from '../lib/categories';
+
+interface Props {
+  counts: { name: string; count: number }[];
+}
+
+const { counts } = Astro.props;
+---
+{counts.length > 0 && (
+  <section class="cats" aria-label="Kategoriler">
+    <h2>Kategoriler</h2>
+    <ul>
+      {counts.map(({ name, count }) => (
+        <li>
+          <a href={`/kategori/${slugifyCategory(name)}/`}>
+            <span class="dot" style={`--badge-color: ${categoryBadgeColor(name)}`}></span>
+            <span class="name">{name}</span>
+            <span class="n">{count}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}
+
+<style>
+  .cats {
+    margin-top: 0.85rem;
+    padding: 1rem 1.1rem 0.7rem;
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: 0.5rem;
+  }
+  h2 {
+    margin: 0 0 0.55rem;
+    font-size: 1.05rem;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  li + li { border-top: 1px solid var(--rule); }
+  a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    text-decoration: none;
+    color: inherit;
+    font-size: 0.9rem;
+  }
+  a:hover { color: var(--accent); }
+  .dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 999px;
+    background: var(--badge-color);
+    flex: 0 0 auto;
+  }
+  .name { flex: 1; min-width: 0; }
+  .n { color: var(--muted); font-variant-numeric: tabular-nums; }
+  @media (max-width: 1099px) {
+    .cats { padding: 0.55rem 0.45rem 0.5rem; margin-top: 0.55rem; }
+    h2 { font-size: 0.92rem; overflow-wrap: break-word; }
+    a {
+      font-size: 0.82rem;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+    .name, .n { overflow-wrap: break-word; }
+  }
+</style>

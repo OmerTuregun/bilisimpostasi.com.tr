@@ -100,6 +100,29 @@ const duration = Math.max(20, groupPosts.length * secPerItem);
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
   }
+  @media (hover: none) and (pointer: coarse) {
+    .marquee-wrap {
+      padding: 1rem 0.75rem;
+      mask-image: none;
+    }
+    .marquee-card {
+      width: min(82vw, 340px);
+      min-height: 168px;
+      padding: 1.15rem 1.2rem;
+    }
+    .badge {
+      font-size: 0.75rem;
+      padding: 0.28rem 0.65rem;
+      margin-bottom: 0.65rem;
+    }
+    .marquee-title {
+      font-size: 1.08rem;
+      line-height: 1.4;
+      -webkit-line-clamp: 3;
+      margin-bottom: 0.55rem;
+    }
+    time { font-size: 0.88rem; }
+  }
   @media (prefers-reduced-motion: reduce) {
     .marquee-track { animation: none; flex-wrap: wrap; width: 100%; }
     .marquee-group:last-child { display: none; }
