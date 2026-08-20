@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://blog.omerfarukturegun.com.tr/sitemap-index.xml
+Sitemap: https://bilisimpostasi.com.tr/sitemap-index.xml
+# RSS: https://bilisimpostasi.com.tr/rss.xml

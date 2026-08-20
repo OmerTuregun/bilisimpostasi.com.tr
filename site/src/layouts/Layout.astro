@@ -1,17 +1,43 @@
 ---
-import { getCollection } from 'astro:content';
-import { slugifyCategory, DEFAULT_CATEGORY } from '../lib/categories';
+import type { Locale } from '../i18n/config';
+import { t } from '../i18n/ui';
+import { getPosts, homePath, localePrefix, postPath, postSlug, alternatePostPath, switchLocalePath } from '../lib/posts';
+import { navCategoriesFromPosts } from '../lib/categories';
+import BreakingTicker from '../components/BreakingTicker.astro';
 
 interface Props {
   title: string;
   description: string;
+  locale?: Locale;
   ogType?: 'website' | 'article';
-  /** Absolute URL or site-relative path; falls back to /og-default.png */
   image?: string;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  /** Post slug for language switch + hreflang on article pages */
+  articleSlug?: string;
+  hreflangTr?: string | null;
+  hreflangEn?: string | null;
+  /** Preload above-the-fold cover URLs (homepage card grid) */
+  preloadImages?: string[];
 }
 
-const { title, description, ogType = 'website', image, jsonLd } = Astro.props;
+const {
+  title,
+  description,
+  locale: localeProp,
+  ogType = 'website',
+  image,
+  jsonLd,
+  articleSlug,
+  hreflangTr,
+  hreflangEn,
+  preloadImages = [],
+} = Astro.props;
+const preloadCoverUrls = [...new Set(preloadImages.filter(Boolean))].slice(0, 6);
+
+const path = Astro.url.pathname;
+const locale: Locale = localeProp ?? (path.startsWith('/en') ? 'en' : 'tr');
+const strings = t(locale);
+const prefix = localePrefix(locale);
 const siteBase = Astro.site ?? new URL(Astro.url.origin);
 const canonical = new URL(Astro.url.pathname, siteBase);
 const defaultOgImage = new URL('/og-default.png', siteBase).href;
@@ -20,27 +46,60 @@ const ogImage = image
       ? image
       : new URL(image, siteBase).href)
   : defaultOgImage;
-const path = Astro.url.pathname;
-const posts = await getCollection('posts');
-const navCategories = [...new Set(posts.map((post) => post.data.kategori ?? DEFAULT_CATEGORY))]
-  .sort()
-  .map((name) => ({ name, slug: slugifyCategory(name) }));
+
+const posts = await getPosts(locale);
+const navCategories = navCategoriesFromPosts(posts, locale);
 const jsonLdString = jsonLd ? JSON.stringify(jsonLd) : null;
+const BREAKING_WINDOW_HOURS = 3;
+const cutoff = Date.now() - BREAKING_WINDOW_HOURS * 60 * 60 * 1000;
+const breakingPosts = posts
+  .filter((p) => p.data.pubDate.valueOf() >= cutoff)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const otherLocale: Locale = locale === 'tr' ? 'en' : 'tr';
+let langSwitchUrl = homePath(otherLocale);
+if (articleSlug) {
+  const alt = await alternatePostPath(articleSlug, locale, otherLocale);
+  langSwitchUrl = alt ?? homePath(otherLocale);
+} else {
+  langSwitchUrl = switchLocalePath(path, otherLocale);
+}
+
+const isHome = locale === 'tr'
+  ? path === '/' || /^\/\d+\/?$/.test(path)
+  : path === '/en/' || path === '/en' || /^\/en\/\d+\/?$/.test(path);
+const isCategory = path.includes('/kategori/');
 ---
-<html lang="tr">
+<html lang={locale}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://pub-880c98af22074b02b5f5237e1b3a0bad.r2.dev" crossorigin />
+    <link rel="dns-prefetch" href="https://pub-880c98af22074b02b5f5237e1b3a0bad.r2.dev" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap"
       rel="stylesheet"
     />
+    {preloadCoverUrls.map((href) => (
+      <link rel="preload" as="image" href={href} />
+    ))}
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical.href} />
+    {hreflangTr && hreflangEn && (
+      <>
+        <link rel="alternate" hreflang="tr" href={hreflangTr} />
+        <link rel="alternate" hreflang="en" href={hreflangEn} />
+        <link rel="alternate" hreflang="x-default" href={hreflangTr} />
+      </>
+    )}
     <link
       rel="alternate"
       type="application/rss+xml"
@@ -70,37 +129,72 @@ const jsonLdString = jsonLd ? JSON.stringify(jsonLd) : null;
   <body>
     <header class="site-header">
       <div class="header-inner">
-        <a class="brand" href="/">
-          <span class="mark" aria-hidden="true">M</span>
-          <span>
-            <span class="name">Blog</span>
-            <span class="tagline">Teknoloji ve AI Haberleri</span>
-          </span>
-        </a>
+        <div class="header-brand-row">
+          <a class="brand" href={homePath(locale)}>
+            <img src="/navbar-logo.png" alt={strings.siteName} />
+          </a>
+          <a
+            class:list={['lang-toggle', { 'is-en': locale === 'en' }]}
+            href={langSwitchUrl}
+            hreflang={otherLocale}
+            lang={otherLocale}
+            aria-label={strings.langSwitchTo}
+            title={strings.langSwitchTo}
+          >
+            <span class="lang-toggle-track" aria-hidden="true">
+              <span class="lang-toggle-thumb"></span>
+              <span class="lang-side lang-tr">
+                {/* SVG flags: Windows renders 🇹🇷/🇬🇧 as "TR"/"GB" letters, not flag images */}
+                <span class="lang-flag" title="TR">
+                  <svg viewBox="0 0 36 24" width="16" height="11" focusable="false" aria-hidden="true">
+                    <rect width="36" height="24" fill="#E30A17"/>
+                    <circle cx="12.5" cy="12" r="7" fill="#fff"/>
+                    <circle cx="14.2" cy="12" r="5.5" fill="#E30A17"/>
+                    <polygon fill="#fff" points="20.2,12 23.8,13.3 22.1,10.1 23.8,6.9 20.2,8.2 17.5,6.2 18.1,10.1 15.5,12 18.1,13.9 17.5,17.8"/>
+                  </svg>
+                </span>
+                <span class="lang-code">TR</span>
+              </span>
+              <span class="lang-side lang-en">
+                <span class="lang-flag" title="EN">
+                  <svg viewBox="0 0 60 30" width="16" height="11" focusable="false" aria-hidden="true">
+                    <rect width="60" height="30" fill="#012169"/>
+                    <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/>
+                    <path d="M0,0 L60,30 M60,0 L0,30" stroke="#C8102E" stroke-width="4"/>
+                    <path d="M30,0 V30 M0,15 H60" stroke="#fff" stroke-width="10"/>
+                    <path d="M30,0 V30 M0,15 H60" stroke="#C8102E" stroke-width="6"/>
+                  </svg>
+                </span>
+                <span class="lang-code">EN</span>
+              </span>
+            </span>
+          </a>
+        </div>
         <button
           class="nav-hamburger"
           type="button"
-          aria-label="Menüyü aç"
+          aria-label={strings.openMenu}
           aria-controls="nav-mobile-drawer"
           aria-expanded="false"
         >
           ☰
         </button>
-        <nav class="nav" aria-label="Ana menü">
-          <a href="/" class:list={[{ active: path === '/' || /^\/\d+\/?$/.test(path) }]}>Ana Sayfa</a>
-          <div class="nav-dropdown" class:list={[{ active: path.startsWith('/kategori/') }]}>
+        <nav class="nav" aria-label={strings.mainNav}>
+          <a href={homePath(locale)} class:list={[{ active: isHome }]}>{strings.home}</a>
+          <div class="nav-dropdown" class:list={[{ active: isCategory }]}>
             <button class="nav-dropdown-trigger" type="button" aria-expanded="false" aria-haspopup="true">
-              Kategoriler <span aria-hidden="true">▾</span>
+              {strings.categories} <span aria-hidden="true">▾</span>
             </button>
             <ul class="nav-dropdown-menu">
               {navCategories.map(({ name, slug }) => (
-                <li><a href={`/kategori/${slug}/`}>{name}</a></li>
+                <li><a href={`${prefix}/kategori/${slug}/`}>{name}</a></li>
               ))}
             </ul>
           </div>
-          <a href="/#search">Ara</a>
-          <a href="/hakkimizda" class:list={[{ active: path === '/hakkimizda/' }]}>Hakkımızda</a>
-          <a href="/iletisim" class:list={[{ active: path === '/iletisim/' }]}>İletişim</a>
+          <a href={`${homePath(locale)}#search`}>{strings.search}</a>
+          <a href={`${prefix}/hakkimizda/`} class:list={[{ active: path.endsWith('/hakkimizda/') }]}>{strings.about}</a>
+          <a href={`${prefix}/iletisim/`} class:list={[{ active: path.endsWith('/iletisim/') }]}>{strings.contact}</a>
+          <button class="nav-subscribe-btn" type="button" id="open-subscribe-modal">{strings.subscribe}</button>
         </nav>
 
         <div
@@ -109,26 +203,70 @@ const jsonLdString = jsonLd ? JSON.stringify(jsonLd) : null;
           aria-hidden="true"
           hidden
         >
-          <a href="/" class:list={[{ active: path === '/' || /^\/\d+\/?$/.test(path) }]} data-close-drawer>Ana Sayfa</a>
+          <a href={homePath(locale)} class:list={[{ active: isHome }]} data-close-drawer>{strings.home}</a>
           <a
-            href="/kategoriler/"
-            class:list={[{ active: path.startsWith('/kategori/') || path === '/kategoriler/' }]}
+            href={`${prefix}/kategoriler/`}
+            class:list={[{ active: isCategory || path.endsWith('/kategoriler/') }]}
             data-close-drawer
-          >Kategoriler</a>
-          <a href="/#search" data-close-drawer>Ara</a>
-          <a href="/hakkimizda" class:list={[{ active: path === '/hakkimizda/' }]} data-close-drawer>Hakkımızda</a>
-          <a href="/iletisim" class:list={[{ active: path === '/iletisim/' }]} data-close-drawer>İletişim</a>
+          >{strings.categories}</a>
+          <a href={`${homePath(locale)}#search`} data-close-drawer>{strings.search}</a>
+          <a href={`${prefix}/hakkimizda/`} class:list={[{ active: path.endsWith('/hakkimizda/') }]} data-close-drawer>{strings.about}</a>
+          <a href={`${prefix}/iletisim/`} class:list={[{ active: path.endsWith('/iletisim/') }]} data-close-drawer>{strings.contact}</a>
+          <button class="nav-subscribe-btn" type="button" id="open-subscribe-modal-mobile" data-close-drawer>{strings.subscribe}</button>
         </div>
       </div>
+      {breakingPosts.length > 0 && (
+        <>
+          <div class="breaking-divider" aria-hidden="true"></div>
+          <BreakingTicker posts={breakingPosts} locale={locale} />
+        </>
+      )}
     </header>
     <slot />
     <footer class="site-footer">
-      <p>© {new Date().getFullYear()} Blog — Teknoloji ve AI Haberleri</p>
-      <nav class="footer-links" aria-label="Yasal">
-        <a href="/gizlilik-politikasi/">Gizlilik Politikası</a>
-        <a href="/kullanim-sartlari/">Kullanım Şartları</a>
+      <p>© {new Date().getFullYear()} {strings.footerTagline}</p>
+      <nav class="footer-links" aria-label={strings.legalNav}>
+        <a href={`${prefix}/gizlilik-politikasi/`}>{strings.privacy}</a>
+        <a href={`${prefix}/kullanim-sartlari/`}>{strings.terms}</a>
       </nav>
     </footer>
+    <div id="subscribe-modal" class="subscribe-modal" aria-hidden="true" hidden
+      data-msg-sending={strings.subscribeSending}
+      data-msg-success={strings.subscribeSuccess}
+      data-msg-error={strings.subscribeError}
+      data-msg-conn-error={strings.subscribeConnError}
+      data-btn-label={strings.subscribeEmailBtn}
+    >
+      <div class="subscribe-modal-overlay"></div>
+      <div class="subscribe-modal-content" role="dialog" aria-modal="true" aria-labelledby="subscribe-modal-title">
+        <button class="subscribe-modal-close" type="button" aria-label="×">&times;</button>
+        <h2 id="subscribe-modal-title">{strings.subscribeTitle}</h2>
+        <p class="subscribe-modal-desc">{strings.subscribeDesc}</p>
+        <div class="subscribe-modal-options">
+          <div class="subscribe-option">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.28-.02-.12.03-2.02 1.28-5.69 3.77-.54.37-1.03.55-1.47.54-.48-.01-1.41-.27-2.1-.5-.85-.28-1.52-.43-1.46-.9.03-.25.38-.5 1.04-.76 4.09-1.78 6.81-2.96 8.17-3.53 3.89-1.62 4.7-1.9 5.23-1.91.12 0 .37.03.54.17.14.12.18.28.2.45-.01.06.01.24 0 .37z" fill="#2AABEE"/></svg>
+            <h3>{strings.subscribeTelegram}</h3>
+            <p>{strings.subscribeTelegramDesc}</p>
+            <a href="https://t.me/omer_content_bot" target="_blank" rel="noopener" class="subscribe-btn subscribe-btn-telegram">{strings.subscribeTelegramBtn}</a>
+          </div>
+          <div class="subscribe-option">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="#0b5fff"/></svg>
+            <h3>{strings.subscribeEmail}</h3>
+            <p>{strings.subscribeEmailDesc}</p>
+            <form id="subscribe-email-form" class="subscribe-email-form">
+              <input type="email" name="email" placeholder="email@example.com" required autocomplete="email" />
+              <label class="subscribe-consent">
+                <input type="checkbox" name="consent" required />
+                <span>{strings.subscribeConsent}</span>
+              </label>
+              <button type="submit" class="subscribe-btn subscribe-btn-email">{strings.subscribeEmailBtn}</button>
+            </form>
+            <div id="subscribe-email-result" class="subscribe-email-result" hidden></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script>
       const dropdown = document.querySelector('.nav-dropdown');
       const dropdownTrigger = dropdown?.querySelector('.nav-dropdown-trigger');
@@ -176,6 +314,93 @@ const jsonLdString = jsonLd ? JSON.stringify(jsonLd) : null;
 
       // Screenshot/debug helper: add ?menu=1 to force-open on mobile
       if (new URLSearchParams(window.location.search).get('menu') === '1') setDrawerOpen(true);
+
+      // Subscribe modal
+      const modal = document.getElementById('subscribe-modal');
+      const modalOverlay = modal?.querySelector('.subscribe-modal-overlay');
+      const modalClose = modal?.querySelector('.subscribe-modal-close');
+      const openBtns = document.querySelectorAll('#open-subscribe-modal, #open-subscribe-modal-mobile');
+
+      function setModalOpen(open) {
+        if (!modal) return;
+        modal.hidden = !open;
+        modal.setAttribute('aria-hidden', String(!open));
+        if (open) document.body.style.overflow = 'hidden';
+        else document.body.style.overflow = '';
+      }
+
+      openBtns.forEach(btn => btn.addEventListener('click', () => setModalOpen(true)));
+      modalClose?.addEventListener('click', () => setModalOpen(false));
+      modalOverlay?.addEventListener('click', () => setModalOpen(false));
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setModalOpen(false); });
+
+      // Email form submit
+      const emailForm = document.getElementById('subscribe-email-form');
+      const emailResult = document.getElementById('subscribe-email-result');
+      const modalEl = document.getElementById('subscribe-modal');
+      const msgSending = modalEl?.dataset.msgSending ?? 'Sending...';
+      const msgSuccess = modalEl?.dataset.msgSuccess ?? 'Success';
+      const msgError = modalEl?.dataset.msgError ?? 'Error';
+      const msgConnError = modalEl?.dataset.msgConnError ?? 'Connection error';
+      const btnLabel = modalEl?.dataset.btnLabel ?? 'Subscribe';
+      emailForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const email = form.email.value.trim();
+        const consent = form.consent.checked;
+        if (!email || !consent) return;
+        const btn = form.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        btn.textContent = msgSending;
+        try {
+          const res = await fetch('https://n8n.omerfarukturegun.com.tr/webhook/email-subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, consent: true }),
+          });
+          if (res.ok) {
+            form.hidden = true;
+            emailResult.hidden = false;
+            emailResult.textContent = msgSuccess;
+            emailResult.classList.add('success');
+          } else {
+            emailResult.hidden = false;
+            emailResult.textContent = msgError;
+            emailResult.classList.add('error');
+          }
+        } catch {
+          emailResult.hidden = false;
+          emailResult.textContent = msgConnError;
+          emailResult.classList.add('error');
+        }
+        btn.disabled = false;
+        btn.textContent = btnLabel;
+      });
+    </script>
+    <script>
+      // Transient CDN/R2 failures: retry cover images once or twice (no artificial page delay).
+      document.addEventListener(
+        'error',
+        (event) => {
+          const target = event.target;
+          if (!(target instanceof HTMLImageElement)) return;
+          if (!target.classList.contains('card-cover') && !target.classList.contains('cover-img')) return;
+          const attempt = Number(target.dataset.retry || '0');
+          if (attempt >= 2) return;
+          target.dataset.retry = String(attempt + 1);
+          try {
+            const url = new URL(target.currentSrc || target.src, window.location.href);
+            url.searchParams.set('_retry', String(attempt + 1));
+            const delay = attempt === 0 ? 0 : 350;
+            window.setTimeout(() => {
+              target.src = url.toString();
+            }, delay);
+          } catch {
+            /* ignore invalid urls */
+          }
+        },
+        true,
+      );
     </script>
   </body>
 </html>
@@ -211,12 +436,13 @@ const jsonLdString = jsonLd ? JSON.stringify(jsonLd) : null;
     border-bottom: 1px solid var(--rule);
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 300;
+    overflow: visible;
   }
   .header-inner {
     max-width: var(--container);
     margin: 0 auto;
-    padding: 0.85rem 1.25rem;
+    padding: 0.6rem 1.25rem;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -230,23 +456,23 @@ const jsonLdString = jsonLd ? JSON.stringify(jsonLd) : null;
     text-decoration: none;
     color: inherit;
   }
-  .mark {
-    display: grid;
-    place-items: center;
-    width: 2.25rem;
-    height: 2.25rem;
-    border-radius: 0.45rem;
-    background: var(--ink);
-    color: var(--bg);
-    font-weight: 700;
+  .header-brand-row {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-width: 0;
   }
-  .name { display: block; font-weight: 700; }
-  .tagline { display: block; color: var(--muted); font-size: 0.78rem; }
+  .brand img {
+    display: block;
+    height: 58px;
+    width: auto;
+  }
   .nav {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.15rem;
+    margin-left: auto;
   }
   .nav > a, .nav-dropdown-trigger {
     text-decoration: none;
@@ -266,12 +492,13 @@ const jsonLdString = jsonLd ? JSON.stringify(jsonLd) : null;
     color: var(--accent);
     background: color-mix(in srgb, var(--accent) 8%, transparent);
   }
-  .nav-dropdown { position: relative; }
+  .nav-dropdown { position: relative; z-index: 310; }
   .nav-dropdown-menu {
     display: none;
     position: absolute;
-    top: calc(100% + 0.25rem);
+    top: 100%;
     left: 0;
+    z-index: 400;
     min-width: 11rem;
     margin: 0;
     padding: 0.35rem 0;
@@ -326,13 +553,12 @@ const jsonLdString = jsonLd ? JSON.stringify(jsonLd) : null;
   }
   .footer-links a:hover { color: var(--ink); text-decoration: underline; }
   @media (max-width: 1099px), (hover: none) and (pointer: coarse) {
-    .tagline { display: none; }
     .header-inner {
       padding: 0.65rem 0.9rem;
       flex-wrap: nowrap;
       gap: 0.4rem;
     }
-    .mark { width: 2rem; height: 2rem; }
+    .brand img { height: 54px; }
     .nav {
       width: auto;
       margin-left: auto;
@@ -349,36 +575,33 @@ const jsonLdString = jsonLd ? JSON.stringify(jsonLd) : null;
 
   /* Mobile: show hamburger drawer instead of squeezed inline links */
   @media (max-width: 768px) {
-    html {
-      font-size: 20px;
-      --container: min(72rem, 100% - 0.45rem);
-    }
-    html, body { overflow-x: hidden; }
-
-    .tagline { display: block; font-size: 1.05rem; line-height: 1.3; max-width: 15rem; }
-    .name { font-size: 2.15rem; line-height: 1.1; }
-    .mark { width: 3.6rem; height: 3.6rem; font-size: 1.55rem; border-radius: 0.5rem; flex-shrink: 0; }
-    .brand { gap: 0.85rem; min-width: 0; }
-    .header-inner {
-      padding: 1.05rem 1rem 1.05rem 0.85rem;
-      min-height: 5.4rem;
-    }
+    .brand img { height: 52px; }
     .nav { display: none !important; }
-    .header-inner { position: relative; padding-right: 4.1rem; }
-    main { padding: 1.15rem 0.4rem 2.2rem; }
+    .header-inner { position: relative; padding-right: 3.4rem; }
+    .header-brand-row {
+      gap: 0.4rem;
+      max-width: calc(100% - 0.25rem);
+    }
+    .lang-toggle-track {
+      width: 4.55rem;
+      height: 1.65rem;
+    }
+    .lang-flag svg {
+      width: 14px;
+      height: 10px;
+    }
+    .lang-code { font-size: 0.62rem; }
     .nav-hamburger {
       display: inline-flex !important;
       align-items: center;
       justify-content: center;
       font: inherit;
-      font-size: 2.15rem;
+      font-size: 1.35rem;
       padding: 0;
-      width: 3.5rem;
-      height: 3.5rem;
-      min-width: 44px;
-      min-height: 44px;
+      width: 44px;
+      height: 44px;
       position: absolute;
-      right: 0.35rem;
+      right: 0.65rem;
       top: 50%;
       transform: translateY(-50%);
       border: 0;
@@ -396,7 +619,7 @@ const jsonLdString = jsonLd ? JSON.stringify(jsonLd) : null;
       right: 0;
       background: #fff;
       border-bottom: 1px solid var(--rule);
-      padding: 0.85rem 1.2rem 1.25rem;
+      padding: 0.55rem 1.05rem 1rem;
       z-index: 200;
       box-shadow: 0 18px 48px rgba(0, 0, 0, 0.08);
     }
@@ -404,14 +627,12 @@ const jsonLdString = jsonLd ? JSON.stringify(jsonLd) : null;
 
     .nav-mobile-drawer a {
       display: block;
-      min-height: 3.4rem;
-      line-height: 3.4rem;
-      font-size: 1.55rem;
-      font-weight: 600;
+      min-height: 44px;
+      line-height: 44px;
+      font-size: 1rem;
       text-decoration: none;
       color: var(--muted);
-      padding: 0 0.55rem;
-      margin: 0.2rem 0;
+      padding: 0 0.1rem;
       border-radius: 0.5rem;
     }
     .nav-mobile-drawer a:hover,
@@ -419,8 +640,6 @@ const jsonLdString = jsonLd ? JSON.stringify(jsonLd) : null;
       color: var(--accent);
       background: color-mix(in srgb, var(--accent) 8%, transparent);
     }
-    .site-footer { font-size: 1.05rem; padding: 1.65rem 1.15rem; }
-    .footer-links a { font-size: 1.05rem; }
   }
 
   /* Desktop default */
@@ -428,4 +647,184 @@ const jsonLdString = jsonLd ? JSON.stringify(jsonLd) : null;
 
   /* Drawer is mobile-only; keep hidden on desktop to prevent link duplication. */
   .nav-mobile-drawer { display: none; }
+
+  /* Subscribe button in nav */
+  .nav-subscribe-btn {
+    font: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    padding: 0.45rem 1rem;
+    border: 0;
+    border-radius: 2rem;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+  .nav-subscribe-btn:hover { background: #093fcc; }
+
+  /* Language toggle switch (TR ↔ EN) */
+  .lang-toggle {
+    display: inline-flex;
+    flex-shrink: 0;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 999px;
+    outline-offset: 2px;
+  }
+  .lang-toggle:focus-visible {
+    outline: 2px solid var(--accent);
+  }
+  .lang-toggle-track {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    width: 5.4rem;
+    height: 1.85rem;
+    padding: 2px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--rule) 70%, #fff);
+    border: 1px solid var(--rule);
+    overflow: hidden;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .lang-toggle:hover .lang-toggle-track {
+    border-color: color-mix(in srgb, var(--accent) 40%, var(--rule));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+  .lang-toggle-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: calc(50% - 2px);
+    height: calc(100% - 4px);
+    border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 1px 3px rgba(11, 95, 255, 0.35);
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 0;
+  }
+  .lang-toggle.is-en .lang-toggle-thumb {
+    transform: translateX(100%);
+  }
+  .lang-side {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.15rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    color: var(--muted);
+    transition: color 0.25s ease, opacity 0.25s ease;
+    opacity: 0.55;
+    user-select: none;
+    pointer-events: none;
+  }
+  .lang-flag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+    flex-shrink: 0;
+  }
+  .lang-flag svg {
+    display: block;
+    width: 16px;
+    height: 11px;
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+  }
+  .lang-toggle:not(.is-en) .lang-tr,
+  .lang-toggle.is-en .lang-en {
+    color: #fff;
+    opacity: 1;
+  }
+  .lang-toggle:not(.is-en) .lang-tr .lang-flag svg,
+  .lang-toggle.is-en .lang-en .lang-flag svg {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35);
+  }
+
+  /* Mobile drawer subscribe button */
+  .nav-mobile-drawer .nav-subscribe-btn {
+    display: block;
+    width: 100%;
+    margin-top: 0.5rem;
+    text-align: center;
+    min-height: 44px;
+    line-height: 44px;
+    padding: 0 1rem;
+    font-size: 1rem;
+  }
+
+  /* Subscribe modal */
+  .subscribe-modal { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+  .subscribe-modal[hidden] { display: none; }
+  .subscribe-modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); }
+  .subscribe-modal-content {
+    position: relative;
+    background: #fff;
+    border-radius: 1rem;
+    padding: 2rem 2rem 1.75rem;
+    max-width: 520px;
+    width: calc(100% - 2rem);
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.18);
+  }
+  .subscribe-modal-close {
+    position: absolute; top: 0.75rem; right: 0.75rem;
+    font-size: 1.75rem; line-height: 1; border: 0; background: none;
+    cursor: pointer; color: var(--muted); padding: 0.25rem 0.5rem; border-radius: 0.5rem;
+  }
+  .subscribe-modal-close:hover { background: #f0f0f0; color: var(--ink); }
+  #subscribe-modal-title { font-size: 1.35rem; margin: 0 0 0.25rem; }
+  .subscribe-modal-desc { color: var(--muted); margin: 0 0 1.25rem; font-size: 0.92rem; }
+  .subscribe-modal-options { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  .subscribe-option {
+    border: 1px solid var(--rule); border-radius: 0.75rem;
+    padding: 1.25rem 1rem; text-align: center;
+  }
+  .subscribe-option h3 { margin: 0.5rem 0 0.25rem; font-size: 1rem; }
+  .subscribe-option p { margin: 0 0 0.75rem; font-size: 0.82rem; color: var(--muted); }
+  .subscribe-btn {
+    display: inline-block; padding: 0.55rem 1.1rem; border-radius: 0.5rem;
+    font-size: 0.88rem; font-weight: 600; text-decoration: none; border: 0; cursor: pointer;
+    transition: background 0.15s;
+  }
+  .subscribe-btn-telegram { background: #2AABEE; color: #fff; }
+  .subscribe-btn-telegram:hover { background: #1a95d4; color: #fff; }
+  .subscribe-btn-email { background: var(--accent); color: #fff; width: 100%; }
+  .subscribe-btn-email:hover { background: #093fcc; }
+
+  .subscribe-email-form { text-align: left; }
+  .subscribe-email-form input[type="email"] {
+    width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--rule);
+    border-radius: 0.4rem; font: inherit; font-size: 0.9rem; margin-bottom: 0.5rem;
+  }
+  .subscribe-consent {
+    display: flex; align-items: flex-start; gap: 0.4rem;
+    font-size: 0.75rem; color: var(--muted); margin-bottom: 0.75rem; cursor: pointer;
+  }
+  .subscribe-consent input { margin-top: 0.15rem; flex-shrink: 0; }
+  .subscribe-email-result { font-size: 0.88rem; margin-top: 0.5rem; padding: 0.5rem; border-radius: 0.4rem; }
+  .subscribe-email-result.success { background: #e8f5e9; color: #2e7d32; }
+  .subscribe-email-result.error { background: #fbe9e7; color: #c62828; }
+
+  @media (max-width: 520px) {
+    .subscribe-modal-options { grid-template-columns: 1fr; }
+    .subscribe-modal-content { padding: 1.5rem 1.25rem; }
+  }
+
+  .breaking-divider {
+    border-bottom: 1px solid var(--rule);
+    background: #fff;
+    position: relative;
+    z-index: 1;
+  }
 </style>

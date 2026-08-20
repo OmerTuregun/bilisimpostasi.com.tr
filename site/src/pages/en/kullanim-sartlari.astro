@@ -1,0 +1,57 @@
+---
+import { t } from '../../i18n/ui';
+import Layout from '../../layouts/Layout.astro';
+
+const LOCALE = 'en' as const;
+const strings = t(LOCALE);
+---
+<Layout
+  locale={LOCALE}
+  title={`${strings.terms} — Blog`}
+  description="Terms of use for bilisimpostasi.com.tr."
+>
+  <main class="static-page legal-page">
+    <h1>{strings.terms}</h1>
+    <p class="updated">Last updated: 17 August 2026</p>
+
+    <p>By using this Site, you are deemed to have accepted the following terms.</p>
+
+    <h2>About the Content</h2>
+    <p>
+      Articles are compiled from publicly available RSS sources (including TechCrunch, Ars Technica,
+      Hacker News, arXiv, The Verge, Engadget, and similar outlets) and adapted into concise summaries
+      with the assistance of an automated, AI-supported system. Copyright in the original source
+      material remains with the respective publishers; each article includes a link to its source.
+      Content is produced automatically rather than through traditional editorial review and may
+      contain errors or omissions.
+    </p>
+
+    <h2>Intellectual Property</h2>
+    <p>
+      Except for the Site’s design and original summary text, article content belongs to the relevant
+      publishers and rights holders. You must respect applicable copyright and linking requirements
+      when reusing or sharing material from the Site.
+    </p>
+
+    <h2>Limitation of Liability</h2>
+    <p>
+      All content is provided on an “as is” and “as available” basis. We make no warranty as to
+      completeness, accuracy, timeliness, or fitness for a particular purpose. To the fullest extent
+      permitted by law, we shall not be liable for any loss or damage arising from your use of, or
+      reliance on, the Site or its content.
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+      For questions about these terms, contact
+      <a href="mailto:trkuraf@gmail.com">trkuraf@gmail.com</a>.
+    </p>
+  </main>
+</Layout>
+
+<style>
+  .static-page { max-width: 42rem; }
+  .legal-page .updated { color: var(--muted); font-size: 0.9rem; }
+  .legal-page h2 { margin-top: 1.75rem; font-size: 1.25rem; }
+  .legal-page p { line-height: 1.65; }
+</style>

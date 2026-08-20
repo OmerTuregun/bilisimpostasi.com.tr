@@ -1,0 +1,122 @@
+---
+const n8nBaseUrl = 'https://n8n.omerfarukturegun.com.tr';
+const subscribeWebhookUrl = `${n8nBaseUrl}/webhook/email-subscribe`;
+---
+
+<form id="abone-form" class="abone-form">
+  <label class="field">
+    <span>E-posta adresiniz</span>
+    <input type="email" name="email" required autocomplete="email" />
+  </label>
+
+  <label class="field checkbox">
+    <input id="abone-riza" type="checkbox" required />
+    <span>
+      E-posta adresiniz veya Telegram kullanıcı bilginiz, yeni yazılardan haberdar olmanız amacıyla yalnızca açık rızanızla toplanır,
+      başka bir amaçla kullanılmaz, üçüncü taraflarla paylaşılmaz.
+    </span>
+  </label>
+
+  <button type="submit" class="btn">Abone Ol</button>
+
+  <p id="abone-status" class="status" role="status" aria-live="polite"></p>
+</form>
+
+<script is:inline>
+  const form = document.getElementById('abone-form');
+  const statusEl = document.getElementById('abone-status');
+  const rizaEl = document.getElementById('abone-riza');
+  const subscribeWebhookUrl = "${subscribeWebhookUrl}";
+
+  function setStatus(text, kind) {
+    statusEl.textContent = text || '';
+    statusEl.dataset.kind = kind || '';
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(form);
+    const email = String(fd.get('email') || '').trim();
+
+    if (!rizaEl.checked) {
+      setStatus('Lütfen açık rıza onay kutusunu işaretleyin.', 'error');
+      return;
+    }
+
+    setStatus('Onay için kayıt ediliyor…', 'loading');
+
+    try {
+      const res = await fetch(subscribeWebhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, consent: true }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (data && data.ok) {
+        setStatus('E-postanızı kontrol edin: onay linkine tıklayın.', 'ok');
+      } else {
+        setStatus('Kayıt alınamadı. Lütfen tekrar deneyin.', 'error');
+      }
+    } catch {
+      setStatus('Bağlantı hatası oluştu. Lütfen tekrar deneyin.', 'error');
+    }
+  });
+</script>
+
+<style>
+  .abone-form {
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: 0.6rem;
+    padding: 1.25rem;
+    max-width: 42rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 0.95rem;
+    color: var(--ink);
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+  .field input[type='email'] {
+    height: 44px;
+    border-radius: 0.5rem;
+    border: 1px solid var(--rule);
+    padding: 0 0.9rem;
+    font: inherit;
+    background: #fff;
+  }
+  .checkbox {
+    font-weight: 500;
+    line-height: 1.5;
+    font-size: 0.88rem;
+    color: var(--muted);
+    gap: 0.6rem;
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  .checkbox input { margin-top: 0.25rem; }
+  .btn {
+    width: 100%;
+    height: 46px;
+    border-radius: 0.6rem;
+    border: 0;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+  }
+  .status {
+    margin-top: 0.9rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+  }
+  .status[data-kind='error'] { color: #b42318; }
+  .status[data-kind='ok'] { color: #067d3e; }
+</style>
+

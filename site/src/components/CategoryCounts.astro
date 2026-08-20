@@ -1,20 +1,25 @@
 ---
-import { categoryBadgeColor, slugifyCategory } from '../lib/categories';
+import type { Locale } from '../i18n/config';
+import { t } from '../i18n/ui';
+import { categoryBadgeColor, getCategoryUrlSlug } from '../lib/categories';
+import { categoryPath } from '../lib/posts';
 
 interface Props {
   counts: { name: string; count: number }[];
+  locale?: Locale;
 }
 
-const { counts } = Astro.props;
+const { counts, locale = 'tr' } = Astro.props;
+const strings = t(locale);
 ---
 {counts.length > 0 && (
-  <section class="cats" aria-label="Kategoriler">
-    <h2>Kategoriler</h2>
+  <section class="cats" aria-label={strings.categories}>
+    <h2>{strings.categories}</h2>
     <ul>
       {counts.map(({ name, count }) => (
         <li>
-          <a href={`/kategori/${slugifyCategory(name)}/`}>
-            <span class="dot" style={`--badge-color: ${categoryBadgeColor(name)}`}></span>
+          <a href={categoryPath(locale, getCategoryUrlSlug(name, locale))}>
+            <span class="dot" style={`--badge-color: ${categoryBadgeColor(name, locale)}`}></span>
             <span class="name">{name}</span>
             <span class="n">{count}</span>
           </a>
@@ -61,23 +66,4 @@ const { counts } = Astro.props;
   }
   .name { flex: 1; min-width: 0; }
   .n { color: var(--muted); font-variant-numeric: tabular-nums; }
-  @media (max-width: 1099px) {
-    .cats { padding: 0.8rem 0.7rem 0.6rem; margin-top: 0.7rem; }
-    h2 { font-size: 1.12rem; overflow-wrap: break-word; }
-    a {
-      font-size: 0.98rem;
-      align-items: flex-start;
-      flex-wrap: wrap;
-      gap: 0.35rem;
-      padding: 0.55rem 0;
-    }
-    .name, .n { overflow-wrap: break-word; }
-    .dot { width: 0.7rem; height: 0.7rem; }
-  }
-  @media (max-width: 768px) {
-    .cats { padding: 0.85rem 0.65rem 0.55rem; margin-top: 0.65rem; }
-    h2 { font-size: 1.22rem; }
-    a { font-size: 1.05rem; padding: 0.55rem 0; }
-    .dot { width: 0.72rem; height: 0.72rem; }
-  }
 </style>

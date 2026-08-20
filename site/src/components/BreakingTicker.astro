@@ -1,0 +1,112 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { Locale } from '../i18n/config';
+import { t } from '../i18n/ui';
+import { postPath, postSlug } from '../lib/posts';
+
+interface Props {
+  posts: CollectionEntry<'posts'>[];
+  locale?: Locale;
+}
+
+const { posts, locale = 'tr' } = Astro.props;
+const strings = t(locale);
+const MIN_ITEMS = 6;
+const repeats = Math.max(1, Math.ceil(MIN_ITEMS / Math.max(1, posts.length)));
+const items = Array.from({ length: repeats }, () => posts).flat();
+const duration = Math.max(25, items.length * 3.5);
+---
+<div class="ticker-outer">
+  <div class="ticker-bar">
+    <span class="ticker-badge">{strings.breaking}</span>
+    <div class="ticker-track-wrap">
+      <div class="ticker-track" style={`--ticker-dur: ${duration}s`}>
+        {[false, true].map((dup) => (
+          <div class="ticker-group" aria-hidden={dup ? 'true' : undefined}>
+            {items.map((post) => (
+              <a href={postPath(locale, postSlug(post.id))} class="ticker-item" tabindex={dup ? '-1' : undefined}>
+                {post.data.title}
+              </a>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .ticker-outer {
+    background: #fff;
+    position: relative;
+    z-index: 1;
+  }
+  .ticker-bar {
+    display: flex;
+    align-items: center;
+    height: 38px;
+    background: #fff;
+    width: 100%;
+    box-sizing: border-box;
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 0 1.25rem;
+    overflow: hidden;
+  }
+  .ticker-badge {
+    flex-shrink: 0;
+    background: var(--breaking, #c0392b);
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.3rem 0.75rem;
+    margin-right: 0.75rem;
+    white-space: nowrap;
+  }
+  .ticker-track-wrap {
+    flex: 1;
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+  }
+  .ticker-track {
+    display: flex;
+    width: max-content;
+    animation: ticker-scroll var(--ticker-dur, 30s) linear infinite;
+  }
+  .ticker-track:hover {
+    animation-play-state: paused;
+  }
+  .ticker-group {
+    display: flex;
+    flex-shrink: 0;
+    gap: 2rem;
+    padding-right: 2rem;
+  }
+  .ticker-item {
+    white-space: nowrap;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: color 0.15s;
+  }
+  .ticker-item:hover {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+  @keyframes ticker-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @media (max-width: 768px) {
+    .ticker-bar { height: 34px; }
+    .ticker-badge { font-size: 0.6rem; padding: 0.25rem 0.55rem; margin-right: 0.5rem; }
+    .ticker-item { font-size: 0.72rem; }
+    .ticker-group { gap: 1.5rem; padding-right: 1.5rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ticker-track { animation: none; }
+  }
+</style>

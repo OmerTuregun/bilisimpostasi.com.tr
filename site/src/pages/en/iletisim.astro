@@ -1,0 +1,16 @@
+---
+import { t } from '../../i18n/ui';
+import Layout from '../../layouts/Layout.astro';
+
+const LOCALE = 'en' as const;
+const strings = t(LOCALE);
+---
+<Layout locale={LOCALE} title={`${strings.contact} — Blog`} description="Contact us.">
+  <main class="static-page">
+    <h1>{strings.contact}</h1>
+    <p>Reach out with questions or suggestions.</p>
+    <p><a href="mailto:iletisim@omerfarukturegun.com.tr">iletisim@omerfarukturegun.com.tr</a></p>
+  </main>
+</Layout>
+
+<style>.static-page { max-width: 42rem; }</style>

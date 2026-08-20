@@ -13,7 +13,7 @@ yarn-error.log*
 pnpm-debug.log*
 
 
-# environment variables
+.cache/
 .env
 .env.production
 

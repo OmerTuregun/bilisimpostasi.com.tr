@@ -1,0 +1,46 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Abonelik Onayı — Bilişim Postası" description="Abonelik onayı sayfası.">
+  <main>
+    <h1>Abonelik Onayı</h1>
+    <p class="muted" id="status">Onay bilgisi işleniyor…</p>
+  </main>
+</Layout>
+
+<script is:inline>
+  const statusEl = document.getElementById('status');
+  const token = new URLSearchParams(window.location.search).get('token');
+
+  if (!token) {
+    statusEl.textContent = 'Link geçersiz: token bulunamadı.';
+  } else {
+    const url = `https://n8n.omerfarukturegun.com.tr/webhook/email-confirm`;
+    fetch(`${url}?token=${encodeURIComponent(token)}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data && data.ok) {
+          statusEl.textContent = 'Aboneliğiniz onaylandı. Teşekkürler.';
+        } else {
+          const reason = (data && data.reason) ? data.reason : 'invalid_or_expired';
+          statusEl.textContent = reason === 'invalid_or_expired'
+            ? 'Link geçersiz veya süresi dolmuş.'
+            : `Onay başarısız: ${reason}`;
+        }
+      })
+      .catch(() => {
+        statusEl.textContent = 'Bağlantı hatası oluştu. Lütfen tekrar deneyin.';
+      });
+  }
+</script>
+
+<style>
+  main h1 {
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    line-height: 1.25;
+    margin: 0 0 1rem;
+  }
+  .muted { color: var(--muted); font-weight: 600; }
+</style>
+

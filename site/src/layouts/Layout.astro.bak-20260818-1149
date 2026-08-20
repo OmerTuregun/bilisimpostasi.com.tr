@@ -1,0 +1,403 @@
+---
+import { getCollection } from 'astro:content';
+import { slugifyCategory, DEFAULT_CATEGORY } from '../lib/categories';
+
+interface Props {
+  title: string;
+  description: string;
+  ogType?: 'website' | 'article';
+  /** Absolute URL or site-relative path; falls back to /og-default.png */
+  image?: string;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const { title, description, ogType = 'website', image, jsonLd } = Astro.props;
+const siteBase = Astro.site ?? new URL(Astro.url.origin);
+const canonical = new URL(Astro.url.pathname, siteBase);
+const defaultOgImage = new URL('/og-default.png', siteBase).href;
+const ogImage = image
+  ? (image.startsWith('http://') || image.startsWith('https://')
+      ? image
+      : new URL(image, siteBase).href)
+  : defaultOgImage;
+const path = Astro.url.pathname;
+const posts = await getCollection('posts');
+const navCategories = [...new Set(posts.map((post) => post.data.kategori ?? DEFAULT_CATEGORY))]
+  .sort()
+  .map((name) => ({ name, slug: slugifyCategory(name) }));
+const jsonLdString = jsonLd ? JSON.stringify(jsonLd) : null;
+---
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical.href} />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Blog — RSS"
+      href={new URL('/rss.xml', siteBase).href}
+    />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonical.href} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    {jsonLdString && (
+      <script type="application/ld+json" set:html={jsonLdString} />
+    )}
+    <script
+      defer
+      src="https://analytics.omerfarukturegun.com.tr/script.js"
+      data-website-id="66c56023-cd3f-4404-9446-7ead80b286a3"
+    ></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="/">
+          <span class="mark" aria-hidden="true">M</span>
+          <span>
+            <span class="name">Blog</span>
+            <span class="tagline">Teknoloji ve AI Haberleri</span>
+          </span>
+        </a>
+        <button
+          class="nav-hamburger"
+          type="button"
+          aria-label="Menüyü aç"
+          aria-controls="nav-mobile-drawer"
+          aria-expanded="false"
+        >
+          ☰
+        </button>
+        <nav class="nav" aria-label="Ana menü">
+          <a href="/" class:list={[{ active: path === '/' || /^\/\d+\/?$/.test(path) }]}>Ana Sayfa</a>
+          <div class="nav-dropdown" class:list={[{ active: path.startsWith('/kategori/') }]}>
+            <button class="nav-dropdown-trigger" type="button" aria-expanded="false" aria-haspopup="true">
+              Kategoriler <span aria-hidden="true">▾</span>
+            </button>
+            <ul class="nav-dropdown-menu">
+              {navCategories.map(({ name, slug }) => (
+                <li><a href={`/kategori/${slug}/`}>{name}</a></li>
+              ))}
+            </ul>
+          </div>
+          <a href="/#search">Ara</a>
+          <a href="/hakkimizda" class:list={[{ active: path === '/hakkimizda/' }]}>Hakkımızda</a>
+          <a href="/iletisim" class:list={[{ active: path === '/iletisim/' }]}>İletişim</a>
+        </nav>
+
+        <div id="nav-mobile-drawer" class="nav-mobile-drawer" aria-hidden="true">
+          <a href="/" class:list={[{ active: path === '/' || /^\/\d+\/?$/.test(path) }]} data-close-drawer>Ana Sayfa</a>
+          <a
+            href="/kategoriler/"
+            class:list={[{ active: path.startsWith('/kategori/') || path === '/kategoriler/' }]}
+            data-close-drawer
+          >Kategoriler</a>
+          <a href="/#search" data-close-drawer>Ara</a>
+          <a href="/hakkimizda" class:list={[{ active: path === '/hakkimizda/' }]} data-close-drawer>Hakkımızda</a>
+          <a href="/iletisim" class:list={[{ active: path === '/iletisim/' }]} data-close-drawer>İletişim</a>
+        </div>
+      </div>
+    </header>
+    <slot />
+    <footer class="site-footer">
+      <p>© {new Date().getFullYear()} Blog — Teknoloji ve AI Haberleri</p>
+      <nav class="footer-links" aria-label="Yasal">
+        <a href="/gizlilik-politikasi/">Gizlilik Politikası</a>
+        <a href="/kullanim-sartlari/">Kullanım Şartları</a>
+      </nav>
+    </footer>
+    <script>
+      const dropdown = document.querySelector('.nav-dropdown');
+      const dropdownTrigger = dropdown?.querySelector('.nav-dropdown-trigger');
+      dropdownTrigger?.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const open = dropdown?.classList.toggle('open');
+        dropdownTrigger.setAttribute('aria-expanded', String(Boolean(open)));
+      });
+      dropdown?.addEventListener('mouseleave', () => {
+        dropdown.classList.remove('open');
+        dropdownTrigger?.setAttribute('aria-expanded', 'false');
+      });
+      document.addEventListener('click', () => {
+        dropdown?.classList.remove('open');
+        dropdownTrigger?.setAttribute('aria-expanded', 'false');
+      });
+
+      // Mobile drawer
+      const hamburger = document.querySelector('.nav-hamburger');
+      const drawer = document.getElementById('nav-mobile-drawer');
+
+      function setDrawerOpen(open) {
+        if (!drawer || !hamburger) return;
+        drawer.classList.toggle('open', open);
+        drawer.setAttribute('aria-hidden', String(!open));
+        hamburger.setAttribute('aria-expanded', String(open));
+      }
+
+      hamburger?.addEventListener('click', () => {
+        const isOpen = drawer?.classList.contains('open');
+        setDrawerOpen(!isOpen);
+      });
+
+      drawer?.addEventListener('click', (event) => {
+        const t = event.target;
+        if (t?.matches?.('[data-close-drawer]')) setDrawerOpen(false);
+      });
+
+      document.addEventListener('click', (event) => {
+        const target = event.target;
+        const clickedInside = drawer?.contains?.(target) || hamburger?.contains?.(target);
+        if (!clickedInside) setDrawerOpen(false);
+      });
+
+      // Screenshot/debug helper: add ?menu=1 to force-open on mobile
+      if (new URLSearchParams(window.location.search).get('menu') === '1') setDrawerOpen(true);
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    color-scheme: light;
+    --bg: #f6f4ef;
+    --ink: #1a1a1a;
+    --muted: #5c5c5c;
+    --accent: #0b5fff;
+    --rule: #d9d4c8;
+    --breaking: #c0392b;
+    --container: min(72rem, 100% - 2.5rem);
+    --font-heading: 'Playfair Display', Georgia, serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  h1, h2, h3, .name { font-family: var(--font-heading); }
+  body {
+    margin: 0;
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  a { color: var(--accent); }
+  .site-header {
+    background: #fff;
+    border-bottom: 1px solid var(--rule);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-inner {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 0.85rem 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: inherit;
+  }
+  .mark {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.45rem;
+    background: var(--ink);
+    color: var(--bg);
+    font-weight: 700;
+  }
+  .name { display: block; font-weight: 700; }
+  .tagline { display: block; color: var(--muted); font-size: 0.78rem; }
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.15rem;
+  }
+  .nav > a, .nav-dropdown-trigger {
+    text-decoration: none;
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.92rem;
+    padding: 0.45rem 0.75rem;
+    border: 0;
+    border-radius: 0.35rem;
+    background: none;
+    cursor: pointer;
+  }
+  .nav > a:hover, .nav > a.active,
+  .nav-dropdown:hover .nav-dropdown-trigger,
+  .nav-dropdown.open .nav-dropdown-trigger,
+  .nav-dropdown.active .nav-dropdown-trigger {
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+  }
+  .nav-dropdown { position: relative; }
+  .nav-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 0.25rem);
+    left: 0;
+    min-width: 11rem;
+    margin: 0;
+    padding: 0.35rem 0;
+    list-style: none;
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: 0.5rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  }
+  .nav-dropdown:hover .nav-dropdown-menu,
+  .nav-dropdown.open .nav-dropdown-menu { display: block; }
+  .nav-dropdown-menu a {
+    display: block;
+    padding: 0.5rem 0.85rem;
+    text-decoration: none;
+    color: var(--ink);
+    font-size: 0.88rem;
+  }
+  .nav-dropdown-menu a:hover {
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+  }
+  main {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 1.75rem 1.25rem 3rem;
+    flex: 1;
+    width: 100%;
+  }
+  @media (max-width: 1099px), (hover: none) and (pointer: coarse) {
+    main { padding-left: 1.5rem; padding-right: 1.5rem; }
+  }
+  .site-footer {
+    border-top: 1px solid var(--rule);
+    background: #fff;
+    padding: 1.25rem;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  .site-footer p { margin: 0; }
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem 1.25rem;
+    margin-top: 0.65rem;
+  }
+  .footer-links a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .footer-links a:hover { color: var(--ink); text-decoration: underline; }
+  @media (max-width: 1099px), (hover: none) and (pointer: coarse) {
+    .tagline { display: none; }
+    .header-inner {
+      padding: 0.65rem 0.9rem;
+      flex-wrap: nowrap;
+      gap: 0.4rem;
+    }
+    .mark { width: 2rem; height: 2rem; }
+    .nav {
+      width: auto;
+      margin-left: auto;
+      justify-content: flex-end;
+      flex-wrap: nowrap;
+      gap: 0.05rem;
+    }
+    .nav > a, .nav-dropdown-trigger {
+      font-size: 0.78rem;
+      padding: 0.32rem 0.42rem;
+      white-space: nowrap;
+    }
+  }
+
+  /* Mobile: show hamburger drawer instead of squeezed inline links */
+  @media (max-width: 768px) {
+    .tagline { display: block; font-size: 0.78rem; }
+    .nav { display: none !important; }
+    .header-inner { position: relative; }
+    .nav-hamburger {
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+      font: inherit;
+      font-size: 1.35rem;
+      padding: 0;
+      width: 44px;
+      height: 44px;
+      position: absolute;
+      right: 0.65rem;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 0;
+      background: none;
+      color: var(--muted);
+      cursor: pointer;
+      border-radius: 0.5rem;
+    }
+    .nav-hamburger:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--accent); }
+
+    .nav-mobile-drawer {
+      display: none;
+      position: absolute;
+      top: calc(100% - 1px);
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-bottom: 1px solid var(--rule);
+      padding: 0.55rem 1.05rem 1rem;
+      z-index: 200;
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.08);
+    }
+    .nav-mobile-drawer.open { display: block; }
+
+    .nav-mobile-drawer a {
+      display: block;
+      min-height: 44px;
+      line-height: 44px;
+      font-size: 1rem;
+      text-decoration: none;
+      color: var(--muted);
+      padding: 0 0.1rem;
+      border-radius: 0.5rem;
+    }
+    .nav-mobile-drawer a:hover,
+    .nav-mobile-drawer a.active {
+      color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 8%, transparent);
+    }
+  }
+
+  /* Desktop default */
+  .nav-hamburger { display: none; }
+</style>

@@ -1,41 +1,46 @@
 ---
-import { getCollection } from 'astro:content';
+import type { CategoryKey } from '../../i18n/config';
+import { CATEGORY_ORDER, CATEGORY_SLUG, categoryLabel, categoryKeyFromName } from '../../i18n/config';
+import { t } from '../../i18n/ui';
+import { getPosts, categoriesIndexPath } from '../../lib/posts';
+import { DEFAULT_CATEGORY } from '../../lib/categories';
 import Layout from '../../layouts/Layout.astro';
 import PostCard from '../../components/PostCard.astro';
-import { slugifyCategory, DEFAULT_CATEGORY } from '../../lib/categories';
+
+const LOCALE = 'tr' as const;
 
 export async function getStaticPaths() {
-  const posts = await getCollection('posts');
-  const categories = [...new Set(posts.map((post) => post.data.kategori ?? DEFAULT_CATEGORY))];
-  return categories.map((kategori) => ({
-    params: { kategori: slugifyCategory(kategori) },
-    props: {
-      kategori,
-      posts: posts
-        .filter((post) => (post.data.kategori ?? DEFAULT_CATEGORY) === kategori)
-        .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()),
-    },
-  }));
+  const locale = 'tr' as const;
+  const posts = await getPosts(locale);
+  const keys = new Set<CategoryKey>();
+  for (const post of posts) {
+    keys.add(categoryKeyFromName(post.data.kategori ?? DEFAULT_CATEGORY, locale));
+  }
+
+  return CATEGORY_ORDER.filter((key) => keys.has(key)).map((key) => {
+    const label = categoryLabel(key, locale);
+    const categoryPosts = posts
+      .filter((post) => categoryKeyFromName(post.data.kategori ?? DEFAULT_CATEGORY, locale) === key)
+      .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+    return {
+      params: { kategori: CATEGORY_SLUG[locale][key] },
+      props: { categoryKey: key, kategori: label, posts: categoryPosts },
+    };
+  });
 }
 
-const { kategori, posts } = Astro.props;
-
-const categoryDescriptions: Record<string, string> = {
-  'Yapay Zeka':
-    'Yapay zekâ modelleri, dil modelleri, sektör şirketleri ve araştırma haberlerinin kısa Türkçe özetleri. Claude, GPT ve açık ağırlık modelleri gibi gelişmeleri bu kategoride takip edin.',
-  Teknoloji:
-    'Yazılım, donanım, siber güvenlik, bulut ve dijital ürün haberlerinin kısa Türkçe özetleri. Teknoloji gündemindeki seçilmiş gelişmeleri buradan izleyin.',
-};
+const { kategori, posts, categoryKey } = Astro.props;
+const strings = t(LOCALE);
 const description =
-  categoryDescriptions[kategori] ??
-  `${kategori} kategorisindeki teknoloji ve yapay zekâ haberlerinin kısa Türkçe özetleri. Güncel yazıları buradan keşfedebilirsiniz.`;
+  strings.categoryDesc[categoryKey as keyof typeof strings.categoryDesc] ??
+  `${kategori} kategorisindeki teknoloji ve yapay zekâ haberlerinin kısa Türkçe özetleri.`;
 ---
-<Layout title={`${kategori} — Blog`} description={description}>
+<Layout locale={LOCALE} title={`${kategori} — Blog`} description={description}>
   <main>
     <h1>{kategori}</h1>
-    <p class="count">{posts.length} yazı</p>
-    <div class="card-grid">{posts.map((post) => <PostCard post={post} />)}</div>
-    <p class="back"><a href="/kategoriler">← Tüm kategoriler</a></p>
+    <p class="count">{posts.length} {strings.posts}</p>
+    <div class="card-grid">{posts.map((post) => <PostCard post={post} locale={LOCALE} />)}</div>
+    <p class="back"><a href={categoriesIndexPath(LOCALE)}>← {strings.allCategories}</a></p>
   </main>
 </Layout>
 
@@ -44,16 +49,14 @@ const description =
   .count { color: var(--muted); margin: 0.25rem 0 1.5rem; }
   .card-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px 10px;
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
-  @media (max-width: 768px) {
+  @media (min-width: 769px) {
     .card-grid {
-      grid-template-columns: 1fr;
-      gap: 1.15rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px 10px;
     }
-    h1 { font-size: 1.95rem; }
-    .count { font-size: 1.12rem; }
   }
   @media (min-width: 1100px) and (hover: hover) and (pointer: fine) {
     .card-grid {

@@ -1,0 +1,289 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import PostCard from '../components/PostCard.astro';
+import BreakingMarquee from '../components/BreakingMarquee.astro';
+import PopularPosts from '../components/PopularPosts.astro';
+import CategoryCounts from '../components/CategoryCounts.astro';
+import { getPopularPosts } from '../lib/popular-posts';
+import { DEFAULT_CATEGORY } from '../lib/categories';
+
+export async function getStaticPaths() {
+  const BREAKING_WINDOW_HOURS = 3;
+  const PAGE_SIZE = 12;
+  const allPosts = (await getCollection('posts')).sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  );
+
+  const cutoff = Date.now() - BREAKING_WINDOW_HOURS * 60 * 60 * 1000;
+  const breakingPosts = allPosts.filter((post) => post.data.pubDate.valueOf() >= cutoff);
+  const totalPages = Math.max(1, Math.ceil(allPosts.length / PAGE_SIZE));
+  const popularPosts = await getPopularPosts(20);
+  const counts = new Map<string, number>();
+  for (const post of allPosts) {
+    const name = post.data.kategori ?? DEFAULT_CATEGORY;
+    counts.set(name, (counts.get(name) ?? 0) + 1);
+  }
+  const categoryCounts = [...counts.entries()]
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => a.name.localeCompare(b.name, 'tr'));
+
+  return Array.from({ length: totalPages }, (_, index) => ({
+    params: index === 0 ? { page: undefined } : { page: String(index + 1) },
+    props: {
+      pageNum: index + 1,
+      totalPages,
+      breakingPosts: index === 0 ? breakingPosts : [],
+      popularPosts: index === 0 ? popularPosts : [],
+      categoryCounts: index === 0 ? categoryCounts : [],
+      gridPosts: allPosts.slice(index * PAGE_SIZE, (index + 1) * PAGE_SIZE),
+    },
+  }));
+}
+
+const { pageNum, totalPages, breakingPosts, gridPosts, popularPosts, categoryCounts } = Astro.props;
+const prevUrl = pageNum > 1 ? (pageNum === 2 ? '/' : `/${pageNum - 1}/`) : null;
+const nextUrl = pageNum < totalPages ? `/${pageNum + 1}/` : null;
+---
+<Layout
+  title={pageNum === 1 ? 'Blog — Teknoloji ve AI Haberleri' : `Blog — Sayfa ${pageNum}`}
+  description={
+    pageNum === 1
+      ? 'Teknoloji ve yapay zekâ alanındaki güncel gelişmeleri Türkçe özetlerle takip edin. Yazılım, donanım, yapay zekâ ve dijital dünyadan seçilmiş haberler.'
+      : `Teknoloji ve yapay zekâ haber özetleri — sayfa ${pageNum}. Güncel gelişmeleri kısa Türkçe yazılarla keşfedin.`
+  }
+>
+  <main>
+    {pageNum === 1 && (
+      <section class="site-search" aria-label="Site içi arama">
+        <div id="search"></div>
+      </section>
+    )}
+    {breakingPosts.length > 0 && (
+      <section class="breaking" aria-label="Son dakika">
+        <div class="breaking-label">Son Dakika</div>
+        <BreakingMarquee posts={breakingPosts} />
+      </section>
+    )}
+    {pageNum === 1 ? (
+      <div class="home-layout">
+        <aside class="home-sidebar">
+          <PopularPosts posts={popularPosts} />
+          <CategoryCounts counts={categoryCounts} />
+        </aside>
+        <section class="home-main">
+          <h1>Gündem</h1>
+          <div class="card-grid">
+            {gridPosts.map((post) => <PostCard post={post} />)}
+          </div>
+        </section>
+      </div>
+    ) : (
+      <section>
+        <h1>Gündem — Sayfa {pageNum}</h1>
+        <div class="card-grid">
+          {gridPosts.map((post) => <PostCard post={post} />)}
+        </div>
+      </section>
+    )}
+    {totalPages > 1 && (
+      <nav class="pager" aria-label="Sayfalama">
+        {prevUrl ? <a href={prevUrl}>← Önceki</a> : <span>← Önceki</span>}
+        <span>{pageNum} / {totalPages}</span>
+        {nextUrl ? <a href={nextUrl}>Sonraki →</a> : <span>Sonraki →</span>}
+      </nav>
+    )}
+  </main>
+</Layout>
+
+{pageNum === 1 && (
+  <script>
+    import { PagefindUI } from '@pagefind/default-ui';
+    import '@pagefind/default-ui/css/ui.css';
+
+    new PagefindUI({
+      element: '#search',
+      showSubResults: false,
+      showImages: false,
+      resetStyles: false,
+      pageSize: 8,
+      excerptLength: 18,
+      translations: {
+        placeholder: 'Yazılarda ara…',
+        clear_search: 'Temizle',
+        load_more: 'Daha fazla yükle',
+        search_label: 'Site içi arama',
+        filters_label: 'Filtreler',
+        zero_results: '[SEARCH_TERM] için sonuç bulunamadı',
+        many_results: '[COUNT] sonuç ([SEARCH_TERM])',
+        one_result: '[COUNT] sonuç ([SEARCH_TERM])',
+        alt_search: '[SEARCH_TERM] için sonuç yok. [DIFFERENT_TERM] için sonuçlar gösteriliyor',
+        search_suggestion: '[SEARCH_TERM] için sonuç yok. Şunları deneyin:',
+        searching: '[SEARCH_TERM] aranıyor…',
+      },
+    });
+  </script>
+)}
+
+<style>
+  .site-search {
+    position: relative;
+    z-index: 40;
+    margin-bottom: 1.5rem;
+    --pagefind-ui-scale: 0.82;
+    --pagefind-ui-primary: var(--accent);
+    --pagefind-ui-text: var(--ink);
+    --pagefind-ui-background: #fff;
+    --pagefind-ui-border: var(--rule);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 0.5rem;
+    --pagefind-ui-font: var(--font-body);
+  }
+  .site-search :global(.pagefind-ui) { position: relative; }
+  .site-search :global(.pagefind-ui__search-input) {
+    box-shadow: 0 2px 12px #0000000a;
+  }
+  .site-search :global(.pagefind-ui__drawer) {
+    position: absolute;
+    top: calc(100% + 0.35rem);
+    left: 0;
+    right: 0;
+    z-index: 41;
+    display: block;
+    max-height: min(22rem, 60vh);
+    overflow: auto;
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: 0.5rem;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  }
+  .site-search :global(.pagefind-ui__drawer:not(:has(.pagefind-ui__message))) {
+    display: none;
+  }
+  .site-search :global(.pagefind-ui__results-area) {
+    min-width: 0;
+    margin: 0;
+    flex: none;
+  }
+  .site-search :global(.pagefind-ui__message) {
+    height: auto;
+    padding: 0.55rem 0.85rem 0.35rem;
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .site-search :global(.pagefind-ui__results) {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0.35rem;
+  }
+  .site-search :global(.pagefind-ui__result) {
+    padding: 0 !important;
+    margin: 0 !important;
+    gap: 0 !important;
+    border-top: 1px solid var(--rule) !important;
+    border-bottom: none !important;
+  }
+  .site-search :global(.pagefind-ui__result-inner) {
+    padding: 0.55rem 0.85rem !important;
+    margin: 0 !important;
+    min-width: 0 !important;
+    width: 100%;
+  }
+  .site-search :global(.pagefind-ui__result:hover),
+  .site-search :global(.pagefind-ui__result:focus-within) {
+    background: #f6f4ef;
+  }
+  .site-search :global(.pagefind-ui__result-title) {
+    font-family: var(--font-heading);
+    font-size: 0.95rem !important;
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 0 !important;
+  }
+  .site-search :global(.pagefind-ui__result-link) {
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .site-search :global(.pagefind-ui__result-excerpt) {
+    display: block !important;
+    margin: 0.15rem 0 0 !important;
+    min-width: 0 !important;
+    max-width: 100%;
+    font-size: 0.78rem !important;
+    line-height: 1.35;
+    color: var(--muted);
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .site-search :global(.pagefind-ui__result-nested),
+  .site-search :global(.pagefind-ui__button),
+  .site-search :global(.pagefind-ui__result-thumb) {
+    display: none;
+  }
+  @media (max-width: 899px) {
+    .site-search :global(.pagefind-ui__drawer) {
+      max-height: min(16rem, 50vh);
+    }
+    .site-search :global(.pagefind-ui__result-title) { font-size: 0.88rem; }
+    .site-search :global(.pagefind-ui__result-inner) { padding: 0.45rem 0.7rem; }
+  }
+  .breaking {
+    margin-bottom: 2rem;
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-left: 4px solid var(--breaking);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+  .breaking-label {
+    background: var(--breaking);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.4rem 1rem;
+  }
+  .breaking :global(.marquee-wrap) { padding: 0.85rem 1rem; }
+  h1 { font-size: 1.5rem; margin: 0 0 1.25rem; }
+  .home-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .home-main, .home-sidebar { min-width: 0; }
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px 10px;
+  }
+  /* Sidebar eklendiği mobil düzende Gündem kartları tek sütun olsun. */
+  @media (max-width: 768px) {
+    .home-main .card-grid { grid-template-columns: 1fr; }
+  }
+  @media (min-width: 1100px) {
+    .home-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      grid-template-areas: "main sidebar";
+      gap: 1.75rem;
+      align-items: start;
+    }
+    .home-main { grid-area: main; }
+    .home-sidebar { grid-area: sidebar; position: sticky; top: 5.25rem; }
+    .card-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+  }
+  .pager {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule);
+  }
+  .pager span { color: var(--muted); }
+</style>

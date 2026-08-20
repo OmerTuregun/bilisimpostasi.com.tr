@@ -1,0 +1,20 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AboneOlForm from '../components/AboneOlForm.astro';
+---
+
+<Layout title="Abone Ol — Bilişim Postası" description="E-posta bültenine abone olun.">
+  <main>
+    <h1>Abone Ol</h1>
+    <AboneOlForm />
+  </main>
+</Layout>
+
+<style>
+  main h1 {
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    line-height: 1.25;
+    margin: 0 0 1rem;
+  }
+</style>
+

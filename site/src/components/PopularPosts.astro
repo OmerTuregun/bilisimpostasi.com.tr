@@ -1,5 +1,14 @@
 ---
-import { categoryBadgeColor, DEFAULT_CATEGORY } from '../lib/categories';
+import type { Locale } from '../i18n/config';
+import { t } from '../i18n/ui';
+import {
+  categoryBadgeColor,
+  getCategoryDisplayName,
+  getCategoryUrlSlug,
+  DEFAULT_CATEGORY,
+  DEFAULT_CATEGORY_EN,
+} from '../lib/categories';
+import { localePrefix } from '../lib/posts';
 
 interface Item {
   title: string;
@@ -10,23 +19,28 @@ interface Item {
 
 interface Props {
   posts: Item[];
+  locale?: Locale;
 }
 
-const { posts } = Astro.props;
+const { posts, locale = 'tr' } = Astro.props;
+const strings = t(locale);
+const prefix = localePrefix(locale);
 const top = posts.slice(0, 2);
+const intlLocale = locale === 'en' ? 'en-GB' : 'tr-TR';
 const viewsLabel = (n: number) =>
-  `${new Intl.NumberFormat('tr-TR').format(n)} görüntülenme`;
+  `${new Intl.NumberFormat(intlLocale).format(n)} ${strings.views}`;
 ---
-<section class="popular" aria-label="Bu hafta en çok okunanlar">
-  <h2>🔥 Bu Hafta En Çok Okunanlar</h2>
-  <p class="sub">Son 7 gün, Umami istatistiklerine göre</p>
+<section class="popular" aria-label={strings.popularTitle}>
+  <h2>{strings.popularTitle}</h2>
+  <p class="sub">{strings.popularSub}</p>
   {top.length === 0 ? (
-    <p class="empty">Henüz yeterli veri yok</p>
+    <p class="empty">—</p>
   ) : (
     <ol>
       {top.map((post, index) => {
-        const kategori = post.kategori ?? DEFAULT_CATEGORY;
-        const badgeColor = categoryBadgeColor(kategori);
+        const raw = post.kategori ?? (locale === 'en' ? DEFAULT_CATEGORY_EN : DEFAULT_CATEGORY);
+        const badgeColor = categoryBadgeColor(raw, locale);
+        const kategori = getCategoryDisplayName(raw, locale);
         return (
           <li>
             <span class="rank" aria-hidden="true">{index + 1}</span>
@@ -40,7 +54,7 @@ const viewsLabel = (n: number) =>
       })}
     </ol>
   )}
-  <a class="all" href="/en-cok-okunanlar/">Tüm En Çok Okunanları Gör →</a>
+  <a class="all" href={`${prefix}/en-cok-okunanlar/`}>{strings.popularAll}</a>
 </section>
 
 <style>
@@ -129,34 +143,4 @@ const viewsLabel = (n: number) =>
     font-size: 0.9rem;
   }
   .all:hover { text-decoration: underline; }
-  @media (max-width: 1099px) {
-    .popular { padding: 0.8rem 0.7rem 0.75rem; }
-    h2 {
-      font-size: 1.12rem;
-      line-height: 1.25;
-      overflow-wrap: break-word;
-    }
-    .sub { font-size: 0.8rem; overflow-wrap: break-word; }
-    li {
-      flex-direction: column;
-      gap: 0.28rem;
-      padding: 0.7rem 0;
-    }
-    .rank { font-size: 1.9rem; min-width: 0; }
-    .badge { font-size: 0.72rem; padding: 0.22rem 0.48rem; }
-    a { font-size: 0.98rem; overflow-wrap: break-word; }
-    .views { font-size: 0.8rem; }
-    .all { font-size: 0.9rem; overflow-wrap: break-word; padding-top: 0.65rem; }
-  }
-  @media (max-width: 768px) {
-    .popular { padding: 0.85rem 0.65rem 0.75rem; }
-    h2 { font-size: 1.22rem; }
-    .sub { font-size: 0.88rem; }
-    li { padding: 0.7rem 0; }
-    .rank { font-size: 2rem; }
-    .badge { font-size: 0.72rem; padding: 0.22rem 0.48rem; }
-    a { font-size: 1.05rem; }
-    .views { font-size: 0.88rem; }
-    .all { font-size: 0.98rem; padding-top: 0.6rem; }
-  }
 </style>

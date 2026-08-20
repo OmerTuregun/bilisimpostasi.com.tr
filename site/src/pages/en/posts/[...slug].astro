@@ -1,0 +1,211 @@
+---
+import { render } from 'astro:content';
+import { t } from '../../../i18n/ui';
+import {
+  getPosts,
+  postSlug,
+  postPath,
+  hasPostInLocale,
+  homePath,
+  categoryPath,
+} from '../../../lib/posts';
+import {
+  formatDateTime,
+  categoryBadgeColor,
+  getCategoryDisplayName,
+  getCategoryUrlSlug,
+  DEFAULT_CATEGORY_EN,
+} from '../../../lib/categories';
+import Layout from '../../../layouts/Layout.astro';
+import PostCard from '../../../components/PostCard.astro';
+
+const LOCALE = 'en' as const;
+
+export async function getStaticPaths() {
+  const locale = 'en' as const;
+  const posts = await getPosts(locale);
+  return posts.map((post) => ({
+    params: { slug: postSlug(post.id) },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const strings = t(LOCALE);
+const slug = postSlug(post.id);
+const { Content } = await render(post);
+const rawKategori = post.data.kategori ?? DEFAULT_CATEGORY_EN;
+const kategori = getCategoryDisplayName(rawKategori, LOCALE);
+const kategoriSlug = getCategoryUrlSlug(rawKategori, LOCALE);
+const badgeColor = categoryBadgeColor(rawKategori, LOCALE);
+
+const siteBase = Astro.site ?? new URL(Astro.url.origin);
+const postUrl = new URL(postPath(LOCALE, slug), siteBase).href;
+const ogImage = post.data.coverImage
+  ? (post.data.coverImage.startsWith('http://') || post.data.coverImage.startsWith('https://')
+      ? post.data.coverImage
+      : new URL(post.data.coverImage, siteBase).href)
+  : new URL('/og-default.png', siteBase).href;
+const datePublished = post.data.pubDate.toISOString();
+const dateModified = (post.data.updatedDate ?? post.data.pubDate).toISOString();
+
+const allInLocale = await getPosts(LOCALE);
+const relatedPosts = allInLocale
+  .filter((p) => postSlug(p.id) !== slug && (p.data.kategori ?? DEFAULT_CATEGORY_EN) === rawKategori)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+
+const trExists = await hasPostInLocale(slug, 'tr');
+const hreflangEn = postUrl;
+const hreflangTr = trExists ? new URL(postPath('tr', slug), siteBase).href : null;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'NewsArticle',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished,
+  dateModified,
+  image: [ogImage],
+  author: [{ '@type': 'Organization', name: 'bilisimpostasi.com.tr' }],
+  publisher: {
+    '@type': 'Organization',
+    name: 'bilisimpostasi.com.tr',
+  },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': postUrl },
+};
+---
+<Layout
+  locale={LOCALE}
+  title={`${post.data.title} — Blog`}
+  description={post.data.description}
+  ogType="article"
+  image={ogImage}
+  jsonLd={jsonLd}
+  articleSlug={slug}
+  hreflangTr={hreflangTr}
+  hreflangEn={hreflangEn}
+>
+  <main>
+    <div class="post-layout">
+      <article class="post-detail" data-pagefind-body>
+        <a class="back" href={homePath(LOCALE)}>{strings.backHome}</a>
+        <a class="badge" href={categoryPath(LOCALE, kategoriSlug)} style={`--badge-color: ${badgeColor}`}>
+          {kategori}
+        </a>
+        <h1>{post.data.title}</h1>
+        <p class="meta">
+          <time datetime={datePublished}>{formatDateTime(post.data.pubDate, LOCALE)}</time>
+          {' · '}
+          <a href={post.data.kaynak} rel="noopener noreferrer" target="_blank">{strings.source}</a>
+        </p>
+        {post.data.coverImage && (
+          <figure class="cover-figure">
+            <img class="cover-img" src={post.data.coverImage} alt={post.data.title} loading="eager" />
+            {post.data.gorselFotografci && (
+              <figcaption class="cover-credit">
+                {strings.photoCredit}{' '}
+                <a href={post.data.gorselFotografciLink} rel="noopener noreferrer" target="_blank">{post.data.gorselFotografci}</a>
+                {' / '}
+                <a href="https://unsplash.com/?utm_source=bilisimpostasi&utm_medium=referral" rel="noopener noreferrer" target="_blank">Unsplash</a>
+              </figcaption>
+            )}
+          </figure>
+        )}
+        <div class="content"><Content /></div>
+      </article>
+
+      {relatedPosts.length > 0 && (
+        <aside class="related" aria-label={strings.relatedPosts}>
+          <h2>{strings.relatedPosts}</h2>
+          <div class="card-grid">
+            {relatedPosts.map((related) => <PostCard post={related} locale={LOCALE} />)}
+          </div>
+        </aside>
+      )}
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .post-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    align-items: start;
+  }
+  .post-detail { max-width: 42rem; min-width: 0; }
+  .back { display: block; margin-bottom: 1.25rem; color: var(--muted); text-decoration: none; }
+  .badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--badge-color) 15%, white);
+    color: var(--badge-color);
+    text-decoration: none;
+  }
+  h1 { font-size: clamp(1.6rem, 4vw, 2.2rem); line-height: 1.25; margin: 0.85rem 0; }
+  .meta {
+    color: var(--muted);
+    margin: 0 0 1.75rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .cover-figure { margin: 0 0 1.5rem; }
+  .cover-img { width: 100%; height: auto; border-radius: 8px; display: block; }
+  .cover-credit { font-size: 0.75rem; color: var(--muted); margin-top: 0.4rem; }
+  .cover-credit a { color: var(--muted); text-decoration: underline; }
+  .content :global(p) { margin: 0 0 1rem; }
+  .related {
+    min-width: 0;
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule);
+  }
+  .related h2 {
+    font-size: 1.35rem;
+    margin: 0 0 1.25rem;
+  }
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 768px) {
+    .content :global(p) {
+      margin: 0 0 1rem;
+      font-size: 1.05rem;
+      line-height: 1.8;
+    }
+    h1 {
+      font-size: 2rem;
+      line-height: 1.25;
+      margin: 0.85rem 0 0.9rem;
+    }
+    .related h2 { font-size: 1.25rem; }
+  }
+  @media (min-width: 769px) and (max-width: 1099px) {
+    .card-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px 10px;
+    }
+  }
+  @media (min-width: 1100px) {
+    .post-layout {
+      grid-template-columns: 1fr 320px;
+      gap: 2rem;
+    }
+    .related {
+      position: sticky;
+      top: 5.25rem;
+      padding-top: 0;
+      border-top: 0;
+    }
+    .card-grid {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+  }
+</style>

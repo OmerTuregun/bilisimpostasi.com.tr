@@ -1,7 +1,10 @@
 ---
+import { t } from '../i18n/ui';
 import Layout from '../layouts/Layout.astro';
+
+const LOCALE = 'tr' as const;
 ---
-<Layout title="İletişim — Blog" description="Bizimle iletişime geçin.">
+<Layout locale={LOCALE} title={`${t(LOCALE).contact} — Blog`} description="Bizimle iletişime geçin.">
   <main class="static-page">
     <h1>İletişim</h1>
     <p>Sorularınız ve önerileriniz için bize ulaşabilirsiniz.</p>

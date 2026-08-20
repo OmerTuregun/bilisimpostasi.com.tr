@@ -1,22 +1,46 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { render } from 'astro:content';
+import { t } from '../../i18n/ui';
+import {
+  getPosts,
+  postSlug,
+  postPath,
+  hasPostInLocale,
+  homePath,
+  categoryPath,
+} from '../../lib/posts';
+import {
+  formatDateTime,
+  categoryBadgeColor,
+  getCategoryDisplayName,
+  getCategoryUrlSlug,
+  DEFAULT_CATEGORY,
+} from '../../lib/categories';
 import Layout from '../../layouts/Layout.astro';
 import PostCard from '../../components/PostCard.astro';
-import { formatDateTime, slugifyCategory, categoryBadgeColor, DEFAULT_CATEGORY } from '../../lib/categories';
+
+const LOCALE = 'tr' as const;
 
 export async function getStaticPaths() {
-  const posts = await getCollection('posts');
-  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+  const locale = 'tr' as const;
+  const posts = await getPosts(locale);
+  return posts.map((post) => ({
+    params: { slug: postSlug(post.id) },
+    props: { post },
+  }));
 }
 
 const { post } = Astro.props;
+const strings = t(LOCALE);
+const slug = postSlug(post.id);
 const { Content } = await render(post);
-const kategori = post.data.kategori ?? DEFAULT_CATEGORY;
-const kategoriSlug = slugifyCategory(kategori);
-const badgeColor = categoryBadgeColor(kategori);
+const rawKategori = post.data.kategori ?? DEFAULT_CATEGORY;
+const kategori = getCategoryDisplayName(rawKategori, LOCALE);
+const kategoriSlug = getCategoryUrlSlug(rawKategori, LOCALE);
+const badgeColor = categoryBadgeColor(rawKategori, LOCALE);
 
 const siteBase = Astro.site ?? new URL(Astro.url.origin);
-const postUrl = new URL(`/posts/${post.id}/`, siteBase).href;
+const postUrl = new URL(postPath(LOCALE, slug), siteBase).href;
 const ogImage = post.data.coverImage
   ? (post.data.coverImage.startsWith('http://') || post.data.coverImage.startsWith('https://')
       ? post.data.coverImage
@@ -25,10 +49,15 @@ const ogImage = post.data.coverImage
 const datePublished = post.data.pubDate.toISOString();
 const dateModified = (post.data.updatedDate ?? post.data.pubDate).toISOString();
 
-const relatedPosts = (await getCollection('posts'))
-  .filter((p) => p.id !== post.id && (p.data.kategori ?? DEFAULT_CATEGORY) === kategori)
+const allInLocale = await getPosts(LOCALE);
+const relatedPosts = allInLocale
+  .filter((p) => postSlug(p.id) !== slug && (p.data.kategori ?? DEFAULT_CATEGORY) === rawKategori)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 3);
+
+const enExists = await hasPostInLocale(slug, 'en');
+const hreflangTr = postUrl;
+const hreflangEn = enExists ? new URL(postPath('en', slug), siteBase).href : null;
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -38,42 +67,59 @@ const jsonLd = {
   datePublished,
   dateModified,
   image: [ogImage],
-  author: [{ '@type': 'Organization', name: 'blog.omerfarukturegun.com.tr' }],
+  author: [{ '@type': 'Organization', name: 'bilisimpostasi.com.tr' }],
   publisher: {
     '@type': 'Organization',
-    name: 'blog.omerfarukturegun.com.tr',
+    name: 'bilisimpostasi.com.tr',
   },
   mainEntityOfPage: { '@type': 'WebPage', '@id': postUrl },
 };
 ---
 <Layout
+  locale={LOCALE}
   title={`${post.data.title} — Blog`}
   description={post.data.description}
   ogType="article"
   image={ogImage}
   jsonLd={jsonLd}
+  articleSlug={slug}
+  hreflangTr={hreflangTr}
+  hreflangEn={hreflangEn}
 >
   <main>
     <div class="post-layout">
       <article class="post-detail" data-pagefind-body>
-        <a class="back" href="/">← Ana sayfa</a>
-        <a class="badge" href={`/kategori/${kategoriSlug}/`} style={`--badge-color: ${badgeColor}`}>
+        <a class="back" href={homePath(LOCALE)}>{strings.backHome}</a>
+        <a class="badge" href={categoryPath(LOCALE, kategoriSlug)} style={`--badge-color: ${badgeColor}`}>
           {kategori}
         </a>
         <h1>{post.data.title}</h1>
         <p class="meta">
-          <time datetime={datePublished}>{formatDateTime(post.data.pubDate)}</time>
+          <time datetime={datePublished}>{formatDateTime(post.data.pubDate, LOCALE)}</time>
           {' · '}
-          <a href={post.data.kaynak} rel="noopener noreferrer" target="_blank">Kaynak</a>
+          <a href={post.data.kaynak} rel="noopener noreferrer" target="_blank">{strings.source}</a>
         </p>
+        {post.data.coverImage && (
+          <figure class="cover-figure">
+            <img class="cover-img" src={post.data.coverImage} alt={post.data.title} loading="eager" />
+            {post.data.gorselFotografci && (
+              <figcaption class="cover-credit">
+                {strings.photoCredit}{' '}
+                <a href={post.data.gorselFotografciLink} rel="noopener noreferrer" target="_blank">{post.data.gorselFotografci}</a>
+                {' / '}
+                <a href="https://unsplash.com/?utm_source=bilisimpostasi&utm_medium=referral" rel="noopener noreferrer" target="_blank">Unsplash</a>
+              </figcaption>
+            )}
+          </figure>
+        )}
         <div class="content"><Content /></div>
       </article>
 
       {relatedPosts.length > 0 && (
-        <aside class="related" aria-label="İlgili yazılar">
-          <h2>İlgili Yazılar</h2>
+        <aside class="related" aria-label={strings.relatedPosts}>
+          <h2>{strings.relatedPosts}</h2>
           <div class="card-grid">
-            {relatedPosts.map((related) => <PostCard post={related} />)}
+            {relatedPosts.map((related) => <PostCard post={related} locale={LOCALE} />)}
           </div>
         </aside>
       )}
@@ -108,6 +154,10 @@ const jsonLd = {
     padding-bottom: 1.25rem;
     border-bottom: 1px solid var(--rule);
   }
+  .cover-figure { margin: 0 0 1.5rem; }
+  .cover-img { width: 100%; height: auto; border-radius: 8px; display: block; }
+  .cover-credit { font-size: 0.75rem; color: var(--muted); margin-top: 0.4rem; }
+  .cover-credit a { color: var(--muted); text-decoration: underline; }
   .content :global(p) { margin: 0 0 1rem; }
   .related {
     min-width: 0;
@@ -120,72 +170,27 @@ const jsonLd = {
   }
   .card-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px 10px;
-  }
-  @media (max-width: 1099px) {
-    .post-layout {
-      grid-template-columns: minmax(0, 60fr) minmax(0, 40fr);
-      gap: 0.75rem;
-    }
-    .related {
-      padding-top: 0;
-      border-top: 0;
-      position: sticky;
-      top: 5rem;
-    }
-    .related h2 {
-      font-size: 1.05rem;
-      line-height: 1.3;
-      margin: 0 0 0.7rem;
-      overflow-wrap: break-word;
-    }
-    .card-grid {
-      grid-template-columns: 1fr;
-      gap: 0.7rem;
-    }
-    .related :global(.card-link) { padding: 0.9rem 0.8rem 0.95rem; }
-    .related :global(h2) {
-      font-size: 1.08rem;
-      line-height: 1.35;
-      overflow-wrap: break-word;
-    }
-    .related :global(.desc) { font-size: 0.92rem; -webkit-line-clamp: 3; }
-    .related :global(.badge) { font-size: 0.72rem; padding: 0.28rem 0.55rem; margin-bottom: 0.5rem; }
-    .related :global(time) { font-size: 0.82rem; }
-    .related :global(.more) { font-size: 0.88rem; white-space: normal; }
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
   @media (max-width: 768px) {
     .content :global(p) {
-      margin: 0 0 1.15rem;
-      font-size: 1.18rem;
-      line-height: 1.7;
-      overflow-wrap: normal;
-      word-break: normal;
+      margin: 0 0 1rem;
+      font-size: 1.05rem;
+      line-height: 1.8;
     }
     h1 {
-      font-size: 1.55rem;
-      line-height: 1.28;
-      margin: 0.75rem 0 0.85rem;
-      overflow-wrap: normal;
-      word-break: normal;
-      hyphens: auto;
+      font-size: 2rem;
+      line-height: 1.25;
+      margin: 0.85rem 0 0.9rem;
     }
-    .badge { font-size: 0.92rem; padding: 0.35rem 0.75rem; }
-    .meta { font-size: 1.05rem; }
-    .related { top: 6.25rem; }
-    .back { font-size: 1.12rem; }
-    .post-layout {
-      grid-template-columns: minmax(0, 60fr) minmax(0, 40fr);
-      gap: 0.45rem;
+    .related h2 { font-size: 1.25rem; }
+  }
+  @media (min-width: 769px) and (max-width: 1099px) {
+    .card-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px 10px;
     }
-    .related h2 { font-size: 1.2rem; margin: 0 0 0.65rem; overflow-wrap: normal; }
-    .related :global(.card-link) { padding: 0.85rem 0.7rem 0.9rem; }
-    .related :global(h2) { font-size: 1.12rem; overflow-wrap: normal; word-break: normal; }
-    .related :global(.desc) { font-size: 0.95rem; }
-    .related :global(.badge) { font-size: 0.72rem; padding: 0.26rem 0.5rem; }
-    .related :global(time) { font-size: 0.88rem; }
-    .related :global(.more) { font-size: 0.95rem; }
   }
   @media (min-width: 1100px) {
     .post-layout {

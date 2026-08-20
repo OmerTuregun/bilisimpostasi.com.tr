@@ -1,16 +1,38 @@
-# secrets
+# secrets & credentials
 .env
 *.env
 .env.*
 !.env.example
+n8n/kullan.txt
+n8n/data/
+**/credentials*.json
+**/secrets/
+
+# n8n operational / bulky artifacts
+n8n/backups/
+n8n/*.log
+n8n/docker-compose.yml.bak*
+n8n/translate-batch.log
+
+# queue runtime + recovery backups (not source)
+site/src/content/_queue/*.jsonl
+site/src/content/_queue/*.bak*
+site/src/content/_queue/pending.jsonl.bak*
 
 # dependencies and build
 node_modules/
 dist/
 .astro/
 
-# logs / OS
+# logs / OS / IDE
 *.log
 .DS_Store
 .idea/
 .vscode/
+.cache/
+
+# local screenshots / one-off captures
+*.png
+!site/public/**/*.png
+site/screenshots/
+home_*.png

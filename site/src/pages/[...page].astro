@@ -1,32 +1,39 @@
 ---
-import { getCollection } from 'astro:content';
+import type { CategoryKey } from '../i18n/config';
+import { CATEGORY_ORDER, categoryLabel } from '../i18n/config';
+import { t } from '../i18n/ui';
+import { getPosts, homePath } from '../lib/posts';
+import { getCategoryKey, DEFAULT_CATEGORY } from '../lib/categories';
+import { getPopularPosts } from '../lib/popular-posts';
 import Layout from '../layouts/Layout.astro';
 import PostCard from '../components/PostCard.astro';
-import BreakingMarquee from '../components/BreakingMarquee.astro';
 import PopularPosts from '../components/PopularPosts.astro';
 import CategoryCounts from '../components/CategoryCounts.astro';
-import { getPopularPosts } from '../lib/popular-posts';
-import { DEFAULT_CATEGORY } from '../lib/categories';
+
+const LOCALE = 'tr' as const;
+const strings = t(LOCALE);
 
 export async function getStaticPaths() {
+  const locale = 'tr' as const;
   const BREAKING_WINDOW_HOURS = 3;
   const PAGE_SIZE = 12;
-  const allPosts = (await getCollection('posts')).sort(
+  const allPosts = (await getPosts(locale)).sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
   );
 
   const cutoff = Date.now() - BREAKING_WINDOW_HOURS * 60 * 60 * 1000;
   const breakingPosts = allPosts.filter((post) => post.data.pubDate.valueOf() >= cutoff);
   const totalPages = Math.max(1, Math.ceil(allPosts.length / PAGE_SIZE));
-  const popularPosts = await getPopularPosts(20);
-  const counts = new Map<string, number>();
+  const popularPosts = await getPopularPosts(20, locale);
+  const countByKey = new Map<CategoryKey, number>();
   for (const post of allPosts) {
-    const name = post.data.kategori ?? DEFAULT_CATEGORY;
-    counts.set(name, (counts.get(name) ?? 0) + 1);
+    const key = getCategoryKey(post.data.kategori ?? DEFAULT_CATEGORY, locale);
+    countByKey.set(key, (countByKey.get(key) ?? 0) + 1);
   }
-  const categoryCounts = [...counts.entries()]
-    .map(([name, count]) => ({ name, count }))
-    .sort((a, b) => a.name.localeCompare(b.name, 'tr'));
+  const categoryCounts = CATEGORY_ORDER.filter((k) => countByKey.has(k)).map((key) => ({
+    name: categoryLabel(key, locale),
+    count: countByKey.get(key)!,
+  }));
 
   return Array.from({ length: totalPages }, (_, index) => ({
     params: index === 0 ? { page: undefined } : { page: String(index + 1) },
@@ -41,56 +48,54 @@ export async function getStaticPaths() {
   }));
 }
 
-const { pageNum, totalPages, breakingPosts, gridPosts, popularPosts, categoryCounts } = Astro.props;
-const prevUrl = pageNum > 1 ? (pageNum === 2 ? '/' : `/${pageNum - 1}/`) : null;
-const nextUrl = pageNum < totalPages ? `/${pageNum + 1}/` : null;
+const { pageNum, totalPages, gridPosts, popularPosts, categoryCounts } = Astro.props;
+const prevUrl = pageNum > 1 ? homePath(LOCALE, pageNum - 1) : null;
+const nextUrl = pageNum < totalPages ? homePath(LOCALE, pageNum + 1) : null;
 ---
 <Layout
-  title={pageNum === 1 ? 'Blog — Teknoloji ve AI Haberleri' : `Blog — Sayfa ${pageNum}`}
-  description={
-    pageNum === 1
-      ? 'Teknoloji ve yapay zekâ alanındaki güncel gelişmeleri Türkçe özetlerle takip edin. Yazılım, donanım, yapay zekâ ve dijital dünyadan seçilmiş haberler.'
-      : `Teknoloji ve yapay zekâ haber özetleri — sayfa ${pageNum}. Güncel gelişmeleri kısa Türkçe yazılarla keşfedin.`
-  }
+  locale={LOCALE}
+  title={pageNum === 1 ? strings.homeTitle : `${strings.homeTitle} — ${pageNum}`}
+  description={pageNum === 1 ? strings.homeDesc : strings.homeDescPage(pageNum)}
+  preloadImages={pageNum === 1
+    ? gridPosts.slice(0, 6).map((p) => p.data.coverImage).filter(Boolean) as string[]
+    : []}
 >
   <main>
     {pageNum === 1 && (
-      <section class="site-search" aria-label="Site içi arama">
+      <section class="site-search" aria-label={strings.searchAria}>
         <div id="search"></div>
-      </section>
-    )}
-    {breakingPosts.length > 0 && (
-      <section class="breaking" aria-label="Son dakika">
-        <div class="breaking-label">Son Dakika</div>
-        <BreakingMarquee posts={breakingPosts} />
       </section>
     )}
     {pageNum === 1 ? (
       <div class="home-layout">
-        <aside class="home-sidebar">
-          <PopularPosts posts={popularPosts} />
-          <CategoryCounts counts={categoryCounts} />
-        </aside>
         <section class="home-main">
-          <h1>Gündem</h1>
+          <h1>{strings.agenda}</h1>
           <div class="card-grid">
-            {gridPosts.map((post) => <PostCard post={post} />)}
+            {gridPosts.map((post, index) => (
+              <PostCard post={post} locale={LOCALE} priority={index < 6} />
+            ))}
           </div>
         </section>
+        <aside class="home-sidebar">
+          <PopularPosts posts={popularPosts} locale={LOCALE} />
+          <CategoryCounts counts={categoryCounts} locale={LOCALE} />
+        </aside>
       </div>
     ) : (
       <section>
-        <h1>Gündem — Sayfa {pageNum}</h1>
+        <h1>{strings.agendaPage} {pageNum}</h1>
         <div class="card-grid">
-          {gridPosts.map((post) => <PostCard post={post} />)}
+          {gridPosts.map((post, index) => (
+            <PostCard post={post} locale={LOCALE} priority={index < 6} />
+          ))}
         </div>
       </section>
     )}
     {totalPages > 1 && (
-      <nav class="pager" aria-label="Sayfalama">
-        {prevUrl ? <a href={prevUrl}>← Önceki</a> : <span>← Önceki</span>}
+      <nav class="pager" aria-label="pagination">
+        {prevUrl ? <a href={prevUrl}>{strings.pagerPrev}</a> : <span>{strings.pagerPrev}</span>}
         <span>{pageNum} / {totalPages}</span>
-        {nextUrl ? <a href={nextUrl}>Sonraki →</a> : <span>Sonraki →</span>}
+        {nextUrl ? <a href={nextUrl}>{strings.pagerNext}</a> : <span>{strings.pagerNext}</span>}
       </nav>
     )}
   </main>
@@ -128,7 +133,7 @@ const nextUrl = pageNum < totalPages ? `/${pageNum + 1}/` : null;
 <style>
   .site-search {
     position: relative;
-    z-index: 40;
+    z-index: 1;
     margin-bottom: 1.5rem;
     --pagefind-ui-scale: 0.82;
     --pagefind-ui-primary: var(--accent);
@@ -229,24 +234,6 @@ const nextUrl = pageNum < totalPages ? `/${pageNum + 1}/` : null;
     .site-search :global(.pagefind-ui__result-title) { font-size: 0.88rem; }
     .site-search :global(.pagefind-ui__result-inner) { padding: 0.45rem 0.7rem; }
   }
-  .breaking {
-    margin-bottom: 2rem;
-    background: #fff;
-    border: 1px solid var(--rule);
-    border-left: 4px solid var(--breaking);
-    border-radius: 0.5rem;
-    overflow: hidden;
-  }
-  .breaking-label {
-    background: var(--breaking);
-    color: #fff;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    padding: 0.4rem 1rem;
-  }
-  .breaking :global(.marquee-wrap) { padding: 0.85rem 1rem; }
   h1 { font-size: 1.5rem; margin: 0 0 1.25rem; }
   .home-layout {
     display: flex;
@@ -256,47 +243,13 @@ const nextUrl = pageNum < totalPages ? `/${pageNum + 1}/` : null;
   .home-main, .home-sidebar { min-width: 0; }
   .card-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
     gap: 16px 10px;
   }
-  /* Mobil: 2 sütun kalsın — ana içerik solda, sidebar sağda dar. Gündem tek sütun kart. */
-  @media (max-width: 1099px) {
-    .home-layout {
-      display: grid;
-      grid-template-columns: minmax(0, 65fr) minmax(0, 35fr);
-      grid-template-areas: "main sidebar";
-      gap: 0.75rem;
-      align-items: start;
+  @media (min-width: 900px) {
+    .card-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .home-main { grid-area: main; }
-    .home-sidebar {
-      grid-area: sidebar;
-      position: sticky;
-      top: 5rem;
-    }
-    .home-main .card-grid {
-      grid-template-columns: 1fr;
-      gap: 1.1rem;
-    }
-    h1 { font-size: 1.85rem; margin: 0 0 1rem; }
-  }
-  @media (max-width: 768px) {
-    .site-search { --pagefind-ui-scale: 1.22; margin-bottom: 1.25rem; }
-    .site-search :global(.pagefind-ui__message) { font-size: 1rem; }
-    .site-search :global(.pagefind-ui__result-title) { font-size: 1.15rem !important; }
-    .site-search :global(.pagefind-ui__result-excerpt) { font-size: 1rem !important; }
-    .breaking-label {
-      font-size: 1rem;
-      padding: 0.55rem 1.1rem;
-    }
-    .breaking :global(.marquee-wrap) { padding: 0.95rem 0.55rem; }
-    .home-layout {
-      grid-template-columns: minmax(0, 65fr) minmax(0, 35fr);
-      gap: 0.45rem;
-    }
-    h1 { font-size: 2.05rem; }
-    .home-sidebar { top: 6.25rem; }
-    .pager { font-size: 1.05rem; }
   }
   @media (min-width: 1100px) {
     .home-layout {
@@ -309,7 +262,7 @@ const nextUrl = pageNum < totalPages ? `/${pageNum + 1}/` : null;
     .home-main { grid-area: main; }
     .home-sidebar { grid-area: sidebar; position: sticky; top: 5.25rem; }
     .card-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 20px;
     }
   }

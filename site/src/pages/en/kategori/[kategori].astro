@@ -1,0 +1,68 @@
+---
+import type { CategoryKey } from '../../../i18n/config';
+import { CATEGORY_ORDER, CATEGORY_SLUG, categoryLabel, categoryKeyFromName } from '../../../i18n/config';
+import { t } from '../../../i18n/ui';
+import { getPosts, categoriesIndexPath } from '../../../lib/posts';
+import { DEFAULT_CATEGORY_EN } from '../../../lib/categories';
+import Layout from '../../../layouts/Layout.astro';
+import PostCard from '../../../components/PostCard.astro';
+
+const LOCALE = 'en' as const;
+
+export async function getStaticPaths() {
+  const locale = 'en' as const;
+  const posts = await getPosts(locale);
+  const keys = new Set<CategoryKey>();
+  for (const post of posts) {
+    keys.add(categoryKeyFromName(post.data.kategori ?? DEFAULT_CATEGORY_EN, locale));
+  }
+
+  return CATEGORY_ORDER.filter((key) => keys.has(key)).map((key) => {
+    const label = categoryLabel(key, locale);
+    const categoryPosts = posts
+      .filter((post) => categoryKeyFromName(post.data.kategori ?? DEFAULT_CATEGORY_EN, locale) === key)
+      .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+    return {
+      params: { kategori: CATEGORY_SLUG[locale][key] },
+      props: { categoryKey: key, kategori: label, posts: categoryPosts },
+    };
+  });
+}
+
+const { kategori, posts, categoryKey } = Astro.props;
+const strings = t(LOCALE);
+const description =
+  strings.categoryDesc[categoryKey as keyof typeof strings.categoryDesc] ??
+  `${kategori} category technology and AI news summaries.`;
+---
+<Layout locale={LOCALE} title={`${kategori} — Blog`} description={description}>
+  <main>
+    <h1>{kategori}</h1>
+    <p class="count">{posts.length} {strings.posts}</p>
+    <div class="card-grid">{posts.map((post) => <PostCard post={post} locale={LOCALE} />)}</div>
+    <p class="back"><a href={categoriesIndexPath(LOCALE)}>← {strings.allCategories}</a></p>
+  </main>
+</Layout>
+
+<style>
+  h1 { margin: 0; }
+  .count { color: var(--muted); margin: 0.25rem 0 1.5rem; }
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  @media (min-width: 769px) {
+    .card-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px 10px;
+    }
+  }
+  @media (min-width: 1100px) and (hover: hover) and (pointer: fine) {
+    .card-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+  }
+  .back { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); }
+</style>

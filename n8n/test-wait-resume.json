@@ -1,0 +1,69 @@
+[
+  {
+    "id": "wait-resume-test-001",
+    "name": "Wait Resume Test (izole)",
+    "active": false,
+    "nodes": [
+      {
+        "id": "webhook-trigger-test",
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [0, 0],
+        "parameters": {
+          "path": "wait-resume-test",
+          "httpMethod": "GET",
+          "responseMode": "lastNode",
+          "options": {}
+        },
+        "webhookId": "wait-resume-test-wh-001"
+      },
+      {
+        "id": "set-resume-time",
+        "name": "Resume Zamanini Hesapla",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [220, 0],
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "jsCode": "const resumeAt = new Date(Date.now() + 3 * 60 * 1000).toISOString();\nreturn [{ json: { resumeAt, note: '3 dakika sonra resume bekleniyor', testStartedAt: new Date().toISOString() } }];"
+        }
+      },
+      {
+        "id": "wait-until-test",
+        "name": "Wait Until Test",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [440, 0],
+        "parameters": {
+          "resume": "specificTime",
+          "dateTime": "={{ $json.resumeAt }}"
+        }
+      },
+      {
+        "id": "done-node",
+        "name": "Resume Basarili",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [660, 0],
+        "parameters": {
+          "jsCode": "return [{ json: { status: 'RESUME_OK', resumedAt: new Date().toISOString(), waitedFor: $json.note, testStartedAt: $json.testStartedAt } }];"
+        }
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [[{ "node": "Resume Zamanini Hesapla", "type": "main", "index": 0 }]]
+      },
+      "Resume Zamanini Hesapla": {
+        "main": [[{ "node": "Wait Until Test", "type": "main", "index": 0 }]]
+      },
+      "Wait Until Test": {
+        "main": [[{ "node": "Resume Basarili", "type": "main", "index": 0 }]]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    }
+  }
+]

@@ -1,0 +1,78 @@
+---
+import { t } from '../../i18n/ui';
+import Layout from '../../layouts/Layout.astro';
+
+const LOCALE = 'en' as const;
+const strings = t(LOCALE);
+---
+<Layout
+  locale={LOCALE}
+  title={`${strings.privacy} — Blog`}
+  description="Privacy policy for bilisimpostasi.com.tr — how we collect and process personal data."
+>
+  <main class="static-page legal-page">
+    <h1>{strings.privacy}</h1>
+    <p class="updated">Last updated: 17 August 2026</p>
+
+    <p>
+      This Privacy Policy explains how personal data of visitors to bilisimpostasi.com.tr (the “Site”)
+      is processed by Ömer Faruk Türegün, the owner and operator of the content published on the Site.
+    </p>
+
+    <h2>Data Controller</h2>
+    <p>
+      Ömer Faruk Türegün (individual) — Email:
+      <a href="mailto:trkuraf@gmail.com">trkuraf@gmail.com</a>
+    </p>
+
+    <h2>Data We Collect</h2>
+    <p>
+      The Site does not collect personal data from visitors except in the following circumstances:
+    </p>
+    <ul>
+      <li>
+        <strong>Usage statistics:</strong> Anonymous visit statistics are collected via a self-hosted
+        Umami instance. The Site does not use cookies for this purpose.
+      </li>
+      <li>
+        <strong>Newsletter and notifications:</strong> If you subscribe, your email address or Telegram
+        user information is collected solely so that we can notify you about new articles. This is done
+        only with your explicit consent. We do not use this information for any other purpose and do not
+        share it with third parties.
+      </li>
+    </ul>
+
+    <h2>Cookies</h2>
+    <p>The Site does not use cookies for user tracking or profiling.</p>
+
+    <h2>Third-Party Services</h2>
+    <p>
+      Anthropic Claude is used to generate article summaries (visitor data is not sent to Claude for
+      this purpose). Newsletter emails are delivered via Resend; Telegram notifications are sent through
+      Telegram’s infrastructure.
+    </p>
+
+    <h2>Your Rights</h2>
+    <p>
+      Under applicable data protection law, including the Turkish Personal Data Protection Law (KVKK,
+      Law No. 6698) where it applies, you may request access to, correction of, or deletion of your
+      personal data by contacting
+      <a href="mailto:trkuraf@gmail.com">trkuraf@gmail.com</a>.
+    </p>
+
+    <h2>Changes</h2>
+    <p>
+      This policy may be updated from time to time. The current version will always be published on
+      this page.
+    </p>
+  </main>
+</Layout>
+
+<style>
+  .static-page { max-width: 42rem; }
+  .legal-page .updated { color: var(--muted); font-size: 0.9rem; }
+  .legal-page h2 { margin-top: 1.75rem; font-size: 1.25rem; }
+  .legal-page p, .legal-page li { line-height: 1.65; }
+  .legal-page ul { padding-left: 1.25rem; }
+  .legal-page li { margin-bottom: 0.65rem; }
+</style>

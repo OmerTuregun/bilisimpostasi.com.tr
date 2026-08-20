@@ -1,0 +1,19 @@
+---
+import { t } from '../../i18n/ui';
+import Layout from '../../layouts/Layout.astro';
+
+const LOCALE = 'en' as const;
+const strings = t(LOCALE);
+---
+<Layout locale={LOCALE} title={`${strings.about} — Blog`} description="About our technology and AI news platform.">
+  <main class="static-page">
+    <h1>{strings.about}</h1>
+    <p>This site is a news platform covering developments in technology and artificial intelligence.</p>
+    <p>We collect and summarize the day's top stories to offer a quick, accessible overview.</p>
+  </main>
+</Layout>
+
+<style>
+  .static-page { max-width: 42rem; }
+  p { line-height: 1.65; }
+</style>

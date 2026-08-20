@@ -1,0 +1,167 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatDateTime, categoryBadgeColor, DEFAULT_CATEGORY } from '../lib/categories';
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+  rank?: number;
+}
+
+const { post, rank } = Astro.props;
+const kategori = post.data.kategori ?? DEFAULT_CATEGORY;
+const badgeColor = categoryBadgeColor(kategori);
+---
+<article class="post-card">
+  {typeof rank === 'number' && (
+    <span class="rank-badge" aria-hidden="true">{rank}.</span>
+  )}
+  <a class="card-link" href={`/posts/${post.id}/`}>
+    <span class="badge" style={`--badge-color: ${badgeColor}`}>{kategori}</span>
+    <h2>{post.data.title}</h2>
+    <p class="desc">{post.data.description}</p>
+    <div class="card-footer">
+      <time datetime={post.data.pubDate.toISOString()}>{formatDateTime(post.data.pubDate)}</time>
+      <span class="more">Devamını oku →</span>
+    </div>
+  </a>
+</article>
+
+<style>
+  .post-card {
+    position: relative;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .rank-badge {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    z-index: 1;
+    min-width: 1.85rem;
+    height: 1.85rem;
+    padding: 0 0.4rem;
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--font-heading);
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .post-card:has(.rank-badge) .badge { margin-right: 2.2rem; }
+  .post-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  }
+  .card-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1.15rem;
+    text-decoration: none;
+    color: inherit;
+  }
+  .badge {
+    align-self: flex-start;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.28rem 0.7rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--badge-color) 14%, white);
+    color: var(--badge-color);
+    margin-bottom: 0.7rem;
+  }
+  h2 {
+    font-size: clamp(1.05rem, 4.6vw, 1.22rem);
+    line-height: 1.35;
+    margin: 0 0 0.55rem;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+  }
+  .desc {
+    font-size: clamp(0.88rem, 3.5vw, 0.98rem);
+    color: var(--muted);
+    margin: 0 0 0.9rem;
+    line-height: 1.5;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--rule);
+    margin-top: auto;
+  }
+  time { font-size: 0.8rem; color: var(--muted); }
+  .more {
+    font-size: 0.88rem;
+    color: var(--accent);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .card-link:hover .more { text-decoration: underline; }
+  @media (hover: none) and (pointer: coarse) {
+    .card-link { padding: 1.25rem 0.8rem 1.2rem; }
+    h2 {
+      font-size: clamp(1.12rem, 5.4vw, 1.3rem);
+      line-height: 1.4;
+      margin: 0 0 0.7rem;
+    }
+    .desc {
+      font-size: clamp(0.92rem, 4vw, 1.05rem);
+      line-height: 1.55;
+      margin: 0 0 1.05rem;
+      -webkit-line-clamp: 4;
+    }
+    .badge {
+      font-size: 0.75rem;
+      padding: 0.3rem 0.7rem;
+      margin-bottom: 0.85rem;
+    }
+    .card-footer { padding-top: 0.95rem; }
+    time { font-size: 0.85rem; }
+    .more { display: inline-block; font-size: 0.95rem; }
+  }
+
+  /* Mobile (width-based) typography, regardless of pointer type */
+  @media (max-width: 768px) {
+    .card-link { padding: 1.25rem 0.9rem 1.25rem; }
+    .badge {
+      font-size: 0.82rem;
+      padding: 0.32rem 0.85rem;
+      margin-bottom: 0.9rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      line-height: 1.4;
+      margin: 0 0 0.7rem;
+    }
+    .desc {
+      font-size: 0.98rem;
+      line-height: 1.65;
+      margin: 0 0 1rem;
+      -webkit-line-clamp: 4;
+    }
+    .card-footer { padding-top: 0.95rem; }
+    time { font-size: 0.95rem; }
+    .more { display: inline-block; font-size: 0.95rem; white-space: nowrap; }
+    .rank-badge {
+      font-size: 0.95rem;
+      min-width: 2rem;
+      height: 2rem;
+    }
+  }
+</style>

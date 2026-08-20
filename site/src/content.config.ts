@@ -10,6 +10,10 @@ const posts = defineCollection({
     kaynak: z.string().url(),
     kategori: z.string().optional().default('Teknoloji'),
     coverImage: z.string().optional(),
+    gorselFotografci: z.string().optional(),
+    gorselFotografciLink: z.string().optional(),
+    /** Unsplash search query used for cover (debug / diagnostics) */
+    gorselQuery: z.string().optional(),
     updatedDate: z.coerce.date().optional(),
   }),
 });

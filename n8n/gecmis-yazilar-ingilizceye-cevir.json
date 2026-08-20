@@ -1,0 +1,291 @@
+[
+  {
+    "id": "gEcMisEnCeviri01",
+    "name": "Geçmiş Yazıları Ingilizceye Cevir",
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [-640, 0],
+        "id": "a1000001-0000-4000-8000-000000000001",
+        "name": "Manuel Tetik"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "limit-field",
+                "name": "limit",
+                "value": 3,
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.5,
+        "position": [-416, 0],
+        "id": "a1000002-0000-4000-8000-000000000002",
+        "name": "Limit Ayarla"
+      },
+      {
+        "parameters": {
+          "jsCode": "const fs = require('fs');\nconst path = require('path');\nconst dir = '/home/node/site/src/content/posts/tr';\nconst enDir = '/home/node/site/src/content/posts/en';\nconst limit = Number($input.first().json.limit ?? 3) || 3;\n\nif (!fs.existsSync(dir)) throw new Error('TR posts directory missing: ' + dir);\nif (!fs.existsSync(enDir)) fs.mkdirSync(enDir, { recursive: true });\n\nconst all = fs.readdirSync(dir)\n  .filter((f) => f.endsWith('.md'))\n  .sort();\n\nconst pending = all.filter((f) => !fs.existsSync(path.join(enDir, f)));\nconst selected = pending.slice(0, limit);\n\nif (selected.length === 0) {\n  return [{ json: { skip: true, message: 'No pending TR posts without EN counterpart.' } }];\n}\n\nreturn selected.map((fileName) => ({\n  json: {\n    skip: false,\n    fileName,\n    slug: fileName.replace(/\\.md$/, ''),\n    filePath: path.join(dir, fileName),\n    enPath: path.join(enDir, fileName),\n  },\n}));"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [-192, 0],
+        "id": "a1000003-0000-4000-8000-000000000003",
+        "name": "TR Dosyalari Listele"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "skip-check",
+                "leftValue": "={{ $json.skip }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "notEquals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [32, 0],
+        "id": "a1000004-0000-4000-8000-000000000004",
+        "name": "Is Var mi"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [256, -80],
+        "id": "a1000005-0000-4000-8000-000000000005",
+        "name": "Tek Tek Islem"
+      },
+      {
+        "parameters": {
+          "fileSelector": "={{ $json.filePath }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1.1,
+        "position": [480, -80],
+        "id": "a1000006-0000-4000-8000-000000000006",
+        "name": "TR Dosyayi Oku"
+      },
+      {
+        "parameters": {
+          "operation": "text",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1.1,
+        "position": [704, -80],
+        "id": "a1000007-0000-4000-8000-000000000007",
+        "name": "Metni Cikar"
+      },
+      {
+        "parameters": {
+          "jsCode": "const meta = $('Tek Tek Islem').item.json;\nconst raw = ($json.data || '').toString();\nconst match = raw.match(/^---\\r?\\n([\\s\\S]*?)\\r?\\n---\\r?\\n([\\s\\S]*)$/);\nif (!match) throw new Error('Frontmatter parse failed for ' + meta.fileName);\n\nconst fmBlock = match[1];\nconst body = match[2].trim();\nconst fm = {};\nfor (const line of fmBlock.split(/\\r?\\n/)) {\n  const m = line.match(/^([\\w]+):\\s*\"?(.+?)\"?\\s*$/);\n  if (m) fm[m[1]] = m[2].replace(/^\"|\"$/g, '');\n}\n\nreturn [{\n  json: {\n    ...meta,\n    tr_title: fm.title || '',\n    tr_description: fm.description || '',\n    tr_kategori: fm.kategori || 'Teknoloji',\n    pubDate: fm.pubDate || new Date().toISOString(),\n    kaynak: fm.kaynak || '',\n    coverImage: fm.coverImage || '',\n    gorselFotografci: fm.gorselFotografci || '',\n    gorselFotografciLink: fm.gorselFotografciLink || '',\n    tr_body: body,\n  },\n}];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [928, -80],
+        "id": "a1000008-0000-4000-8000-000000000008",
+        "name": "TR Post Parse"
+      },
+      {
+        "parameters": {
+          "modelId": {
+            "__rl": true,
+            "value": "claude-haiku-4-5-20251001",
+            "mode": "list",
+            "cachedResultName": "claude-haiku-4-5-20251001"
+          },
+          "messages": {
+            "values": [
+              {
+                "content": "=You are a professional translator for a technology news website.\nTranslate the following Turkish article into natural, fluent English.\nUse news-style tone; translate by meaning, not word-for-word.\n\nReturn ONLY this exact format (no markdown fences, no extra commentary):\nTITLE: [one line]\nSUMMARY: [one line, max 150 characters]\nCATEGORY: [AI, Technology, or Security]\nBODY:\n[full translated markdown body only — no frontmatter]\n\nCategory mapping:\n- Yapay Zeka -> AI\n- Teknoloji -> Technology\n- Güvenlik -> Security\n\nTurkish title: {{ $json.tr_title }}\nTurkish summary: {{ $json.tr_description }}\nTurkish category: {{ $json.tr_kategori }}\nTurkish body:\n{{ $json.tr_body }}"
+              }
+            ]
+          },
+          "options": {
+            "maxTokens": 4096
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.anthropic",
+        "typeVersion": 1,
+        "position": [1152, -80],
+        "id": "a1000009-0000-4000-8000-000000000009",
+        "name": "Claude Cevir",
+        "credentials": {
+          "anthropicApi": {
+            "id": "PwbVP4NCV8ZK1PDe",
+            "name": "Anthropic account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const src = $('TR Post Parse').item.json;\nconst raw = ($json.content?.[0]?.text || $json.text || '').trim();\n\nfunction pick(label) {\n  const re = new RegExp('^' + label + ':\\\\s*(.+)$', 'im');\n  const m = raw.match(re);\n  return m ? m[1].trim() : '';\n}\n\nconst title = pick('TITLE');\nconst summary = pick('SUMMARY');\nlet category = pick('CATEGORY');\nconst bodyMatch = raw.match(/^BODY:\\s*\\n([\\s\\S]*)$/im);\nconst body = bodyMatch ? bodyMatch[1].trim() : '';\n\nconst map = {\n  AI: 'AI',\n  Technology: 'Technology',\n  Security: 'Security',\n  'Yapay Zeka': 'AI',\n  Teknoloji: 'Technology',\n  Güvenlik: 'Security',\n};\ncategory = map[category] || map[src.tr_kategori] || 'Technology';\n\nif (!title || !body) {\n  throw new Error('Claude translation parse failed for ' + src.fileName + '\\n---\\n' + raw.slice(0, 400));\n}\n\nconst esc = (s) => (s || '').replace(/\"/g, \"'\");\nconst markdown = `---\\ntitle: \"${esc(title)}\"\\npubDate: ${src.pubDate}\\nkategori: \"${category}\"\\ndescription: \"${esc(summary.slice(0, 150))}\"\\nkaynak: \"${esc(src.kaynak)}\"\\ncoverImage: \"${esc(src.coverImage)}\"\\ngorselFotografci: \"${esc(src.gorselFotografci)}\"\\ngorselFotografciLink: \"${esc(src.gorselFotografciLink)}\"\\n---\\n${body}\\n`;\n\nreturn [{\n  json: {\n    ...src,\n    en_title: title,\n    en_summary: summary,\n    en_kategori: category,\n    markdown_icerik: markdown,\n    dosya_adi: src.slug,\n  },\n}];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [1376, -80],
+        "id": "a1000010-0000-4000-8000-000000000010",
+        "name": "EN Markdown Olustur"
+      },
+      {
+        "parameters": {
+          "operation": "toText",
+          "sourceProperty": "markdown_icerik",
+          "binaryPropertyName": "=data",
+          "options": {
+            "fileName": "={{ $json.fileName }}"
+          }
+        },
+        "type": "n8n-nodes-base.convertToFile",
+        "typeVersion": 1.1,
+        "position": [1600, -80],
+        "id": "a1000011-0000-4000-8000-000000000011",
+        "name": "EN Dosyaya Cevir"
+      },
+      {
+        "parameters": {
+          "operation": "write",
+          "fileName": "=/home/node/site/src/content/posts/en/{{ $binary.data.fileName }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1.1,
+        "position": [1824, -80],
+        "id": "a1000012-0000-4000-8000-000000000012",
+        "name": "EN Dosyayi Yaz"
+      },
+      {
+        "parameters": {
+          "amount": 1.5
+        },
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [2048, -80],
+        "id": "a1000013-0000-4000-8000-000000000013",
+        "name": "Rate Limit Bekle",
+        "webhookId": "gecmis-ceviri-wait"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "done-msg",
+                "name": "message",
+                "value": "={{ $('EN Markdown Olustur').item.json.en_title }} -> /content/posts/en/{{ $('EN Markdown Olustur').item.json.fileName }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.5,
+        "position": [2272, -80],
+        "id": "a1000014-0000-4000-8000-000000000014",
+        "name": "Sonuc Ozeti"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "empty-msg",
+                "name": "message",
+                "value": "={{ $json.message || 'Nothing to translate.' }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.5,
+        "position": [256, 128],
+        "id": "a1000015-0000-4000-8000-000000000015",
+        "name": "Bos Kuyruk Mesaji"
+      }
+    ],
+    "connections": {
+      "Manuel Tetik": {
+        "main": [[{ "node": "Limit Ayarla", "type": "main", "index": 0 }]]
+      },
+      "Limit Ayarla": {
+        "main": [[{ "node": "TR Dosyalari Listele", "type": "main", "index": 0 }]]
+      },
+      "TR Dosyalari Listele": {
+        "main": [[{ "node": "Is Var mi", "type": "main", "index": 0 }]]
+      },
+      "Is Var mi": {
+        "main": [
+          [{ "node": "Tek Tek Islem", "type": "main", "index": 0 }],
+          [{ "node": "Bos Kuyruk Mesaji", "type": "main", "index": 0 }]
+        ]
+      },
+      "Tek Tek Islem": {
+        "main": [
+          [],
+          [{ "node": "TR Dosyayi Oku", "type": "main", "index": 0 }]
+        ]
+      },
+      "TR Dosyayi Oku": {
+        "main": [[{ "node": "Metni Cikar", "type": "main", "index": 0 }]]
+      },
+      "Metni Cikar": {
+        "main": [[{ "node": "TR Post Parse", "type": "main", "index": 0 }]]
+      },
+      "TR Post Parse": {
+        "main": [[{ "node": "Claude Cevir", "type": "main", "index": 0 }]]
+      },
+      "Claude Cevir": {
+        "main": [[{ "node": "EN Markdown Olustur", "type": "main", "index": 0 }]]
+      },
+      "EN Markdown Olustur": {
+        "main": [[{ "node": "EN Dosyaya Cevir", "type": "main", "index": 0 }]]
+      },
+      "EN Dosyaya Cevir": {
+        "main": [[{ "node": "EN Dosyayi Yaz", "type": "main", "index": 0 }]]
+      },
+      "EN Dosyayi Yaz": {
+        "main": [[{ "node": "Rate Limit Bekle", "type": "main", "index": 0 }]]
+      },
+      "Rate Limit Bekle": {
+        "main": [[{ "node": "Sonuc Ozeti", "type": "main", "index": 0 }]]
+      },
+      "Sonuc Ozeti": {
+        "main": [[{ "node": "Tek Tek Islem", "type": "main", "index": 0 }]]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "active": false
+  }
+]

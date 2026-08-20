@@ -1,85 +1,62 @@
 ---
+import { t } from '../i18n/ui';
 import Layout from '../layouts/Layout.astro';
+
+const LOCALE = 'tr' as const;
 ---
 <Layout
-  title="Gizlilik Politikası — Blog"
-  description="blog.omerfarukturegun.com.tr gizlilik politikası ve kişisel veri işleme bilgilendirmesi."
+  locale={LOCALE}
+  title={`${t(LOCALE).privacy} — Blog`}
+  description="bilisimpostasi.com.tr gizlilik politikası ve kişisel veri işleme bilgilendirmesi."
 >
   <main class="static-page legal-page">
     <h1>Gizlilik Politikası</h1>
     <p class="updated">Son güncelleme: 17 Ağustos 2026</p>
 
     <p>
-      Bu Gizlilik Politikası, blog.omerfarukturegun.com.tr adresinde
-      (“Site”) yayınlanan içeriklerin sahibi Ömer Faruk Türegün
-      tarafından, Site ziyaretçilerinin kişisel verilerinin nasıl
+      Bu Gizlilik Politikası, bilisimpostasi.com.tr adresinde (“Site”) yayınlanan içeriklerin
+      sahibi Ömer Faruk Türegün tarafından, Site ziyaretçilerinin kişisel verilerinin nasıl
       işlendiğini açıklamak amacıyla hazırlanmıştır.
     </p>
 
     <h2>Veri Sorumlusu</h2>
     <p>
-      Ömer Faruk Türegün (şahıs)<br />
-      E-posta: <a href="mailto:trkuraf@gmail.com">trkuraf@gmail.com</a>
+      Ömer Faruk Türegün (şahıs) — E-posta:
+      <a href="mailto:trkuraf@gmail.com">trkuraf@gmail.com</a>
     </p>
 
     <h2>Toplanan Veriler</h2>
     <p>
-      Site, aşağıdaki durumlar dışında ziyaretçilerden kişisel veri
-      toplamaz:
+      Site, aşağıdaki durumlar dışında ziyaretçilerden kişisel veri toplamaz:
     </p>
     <ul>
       <li>
-        <strong>Site kullanım istatistikleri</strong>: Site, çerez kullanmayan
-        self-hosted bir analitik araç (Umami) ile anonim ziyaret
-        istatistikleri (sayfa görüntüleme sayısı, genel konum bilgisi
-        gibi) toplar. Bu veriler kişileri tanımlamak için kullanılmaz.
+        Site kullanım istatistikleri: çerez kullanmayan self-hosted Umami ile anonim ziyaret istatistikleri toplanır.
       </li>
       <li>
-        <strong>Bülten/bildirim aboneliği</strong> (varsa): E-posta adresinizi veya
-        Telegram kullanıcı bilginizi, yeni yazılardan haberdar olmanız
-        amacıyla, yalnızca açık rızanızla topluyoruz. Bu bilgiler başka
-        bir amaçla kullanılmaz, üçüncü taraflarla paylaşılmaz.
+        Bülten/bildirim aboneliği: E-posta adresiniz veya Telegram kullanıcı bilginiz, yeni yazılardan haberdar olmanız amacıyla,
+        yalnızca açık rızanızla toplanır, başka bir amaçla kullanılmaz, üçüncü taraflarla paylaşılmaz.
       </li>
     </ul>
 
     <h2>Çerezler</h2>
-    <p>
-      Site, kullanıcı takibi amacıyla çerez kullanmaz. Kullanılan
-      analitik araç (Umami) çerezsiz çalışır.
-    </p>
+    <p>Site, kullanıcı takibi amacıyla çerez kullanmaz.</p>
 
     <h2>Üçüncü Taraf Hizmetler</h2>
     <p>
-      Site içeriği, RSS ile toplanan haberlerin özetlenmesi amacıyla
-      yapay zeka servisleri (Anthropic Claude) kullanılarak
-      üretilmektedir. Bu süreçte ziyaretçilere ait kişisel veri işlenmez,
-      yalnızca kamuya açık haber içerikleri işlenir.
-    </p>
-    <p>
-      Bülten/bildirim aboneliği için e-posta gönderimi Resend üzerinden,
-      Telegram bildirimleri Telegram’ın kendi altyapısı üzerinden
-      yapılmaktadır.
+      İçerik özetleme için Anthropic Claude kullanılır (ziyaretçi verisi işlenmez). Bülten e-postaları
+      Resend, Telegram bildirimleri Telegram altyapısı üzerinden gönderilir.
     </p>
 
     <h2>Haklarınız (KVKK m. 11)</h2>
     <p>
-      6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında; kişisel
-      verilerinizin işlenip işlenmediğini öğrenme, işlenmişse buna
-      ilişkin bilgi talep etme, işlenme amacını öğrenme, yurt içinde veya
-      yurt dışında aktarıldığı üçüncü kişileri bilme, eksik veya yanlış
-      işlenmişse düzeltilmesini isteme, silinmesini veya yok edilmesini
-      isteme haklarına sahipsiniz. Bu haklarınızı kullanmak için
-      <a href="mailto:trkuraf@gmail.com">trkuraf@gmail.com</a> adresinden bize ulaşabilirsiniz.
+      6698 sayılı KVKK kapsamında bilgi talep etme, düzeltme, silme haklarınız için
+      <a href="mailto:trkuraf@gmail.com">trkuraf@gmail.com</a>
+      adresinden ulaşabilirsiniz.
     </p>
 
     <h2>Değişiklikler</h2>
-    <p>
-      Bu politika zaman zaman güncellenebilir. Güncel sürüm her zaman bu
-      sayfada yayınlanır.
-    </p>
-    <p>
-      İletişim: <a href="mailto:trkuraf@gmail.com">trkuraf@gmail.com</a>
-    </p>
+    <p>Bu politika güncellenebilir, güncel sürüm bu sayfada yayınlanır.</p>
   </main>
 </Layout>
 
