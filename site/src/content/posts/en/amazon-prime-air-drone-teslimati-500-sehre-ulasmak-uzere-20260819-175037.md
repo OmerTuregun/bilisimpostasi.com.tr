@@ -4,9 +4,24 @@ pubDate: 2026-08-19T17:50:37.515+03:00
 kategori: "Technology"
 description: "Amazon plans to expand its Prime Air drone delivery service to approximately 500 cities by end of 2026, six times its current coverage."
 kaynak: "https://theremin.bizibah.com/"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - drone-teslimat
+  - amazon-prime-air
+  - e-ticaret-lojistik
+tagLabels:
+  drone-teslimat:
+    tr: "Drone Teslimatı"
+    en: "Drone Delivery"
+  amazon-prime-air:
+    tr: "Amazon Prime Air"
+    en: "Amazon Prime Air"
+  e-ticaret-lojistik:
+    tr: "E-ticaret Lojistiği"
+    en: "E-commerce Logistics"
+coverImage: "https://images.unsplash.com/photo-1568952433726-3896e3881c65?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Robynne O"
+gorselFotografciLink: "https://unsplash.com/@roborobs?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "technology innovation"
 ---
 Amazon is taking a major step forward in drone-based delivery technology. According to the announcement, the Prime Air service will reach approximately 500 cities and towns across the United States by the end of 2026.
 

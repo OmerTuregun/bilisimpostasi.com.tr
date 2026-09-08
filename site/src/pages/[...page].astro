@@ -25,15 +25,13 @@ export async function getStaticPaths() {
   const breakingPosts = allPosts.filter((post) => post.data.pubDate.valueOf() >= cutoff);
   const totalPages = Math.max(1, Math.ceil(allPosts.length / PAGE_SIZE));
   const popularPosts = await getPopularPosts(20, locale);
-  const countByKey = new Map<CategoryKey, number>();
+  const categoryKeys = new Set<CategoryKey>();
   for (const post of allPosts) {
-    const key = getCategoryKey(post.data.kategori ?? DEFAULT_CATEGORY, locale);
-    countByKey.set(key, (countByKey.get(key) ?? 0) + 1);
+    categoryKeys.add(getCategoryKey(post.data.kategori ?? DEFAULT_CATEGORY, locale));
   }
-  const categoryCounts = CATEGORY_ORDER.filter((k) => countByKey.has(k)).map((key) => ({
-    name: categoryLabel(key, locale),
-    count: countByKey.get(key)!,
-  }));
+  const sidebarCategories = CATEGORY_ORDER.filter((k) => categoryKeys.has(k)).map((key) =>
+    categoryLabel(key, locale),
+  );
 
   return Array.from({ length: totalPages }, (_, index) => ({
     params: index === 0 ? { page: undefined } : { page: String(index + 1) },
@@ -42,13 +40,13 @@ export async function getStaticPaths() {
       totalPages,
       breakingPosts: index === 0 ? breakingPosts : [],
       popularPosts: index === 0 ? popularPosts : [],
-      categoryCounts: index === 0 ? categoryCounts : [],
+      sidebarCategories: index === 0 ? sidebarCategories : [],
       gridPosts: allPosts.slice(index * PAGE_SIZE, (index + 1) * PAGE_SIZE),
     },
   }));
 }
 
-const { pageNum, totalPages, gridPosts, popularPosts, categoryCounts } = Astro.props;
+const { pageNum, totalPages, gridPosts, popularPosts, sidebarCategories } = Astro.props;
 const prevUrl = pageNum > 1 ? homePath(LOCALE, pageNum - 1) : null;
 const nextUrl = pageNum < totalPages ? homePath(LOCALE, pageNum + 1) : null;
 ---
@@ -78,7 +76,7 @@ const nextUrl = pageNum < totalPages ? homePath(LOCALE, pageNum + 1) : null;
         </section>
         <aside class="home-sidebar">
           <PopularPosts posts={popularPosts} locale={LOCALE} />
-          <CategoryCounts counts={categoryCounts} locale={LOCALE} />
+          <CategoryCounts categories={sidebarCategories} locale={LOCALE} />
         </aside>
       </div>
     ) : (
@@ -138,7 +136,7 @@ const nextUrl = pageNum < totalPages ? homePath(LOCALE, pageNum + 1) : null;
     --pagefind-ui-scale: 0.82;
     --pagefind-ui-primary: var(--accent);
     --pagefind-ui-text: var(--ink);
-    --pagefind-ui-background: #fff;
+    --pagefind-ui-background: var(--surface);
     --pagefind-ui-border: var(--rule);
     --pagefind-ui-border-width: 1px;
     --pagefind-ui-border-radius: 0.5rem;
@@ -157,7 +155,7 @@ const nextUrl = pageNum < totalPages ? homePath(LOCALE, pageNum + 1) : null;
     display: block;
     max-height: min(22rem, 60vh);
     overflow: auto;
-    background: #fff;
+    background: var(--surface);
     border: 1px solid var(--rule);
     border-radius: 0.5rem;
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
@@ -197,7 +195,7 @@ const nextUrl = pageNum < totalPages ? homePath(LOCALE, pageNum + 1) : null;
   }
   .site-search :global(.pagefind-ui__result:hover),
   .site-search :global(.pagefind-ui__result:focus-within) {
-    background: #f6f4ef;
+    background: var(--bg);
   }
   .site-search :global(.pagefind-ui__result-title) {
     font-family: var(--font-heading);

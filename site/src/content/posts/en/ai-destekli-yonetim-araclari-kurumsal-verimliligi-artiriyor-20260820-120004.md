@@ -4,6 +4,24 @@ pubDate: 2026-08-20T12:00:04+03:00
 kategori: "AI"
 description: "New platforms like OneCLI and Frugal Tokens enable teams to safely manage AI agents with built-in security controls and cost tracking."
 kaynak: "https://github.com/onecli/onecli"
+tags:
+  - ai-yonetim
+  - kurumsal-verimlilik
+  - ai-ajanlar
+  - guvenlik-kontrolu
+tagLabels:
+  ai-yonetim:
+    tr: "AI Yönetimi"
+    en: "AI Management"
+  kurumsal-verimlilik:
+    tr: "Kurumsal Verimlilik"
+    en: "Enterprise Efficiency"
+  ai-ajanlar:
+    tr: "AI Ajanları"
+    en: "AI Agents"
+  guvenlik-kontrolu:
+    tr: "Güvenlik ve Kontrol"
+    en: "Security Control"
 coverImage: "https://pub-880c98af22074b02b5f5237e1b3a0bad.r2.dev/ai-destekli-yonetim-araclari-kurumsal-verimliligi-cover-opt-20260820111658.jpg"
 gorselFotografci: "Marvin Meyer"
 gorselFotografciLink: "https://unsplash.com/@marvelous?utm_source=bilisimpostasi&utm_medium=referral"

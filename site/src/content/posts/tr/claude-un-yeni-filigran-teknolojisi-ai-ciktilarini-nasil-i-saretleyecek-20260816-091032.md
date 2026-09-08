@@ -4,6 +4,24 @@ pubDate: 2026-08-16T09:10:32.711+03:00
 kategori: "Yapay Zeka"
 description: "Anthropic, Claude'un ürettiği içeriği belirlemek için geliştirdiği filigran sisteminin teknik detaylarını paylaştı. Sistem düzenleme ile gizlenebilir "
 kaynak: "https://techcrunch.com/2026/08/15/anthropic-shares-more-details-about-how-claudes-new-watermarks-will-work/"
+tags:
+  - ai-filigran
+  - yapay-zeka-guvenligi
+  - icterik-isareti
+tagLabels:
+  ai-filigran:
+    tr: "AI Filigran"
+    en: "AI Watermarking"
+  yapay-zeka-guvenligi:
+    tr: "AI Güvenliği"
+    en: "AI Safety"
+  icterik-isareti:
+    tr: "İçerik İşaretleme"
+    en: "Content Marking"
+coverImage: "https://images.unsplash.com/photo-1697577418970-95d99b5a55cf?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Igor Omilaev"
+gorselFotografciLink: "https://unsplash.com/@omilaev?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "artificial intelligence semiconductor"
 ---
 Yapay zeka araçlarının ürettiği içeriğin kaynağını tanımlamak giderek daha önemli hale gelirken, Anthropic bir adım öne geçiyor. Claude'un yeni filigran teknolojisi, AI tarafından oluşturulan metinleri işaretleme konusunda önemli bir gelişme sunuyor.
 

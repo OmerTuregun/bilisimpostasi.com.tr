@@ -4,9 +4,24 @@ pubDate: 2026-08-19T17:50:37.522+03:00
 kategori: "Teknoloji"
 description: "Mova V70 Ultra, kollu robotu hareketli alanı sayesinde klasik robot süpürgelerin erişemediği alanları, özellikle masa ve sandalyelerin altını temizley"
 kaynak: "https://theremin.bizibah.com/"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - robot-supurge
+  - ev-otomasyonu
+  - temizlik-teknolojisi
+tagLabels:
+  robot-supurge:
+    tr: "Robot Süpürge"
+    en: "Robot Vacuum"
+  ev-otomasyonu:
+    tr: "Ev Otomasyonu"
+    en: "Home Automation"
+  temizlik-teknolojisi:
+    tr: "Temizlik Teknolojisi"
+    en: "Cleaning Technology"
+coverImage: "https://images.unsplash.com/photo-1568952433726-3896e3881c65?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDM1MjQzfDB8MXxzZWFyY2h8MXx8dGVjaG5vbG9neSUyMGlubm92YXRpb258ZW58MHwwfHx8MTc4ODMzOTIyM3ww&ixlib=rb-4.1.0&q=80&w=1080&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Robynne O"
+gorselFotografciLink: "https://unsplash.com/@roborobs?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "technology innovation"
 ---
 Robot süpürgelerin çoğu, merdiven gibi ortam zorlukları karşısında sınırlı olsa da, başka bir problem var: büyük mobilyaların altı. Mova V70 Ultra, bu sorunu mekanik bir kollu tasarımla çözüyor.
 

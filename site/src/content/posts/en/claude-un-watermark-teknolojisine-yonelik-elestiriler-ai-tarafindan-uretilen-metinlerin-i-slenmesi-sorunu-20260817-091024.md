@@ -4,9 +4,28 @@ pubDate: 2026-08-17T09:10:24.701+03:00
 kategori: "AI"
 description: "Anthropic's watermarking feature in Claude faces backlash for allegedly compromising text quality and naturalness while blurring human-AI authorship l"
 kaynak: "https://www.lorekit.io/blog/give-your-agent-a-memory"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - watermark-teknoloji
+  - ai-etikleri
+  - claude-anthropic
+  - metin-uretim
+tagLabels:
+  watermark-teknoloji:
+    tr: "Watermark Teknolojisi"
+    en: "Watermark Technology"
+  ai-etikleri:
+    tr: "AI Etiği"
+    en: "AI Ethics"
+  claude-anthropic:
+    tr: "Claude Anthropic"
+    en: "Claude Anthropic"
+  metin-uretim:
+    tr: "Metin Üretim"
+    en: "Text Generation"
+coverImage: "https://images.unsplash.com/photo-1697577418970-95d99b5a55cf?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Igor Omilaev"
+gorselFotografciLink: "https://unsplash.com/@omilaev?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "artificial intelligence semiconductor"
 ---
 Anthropic's integration of watermarking technology into its Claude AI model continues to spark debate within the tech community. While designed to mark and trace AI-generated text, the feature is drawing criticism for allegedly compromising writing quality and naturalness.
 

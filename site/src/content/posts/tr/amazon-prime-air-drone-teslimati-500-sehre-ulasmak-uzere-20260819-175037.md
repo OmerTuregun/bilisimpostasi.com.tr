@@ -4,9 +4,24 @@ pubDate: 2026-08-19T17:50:37.515+03:00
 kategori: "Teknoloji"
 description: "Amazon, drone teslimat hizmetini 2026 yılı sonuna kadar mevcut kapsamının altı katına çıkararak Atlanta, Cleveland, Syracuse, Chicago ve Boise gibi bü"
 kaynak: "https://theremin.bizibah.com/"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - drone-teslimat
+  - amazon-prime-air
+  - e-ticaret-lojistik
+tagLabels:
+  drone-teslimat:
+    tr: "Drone Teslimatı"
+    en: "Drone Delivery"
+  amazon-prime-air:
+    tr: "Amazon Prime Air"
+    en: "Amazon Prime Air"
+  e-ticaret-lojistik:
+    tr: "E-ticaret Lojistiği"
+    en: "E-commerce Logistics"
+coverImage: "https://images.unsplash.com/photo-1568952433726-3896e3881c65?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Robynne O"
+gorselFotografciLink: "https://unsplash.com/@roborobs?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "technology innovation"
 ---
 Amazon, drone tabanlı teslimat teknolojisinde büyük bir genişleme adımı atıyor. Prime Air servisi, yapılan açıklamaya göre 2026 yılı sonunda Amerika Birleşik Devletleri'nde yaklaşık 500 şehir ve kasabaya hizmet verecek.
 

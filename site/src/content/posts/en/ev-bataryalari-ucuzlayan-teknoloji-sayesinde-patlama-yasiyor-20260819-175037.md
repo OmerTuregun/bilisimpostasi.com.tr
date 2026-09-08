@@ -4,9 +4,28 @@ pubDate: 2026-08-19T17:50:37.520+03:00
 kategori: "Technology"
 description: "Tesla and Base Power compete in rapidly expanding residential energy storage market powered by cost-reducing technological advances."
 kaynak: "https://theremin.bizibah.com/"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - enerji-depolama
+  - ev-bataryasi
+  - yenilenebilir-enerji
+  - tesla
+tagLabels:
+  enerji-depolama:
+    tr: "Enerji Depolama"
+    en: "Energy Storage"
+  ev-bataryasi:
+    tr: "Ev Bataryası"
+    en: "Home Battery"
+  yenilenebilir-enerji:
+    tr: "Yenilenebilir Enerji"
+    en: "Renewable Energy"
+  tesla:
+    tr: "Tesla"
+    en: "Tesla"
+coverImage: "https://images.unsplash.com/photo-1568952433726-3896e3881c65?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Robynne O"
+gorselFotografciLink: "https://unsplash.com/@roborobs?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "technology innovation"
 ---
 The home battery market has experienced dramatic price declines and rapid growth since its inception. Residential energy storage systems, once considered a luxury product, are now becoming affordable for middle-class homeowners.
 

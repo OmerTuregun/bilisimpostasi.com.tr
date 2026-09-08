@@ -4,9 +4,24 @@ pubDate: 2026-08-15T09:00:23.938+03:00
 kategori: "AI"
 description: "Scientists propose that autonomous reasoning in machines may be a learnable, rule-based process, potentially unifying symbolic AI with modern deep lea"
 kaynak: "https://techcrunch.com/2026/08/14/read-it-later-app-pocket-is-shutting-down-here-are-the-best-alternatives/"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - yapay-zeka
+  - akil-yurutme
+  - kural-tabanli-sistemler
+tagLabels:
+  yapay-zeka:
+    tr: "Yapay Zeka"
+    en: "Artificial Intelligence"
+  akil-yurutme:
+    tr: "Akıl Yürütme"
+    en: "Reasoning"
+  kural-tabanli-sistemler:
+    tr: "Kural Tabanlı Sistemler"
+    en: "Rule-Based Systems"
+coverImage: "https://images.unsplash.com/photo-1697577418970-95d99b5a55cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDM1MjQzfDB8MXxzZWFyY2h8MXx8YXJ0aWZpY2lhbCUyMGludGVsbGlnZW5jZSUyMHNlbWljb25kdWN0b3J8ZW58MHwwfHx8MTc4ODMzOTIyOHww&ixlib=rb-4.1.0&q=80&w=1080&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Igor Omilaev"
+gorselFotografciLink: "https://unsplash.com/@omilaev?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "artificial intelligence semiconductor"
 ---
 A new academic study addresses a fundamental question in artificial intelligence research, sparking an important debate in the field. The core inquiry examines whether autonomous reasoning—the ability of machines to think logically independently—is actually a learnable, rule-based process.
 

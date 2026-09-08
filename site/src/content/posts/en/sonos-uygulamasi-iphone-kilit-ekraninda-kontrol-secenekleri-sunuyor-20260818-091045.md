@@ -4,9 +4,24 @@ pubDate: 2026-08-18T09:10:45.312+03:00
 kategori: "Technology"
 description: "Sonos leverages Apple's Live Activities feature to bring speaker controls directly to the iPhone lock screen in its latest update."
 kaynak: "https://arstechnica.com/tech-policy/2026/08/hidden-airtag-reveals-amazon-is-trashing-rare-books-to-train-ai/"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - sonos-kontrol
+  - iphone-kilit-ekrani
+  - live-activities
+tagLabels:
+  sonos-kontrol:
+    tr: "Sonos Kontrol"
+    en: "Sonos Control"
+  iphone-kilit-ekrani:
+    tr: "iPhone Kilit Ekranı"
+    en: "iPhone Lock Screen"
+  live-activities:
+    tr: "Live Activities"
+    en: "Live Activities"
+coverImage: "https://images.unsplash.com/photo-1568952433726-3896e3881c65?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDM1MjQzfDB8MXxzZWFyY2h8MXx8dGVjaG5vbG9neSUyMGlubm92YXRpb258ZW58MHwwfHx8MTc4ODMzOTIyM3ww&ixlib=rb-4.1.0&q=80&w=1080&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Robynne O"
+gorselFotografciLink: "https://unsplash.com/@roborobs?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "technology innovation"
 ---
 Enhancing mobile device functionality remains a key priority for app developers. Sonos's latest move demonstrates just how deeply iOS integration can go.
 

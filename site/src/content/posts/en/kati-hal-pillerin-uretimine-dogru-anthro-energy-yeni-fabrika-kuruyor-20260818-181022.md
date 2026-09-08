@@ -4,9 +4,24 @@ pubDate: 2026-08-18T18:10:22.890+03:00
 kategori: "Technology"
 description: "Battery materials company Anthro Energy launches electrolyte production facility in Kentucky, advancing commercial solid-state battery technology."
 kaynak: "https://arstechnica.com/science/2026/08/as-temperatures-get-hotter-pesticides-are-more-dangerous-to-farmworkers/"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - kati-hal-pil
+  - pil-uretimi
+  - anthro-energy
+tagLabels:
+  kati-hal-pil:
+    tr: "Katı Hal Pil"
+    en: "Solid State Battery"
+  pil-uretimi:
+    tr: "Pil Üretimi"
+    en: "Battery Manufacturing"
+  anthro-energy:
+    tr: "Anthro Energy"
+    en: "Anthro Energy"
+coverImage: "https://images.unsplash.com/photo-1568952433726-3896e3881c65?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Robynne O"
+gorselFotografciLink: "https://unsplash.com/@roborobs?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "technology innovation"
 ---
 Anthro Energy has taken a major step forward in solid-state battery technology by breaking ground on a new electrolyte production facility in Louisville, Kentucky.
 

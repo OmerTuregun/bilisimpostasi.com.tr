@@ -4,9 +4,24 @@ pubDate: 2026-08-18T18:10:22.892+03:00
 kategori: "Technology"
 description: "Comcast launches Xfinity Shield, a Wi-Fi-based motion detection system that combines home security, family safety, and cybersecurity protection."
 kaynak: "https://arstechnica.com/science/2026/08/as-temperatures-get-hotter-pesticides-are-more-dangerous-to-farmworkers/"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - akilli-ev
+  - wifi-guvenlik
+  - hareket-tespit
+tagLabels:
+  akilli-ev:
+    tr: "Akıllı Ev"
+    en: "Smart Home"
+  wifi-guvenlik:
+    tr: "Wi-Fi Güvenlik"
+    en: "Wi-Fi Security"
+  hareket-tespit:
+    tr: "Hareket Tespit"
+    en: "Motion Detection"
+coverImage: "https://images.unsplash.com/photo-1568952433726-3896e3881c65?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Robynne O"
+gorselFotografciLink: "https://unsplash.com/@roborobs?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "technology innovation"
 ---
 Comcast has introduced an innovative solution in the smart home security space. Xfinity Shield modernizes residential security by leveraging Wi-Fi-based motion detection technology.
 

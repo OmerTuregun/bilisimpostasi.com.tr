@@ -4,9 +4,24 @@ pubDate: 2026-08-19T13:21:45.375+03:00
 kategori: "Technology"
 description: "Palomar verified mathematics registry and Mojo programming language open-sourcing mark growing trend of collaborative software development."
 kaynak: "https://arstechnica.com/science/2026/08/as-temperatures-get-hotter-pesticides-are-more-dangerous-to-farmworkers/"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - acik-kaynak
+  - programlama-dili
+  - mojo
+tagLabels:
+  acik-kaynak:
+    tr: "Açık Kaynak"
+    en: "Open Source"
+  programlama-dili:
+    tr: "Programlama Dili"
+    en: "Programming Language"
+  mojo:
+    tr: "Mojo Dili"
+    en: "Mojo Language"
+coverImage: "https://images.unsplash.com/photo-1568952433726-3896e3881c65?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Robynne O"
+gorselFotografciLink: "https://unsplash.com/@roborobs?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "technology innovation"
 ---
 The software development ecosystem is witnessing a significant shift toward open-source models. The Palomar project, championed by mathematician Terry Tao, and the open-sourcing of the Mojo programming language exemplify this growing trend.
 

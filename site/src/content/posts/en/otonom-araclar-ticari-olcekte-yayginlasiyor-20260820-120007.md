@@ -4,6 +4,24 @@ pubDate: 2026-08-20T12:00:07+03:00
 kategori: "Technology"
 description: "Waymo opens its affordable next-gen Ojai robotaxi to all riders across three cities, signaling autonomous transportation has reached commercial viabil"
 kaynak: "https://techcrunch.com/2026/08/19/waymos-cheaper-next-gen-robotaxi-is-now-open-to-all-riders-in-these-three-cities"
+tags:
+  - otonom-araclar
+  - robotaksi
+  - waymo
+  - ulastirma-teknolojisi
+tagLabels:
+  otonom-araclar:
+    tr: "Otonom Araçlar"
+    en: "Autonomous Vehicles"
+  robotaksi:
+    tr: "Robotaksi"
+    en: "Robotaxi"
+  waymo:
+    tr: "Waymo"
+    en: "Waymo"
+  ulastirma-teknolojisi:
+    tr: "Ulaştırma Teknolojisi"
+    en: "Transportation Technology"
 coverImage: "https://pub-880c98af22074b02b5f5237e1b3a0bad.r2.dev/otonom-araclar-ticari-olcekte-yayginlasiyor-202608-cover-opt-20260820111658.jpg"
 gorselFotografci: "gibblesmash asdf"
 gorselFotografciLink: "https://unsplash.com/@gibblesmash139?utm_source=bilisimpostasi&utm_medium=referral"

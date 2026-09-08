@@ -4,9 +4,28 @@ pubDate: 2026-08-19T17:50:37.409+03:00
 kategori: "Technology"
 description: "Framework upgrades its 12-inch convertible laptop with Intel Core Series 3 processors and lower starting price of $699"
 kaynak: "https://theremin.bizibah.com/"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - framework-laptop
+  - tasinabilir-bilgisayar
+  - intel-islemci
+  - ozellestirilmis-donanim
+tagLabels:
+  framework-laptop:
+    tr: "Framework Laptop"
+    en: "Framework Laptop"
+  tasinabilir-bilgisayar:
+    tr: "Taşınabilir Bilgisayar"
+    en: "Laptop"
+  intel-islemci:
+    tr: "Intel İşlemci"
+    en: "Intel Processor"
+  ozellestirilmis-donanim:
+    tr: "Özelleştirilebilir"
+    en: "Customizable"
+coverImage: "https://images.unsplash.com/photo-1568952433726-3896e3881c65?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Robynne O"
+gorselFotografciLink: "https://unsplash.com/@roborobs?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "technology innovation"
 ---
 Framework, known for its modular design philosophy, has unveiled a new generation of its 12-inch convertible laptop series. The second-generation model delivers significant hardware improvements, advancing both performance and accessibility for users.
 

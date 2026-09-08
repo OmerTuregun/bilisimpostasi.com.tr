@@ -49,20 +49,23 @@ const coverImage = post.data.coverImage || '';
     <span class="badge" style={`--badge-color: ${badgeColor}`}>{kategori}</span>
     <h2>{post.data.title}</h2>
     <p class="desc">{post.data.description}</p>
-    <div class="card-footer">
-      <time datetime={post.data.pubDate.toISOString()}>{formatDateTime(post.data.pubDate, locale)}</time>
-      <span class="more">{strings.readMore}</span>
-    </div>
   </a>
+  <div class="card-footer">
+    <time datetime={post.data.pubDate.toISOString()}>{formatDateTime(post.data.pubDate, locale)}</time>
+    <a class="more" href={postPath(locale, slug)}>{strings.readMore}</a>
+  </div>
 </article>
 
 <style>
   .post-card {
     position: relative;
-    background: #fff;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--surface);
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 12px var(--shadow-sm);
     transition: transform 0.25s ease, box-shadow 0.25s ease;
   }
   .rank-badge {
@@ -77,7 +80,7 @@ const coverImage = post.data.coverImage || '';
     place-items: center;
     border-radius: 999px;
     background: var(--accent);
-    color: #fff;
+    color: var(--on-accent);
     font-family: var(--font-heading);
     font-size: 0.82rem;
     font-weight: 700;
@@ -86,7 +89,7 @@ const coverImage = post.data.coverImage || '';
   .post-card:has(.rank-badge) .badge { margin-right: 2.2rem; }
   .post-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 12px 32px var(--shadow-lg);
   }
   .card-cover {
     width: calc(100% + 2.3rem);
@@ -97,17 +100,17 @@ const coverImage = post.data.coverImage || '';
     display: block;
     margin: -1.15rem -1.15rem 0.85rem;
     background:
-      linear-gradient(110deg, #e8eef5 25%, #f4f7fb 40%, #e8eef5 55%);
+      linear-gradient(110deg, var(--cover-placeholder) 25%, var(--cover-shimmer-mid) 40%, var(--cover-placeholder) 55%);
     background-size: 200% 100%;
     animation: cover-shimmer 1.2s ease-in-out infinite;
   }
   .card-cover[src] {
     animation: none;
-    background: #e8eef5;
+    background: var(--cover-placeholder);
   }
   .card-cover.card-cover-empty {
     animation: none;
-    background: #e8eef5;
+    background: var(--cover-placeholder);
   }
   @keyframes cover-shimmer {
     0% { background-position: 100% 0; }
@@ -116,8 +119,9 @@ const coverImage = post.data.coverImage || '';
   .card-link {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    padding: 1.15rem;
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 1.15rem 1.15rem 0.65rem;
     text-decoration: none;
     color: inherit;
   }
@@ -129,7 +133,7 @@ const coverImage = post.data.coverImage || '';
     letter-spacing: 0.05em;
     padding: 0.28rem 0.7rem;
     border-radius: 999px;
-    background: color-mix(in srgb, var(--badge-color) 14%, white);
+    background: color-mix(in srgb, var(--badge-color) 14%, var(--badge-blend));
     color: var(--badge-color);
     margin-bottom: 0.7rem;
   }
@@ -156,7 +160,8 @@ const coverImage = post.data.coverImage || '';
     justify-content: space-between;
     align-items: center;
     gap: 0.5rem;
-    padding-top: 0.8rem;
+    flex-shrink: 0;
+    padding: 0.8rem 1.15rem 1rem;
     border-top: 1px solid var(--rule);
     margin-top: auto;
   }
@@ -166,14 +171,16 @@ const coverImage = post.data.coverImage || '';
     color: var(--accent);
     font-weight: 600;
     white-space: nowrap;
+    text-decoration: none;
   }
-  .card-link:hover .more { text-decoration: underline; }
+  .more:hover { text-decoration: underline; }
   @media (hover: none) and (pointer: coarse) {
     .card-cover {
       width: calc(100% + 1.6rem);
       margin: -1.25rem -0.8rem 0.85rem;
     }
-    .card-link { padding: 1.25rem 0.8rem 1.2rem; }
+    .card-link { padding: 1.25rem 0.8rem 0.55rem; }
+    .card-footer { padding: 0.95rem 0.8rem 1.2rem; }
     h2 {
       font-size: clamp(1.12rem, 5.4vw, 1.3rem);
       line-height: 1.4;
@@ -192,7 +199,6 @@ const coverImage = post.data.coverImage || '';
     }
     .card-footer { padding-top: 0.95rem; }
     time { font-size: 0.85rem; }
-    .more { display: inline-block; font-size: 0.95rem; }
   }
 
   @media (max-width: 768px) {
@@ -200,7 +206,8 @@ const coverImage = post.data.coverImage || '';
       width: calc(100% + 1.8rem);
       margin: -1.25rem -0.9rem 0.85rem;
     }
-    .card-link { padding: 1.25rem 0.9rem 1.25rem; }
+    .card-link { padding: 1.25rem 0.9rem 0.55rem; }
+    .card-footer { padding: 0.95rem 0.9rem 1.25rem; }
     .badge {
       font-size: 0.82rem;
       padding: 0.32rem 0.85rem;

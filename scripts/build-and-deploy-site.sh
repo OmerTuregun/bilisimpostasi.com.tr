@@ -41,3 +41,13 @@ if urls:
 else:
     print("cover-warmup: no r2 cover urls on homepage")
 PY
+
+
+# Ensure n8n content perms (posts + _queue writable by node uid 1000 after root builds)
+CONTENT_ROOT="/root/agent-icerik-sistemi/site/src/content"
+chown -R 1000:1000 "${CONTENT_ROOT}/posts" "${CONTENT_ROOT}/_queue" || true
+chmod -R u+rwX,g+rX "${CONTENT_ROOT}/posts" "${CONTENT_ROOT}/_queue" || true
+ENSURE_SCRIPT="/root/agent-icerik-sistemi/scripts/ensure-n8n-content-perms.sh"
+if [[ -x "${ENSURE_SCRIPT}" ]]; then
+  "${ENSURE_SCRIPT}" || true
+fi

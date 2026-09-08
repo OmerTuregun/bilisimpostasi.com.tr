@@ -4,6 +4,24 @@ pubDate: 2026-08-18T09:10:45.311+03:00
 kategori: "Teknoloji"
 description: "Siber güvenlik araştırmacıları, Apple'ın yakın zamanda verdiği tehdit uyarısının alışılmadık derecede geniş bir kitleyi etkilediğini belirtmektedir."
 kaynak: "https://arstechnica.com/tech-policy/2026/08/hidden-airtag-reveals-amazon-is-trashing-rare-books-to-train-ai/"
+tags:
+  - apple-guvenlik
+  - casus-yazilim
+  - siber-tehdit
+tagLabels:
+  apple-guvenlik:
+    tr: "Apple Güvenliği"
+    en: "Apple Security"
+  casus-yazilim:
+    tr: "Casus Yazılım"
+    en: "Spyware"
+  siber-tehdit:
+    tr: "Siber Tehdit"
+    en: "Cyber Threat"
+coverImage: "https://images.unsplash.com/photo-1568952433726-3896e3881c65?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Robynne O"
+gorselFotografciLink: "https://unsplash.com/@roborobs?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "technology innovation"
 ---
 Siber güvenlik tehditleri, özellikle mobil işletim sistemlerinde giderek daha sofistike hale gelmektedir. Apple'ın yakın zamanda uyardığı casus yazılım tehdidi, yeni bir duruma işaret etmektedir.
 

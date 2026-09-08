@@ -4,9 +4,28 @@ pubDate: 2026-08-18T09:10:45.310+03:00
 kategori: "AI"
 description: "AI startup Anthropic reached $65 billion in annualized revenue, adding $18 billion in just two months."
 kaynak: "https://arstechnica.com/tech-policy/2026/08/hidden-airtag-reveals-amazon-is-trashing-rare-books-to-train-ai/"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - anthropic
+  - yapay-zeka
+  - startup-finansmani
+  - gelir-buyumesi
+tagLabels:
+  anthropic:
+    tr: "Anthropic"
+    en: "Anthropic"
+  yapay-zeka:
+    tr: "Yapay Zeka"
+    en: "Artificial Intelligence"
+  startup-finansmani:
+    tr: "Startup Finansmanı"
+    en: "Startup Funding"
+  gelir-buyumesi:
+    tr: "Gelir Büyümesi"
+    en: "Revenue Growth"
+coverImage: "https://images.unsplash.com/photo-1734597949889-f8e2ec87c8ea?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Milad Fakurian"
+gorselFotografciLink: "https://unsplash.com/@fakurian?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "artificial intelligence semiconductor"
 ---
 The commercialization of artificial intelligence models has become one of the most dynamic sectors in the technology industry. Anthropic's rapid expansion demonstrates just how vibrant this market has become.
 

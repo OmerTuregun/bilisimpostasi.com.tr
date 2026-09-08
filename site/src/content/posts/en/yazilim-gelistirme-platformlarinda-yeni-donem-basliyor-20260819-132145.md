@@ -4,9 +4,24 @@ pubDate: 2026-08-19T13:21:45.370+03:00
 kategori: "Technology"
 description: "AI-powered code editor Cursor enters the code hosting market with a GitHub alternative designed around developer needs."
 kaynak: "https://arstechnica.com/science/2026/08/as-temperatures-get-hotter-pesticides-are-more-dangerous-to-farmworkers/"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - kod-barindirma
+  - gelistirici-araclari
+  - cursor-github
+tagLabels:
+  kod-barindirma:
+    tr: "Kod Barındırma"
+    en: "Code Hosting"
+  gelistirici-araclari:
+    tr: "Geliştirici Araçları"
+    en: "Developer Tools"
+  cursor-github:
+    tr: "Cursor vs GitHub"
+    en: "Cursor vs GitHub"
+coverImage: "https://images.unsplash.com/photo-1568952433726-3896e3881c65?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDM1MjQzfDB8MXxzZWFyY2h8MXx8dGVjaG5vbG9neSUyMGlubm92YXRpb258ZW58MHwwfHx8MTc4ODMzOTIyM3ww&ixlib=rb-4.1.0&q=80&w=1080&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Robynne O"
+gorselFotografciLink: "https://unsplash.com/@roborobs?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "technology innovation"
 ---
 A significant new rivalry is emerging in the software development ecosystem. Cursor, the company known for its AI-powered code editor, is preparing to launch a competing platform to challenge GitHub's long-standing dominance among developers.
 

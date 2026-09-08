@@ -61,7 +61,7 @@ const duration = Math.max(20, groupPosts.length * secPerItem);
     width: 280px;
     min-height: 128px;
     padding: 0.85rem 1rem;
-    background: #fff;
+    background: var(--surface);
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     text-decoration: none;
@@ -80,7 +80,7 @@ const duration = Math.max(20, groupPosts.length * secPerItem);
     letter-spacing: 0.05em;
     padding: 0.2rem 0.55rem;
     border-radius: 999px;
-    background: color-mix(in srgb, var(--badge-color) 14%, white);
+    background: color-mix(in srgb, var(--badge-color) 14%, var(--badge-blend));
     color: var(--badge-color);
     margin-bottom: 0.5rem;
   }

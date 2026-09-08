@@ -4,9 +4,28 @@ pubDate: 2026-08-17T21:10:29.257+03:00
 kategori: "AI"
 description: "Amazon allegedly destroying rare and valuable books to create training data for large language models."
 kaynak: "https://arstechnica.com/cars/2026/08/the-opposite-of-a-hypercar-is-fun-meet-the-gasolini-ar1/"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - yapay-zeka
+  - kitap-yonetimi
+  - llm-modelleri
+  - veri-etigi
+tagLabels:
+  yapay-zeka:
+    tr: "Yapay Zeka"
+    en: "Artificial Intelligence"
+  kitap-yonetimi:
+    tr: "Kitap Yönetimi"
+    en: "Book Management"
+  llm-modelleri:
+    tr: "LLM Modelleri"
+    en: "LLM Models"
+  veri-etigi:
+    tr: "Veri Etiği"
+    en: "Data Ethics"
+coverImage: "https://images.unsplash.com/photo-1697577418970-95d99b5a55cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDM1MjQzfDB8MXxzZWFyY2h8MXx8YXJ0aWZpY2lhbCUyMGludGVsbGlnZW5jZSUyMHNlbWljb25kdWN0b3J8ZW58MHwwfHx8MTc4ODMzOTIyOHww&ixlib=rb-4.1.0&q=80&w=1080&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Igor Omilaev"
+gorselFotografciLink: "https://unsplash.com/@omilaev?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "artificial intelligence semiconductor"
 ---
 Since its founding, Amazon has operated as an online bookseller, establishing deep connections with libraries and the publishing industry. However, recent reports reveal the company is not hesitant to sever ties with this legacy.
 

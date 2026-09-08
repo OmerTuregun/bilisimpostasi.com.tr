@@ -4,6 +4,24 @@ pubDate: 2026-08-20T12:00:01+03:00
 kategori: "Yapay Zeka"
 description: "Stripe'ın OpenRouter satın alması ve Rillet'in milyar dolarlık değerlemesi, AI modellerinin kurumsal uygulamalarında önemli bir dönüm noktasını işaret"
 kaynak: "https://techcrunch.com/2026/08/19/stripe-didnt-really-buy-openrouter-because-of-the-singularity/"
+tags:
+  - yapay-zeka
+  - llm
+  - kurumsal-ai
+  - ai-yatirimi
+tagLabels:
+  yapay-zeka:
+    tr: "Yapay Zeka"
+    en: "Artificial Intelligence"
+  llm:
+    tr: "Büyük Dil Modelleri"
+    en: "Large Language Models"
+  kurumsal-ai:
+    tr: "Kurumsal AI"
+    en: "Enterprise AI"
+  ai-yatirimi:
+    tr: "AI Yatırımı"
+    en: "AI Investment"
 coverImage: "https://pub-880c98af22074b02b5f5237e1b3a0bad.r2.dev/buyuk-dil-modellerinin-kurumsal-kullanimi-artiyor-cover-opt-20260820111658.jpg"
 gorselFotografci: "Igor Omilaev"
 gorselFotografciLink: "https://unsplash.com/@omilaev?utm_source=bilisimpostasi&utm_medium=referral"

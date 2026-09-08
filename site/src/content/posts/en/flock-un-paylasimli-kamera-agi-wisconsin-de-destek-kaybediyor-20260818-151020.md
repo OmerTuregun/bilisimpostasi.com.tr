@@ -4,9 +4,24 @@ pubDate: 2026-08-18T15:10:20.630+03:00
 kategori: "Technology"
 description: "Wisconsin municipalities are withdrawing from Flock's surveillance camera network, diminishing the system's data collection capacity and operational v"
 kaynak: "https://www.theverge.com/tech/981326/apple-airpods-with-cameras-demo-video-leak"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - gozlem-kameras
+  - veri-guvenligi
+  - akilli-sehir
+tagLabels:
+  gozlem-kameras:
+    tr: "Gözetleme Kamerası"
+    en: "Surveillance Camera"
+  veri-guvenligi:
+    tr: "Veri Güvenliği"
+    en: "Data Privacy"
+  akilli-sehir:
+    tr: "Akıllı Şehir"
+    en: "Smart City"
+coverImage: "https://images.unsplash.com/photo-1568952433726-3896e3881c65?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Robynne O"
+gorselFotografciLink: "https://unsplash.com/@roborobs?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "technology innovation"
 ---
 Surveillance technology company Flock is losing local government support for its shared camera network operating across Wisconsin. As cities withdraw from the network, the system's data collection capabilities and operational effectiveness have been significantly compromised.
 

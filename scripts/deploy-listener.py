@@ -17,7 +17,7 @@ PORT = int(os.environ.get("DEPLOY_LISTENER_PORT", "9876"))
 TOKEN = os.environ.get("DEPLOY_LISTENER_TOKEN", "")
 SCRIPT = os.environ.get("DEPLOY_SCRIPT", "/root/agent-icerik-sistemi/scripts/build-and-deploy-site.sh")
 LOCK_FILE = os.environ.get("DEPLOY_LOCK_FILE", "/var/lock/agent-icerik-deploy.lock")
-TIMEOUT = int(os.environ.get("DEPLOY_TIMEOUT_SEC", "30"))
+TIMEOUT = int(os.environ.get("DEPLOY_TIMEOUT_SEC", "300"))
 
 
 class DeployHandler(BaseHTTPRequestHandler):

@@ -4,6 +4,20 @@ pubDate: 2026-08-20T15:00:00+03:00
 kategori: "Teknoloji"
 description: "Amazon Prime Air hizmetinin 2026 yılı sonuna kadar yaklaşık 500 ABD şehrinde faaliyet göstermesi bekleniyor."
 kaynak: "https://techcrunch.com/2026/08/19/amazons-prime-air-is-taking-off-in-nearly-500-u-s-cities/"
+tags:
+  - drone-teslimat
+  - amazon-prime-air
+  - lojistik-teknoloji
+tagLabels:
+  drone-teslimat:
+    tr: "Drone Teslimatı"
+    en: "Drone Delivery"
+  amazon-prime-air:
+    tr: "Amazon Prime Air"
+    en: "Amazon Prime Air"
+  lojistik-teknoloji:
+    tr: "Lojistik Teknolojisi"
+    en: "Logistics Technology"
 coverImage: "https://pub-880c98af22074b02b5f5237e1b3a0bad.r2.dev/drone-teslimatinin-hizli-genislemesi-amazon-prime-cover-opt-20260820122300.jpg"
 gorselFotografci: "David Ballew"
 gorselFotografciLink: "https://unsplash.com/@daveballew?utm_source=bilisimpostasi&utm_medium=referral"

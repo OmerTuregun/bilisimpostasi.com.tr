@@ -4,6 +4,20 @@ pubDate: 2026-08-20T12:00:00+03:00
 kategori: "AI"
 description: "AI technology faces slower-than-expected mainstream adoption as consumer skepticism grows, contradicting Silicon Valley's optimistic projections."
 kaynak: "https://techcrunch.com/2026/08/19/ai-was-supposed-to-win-people-over-by-now-it-hasnt"
+tags:
+  - yapay-zeka
+  - tuketici-kabul
+  - teknoloji-sektoru
+tagLabels:
+  yapay-zeka:
+    tr: "Yapay Zeka"
+    en: "Artificial Intelligence"
+  tuketici-kabul:
+    tr: "Tüketici Kabulü"
+    en: "Consumer Adoption"
+  teknoloji-sektoru:
+    tr: "Teknoloji Sektörü"
+    en: "Tech Industry"
 coverImage: "https://pub-880c98af22074b02b5f5237e1b3a0bad.r2.dev/yapay-zeka-asistanlarinin-tuketici-kabulu-soguyor-cover-opt-20260820111658.jpg"
 gorselFotografci: "Growtika"
 gorselFotografciLink: "https://unsplash.com/@growtika?utm_source=bilisimpostasi&utm_medium=referral"

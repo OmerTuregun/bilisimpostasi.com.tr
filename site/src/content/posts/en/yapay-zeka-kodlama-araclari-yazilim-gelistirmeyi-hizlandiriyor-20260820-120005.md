@@ -4,6 +4,24 @@ pubDate: 2026-08-20T12:00:05+03:00
 kategori: "AI"
 description: "Asana completes five years of engineering work in two weeks using OpenAI Codex, demonstrating dramatic productivity gains from AI coding assistants."
 kaynak: "https://openai.com/index/asana/"
+tags:
+  - yapay-zeka
+  - yazilim-gelistirme
+  - kodlama-araclari
+  - verimlilik
+tagLabels:
+  yapay-zeka:
+    tr: "Yapay Zeka"
+    en: "Artificial Intelligence"
+  yazilim-gelistirme:
+    tr: "Yazılım Geliştirme"
+    en: "Software Development"
+  kodlama-araclari:
+    tr: "Kodlama Araçları"
+    en: "Coding Tools"
+  verimlilik:
+    tr: "Verimlilik"
+    en: "Productivity"
 coverImage: "https://pub-880c98af22074b02b5f5237e1b3a0bad.r2.dev/yapay-zeka-kodlama-araclari-yazilim-gelistirmeyi-h-cover-opt-20260820111658.jpg"
 gorselFotografci: "Mohammad Rahmani"
 gorselFotografciLink: "https://unsplash.com/@afgprogrammer?utm_source=bilisimpostasi&utm_medium=referral"

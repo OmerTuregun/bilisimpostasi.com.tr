@@ -4,9 +4,24 @@ pubDate: 2026-08-17T18:10:31.088+03:00
 kategori: "Technology"
 description: "Uber Eats integrates Zipline's drone technology to accelerate deliveries and scale operations efficiently."
 kaynak: "https://www.ft.com/content/e04f286c-f5ed-46d1-8e3f-0bbe4cce4d3e"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - drone-teslimat
+  - uber-eats
+  - zipline
+tagLabels:
+  drone-teslimat:
+    tr: "Drone Teslimatı"
+    en: "Drone Delivery"
+  uber-eats:
+    tr: "Uber Eats"
+    en: "Uber Eats"
+  zipline:
+    tr: "Zipline Teknolojisi"
+    en: "Zipline Technology"
+coverImage: "https://images.unsplash.com/photo-1568952433726-3896e3881c65?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Robynne O"
+gorselFotografciLink: "https://unsplash.com/@roborobs?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "technology innovation"
 ---
 A new aerial layer is emerging in the fast delivery competition. Uber is integrating drones into its Eats delivery network through its investment in Zipline's drone technology.
 

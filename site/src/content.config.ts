@@ -9,6 +9,11 @@ const posts = defineCollection({
     description: z.string(),
     kaynak: z.string().url(),
     kategori: z.string().optional().default('Teknoloji'),
+    tags: z.array(z.string()).optional().default([]),
+    tagLabels: z
+      .record(z.object({ tr: z.string(), en: z.string() }))
+      .optional()
+      .default({}),
     coverImage: z.string().optional(),
     gorselFotografci: z.string().optional(),
     gorselFotografciLink: z.string().optional(),

@@ -4,6 +4,20 @@ pubDate: 2026-08-20T12:00:02+03:00
 kategori: "AI"
 description: "Google launches new study tools in Search and Gemini while offering free AI Pro access to compete with OpenAI in education sector."
 kaynak: "https://techcrunch.com/2026/08/19/google-launches-new-study-tools-for-students-across-search-and-gemini/"
+tags:
+  - yapay-zeka
+  - egitim-teknolojisi
+  - google-gemini
+tagLabels:
+  yapay-zeka:
+    tr: "Yapay Zeka"
+    en: "Artificial Intelligence"
+  egitim-teknolojisi:
+    tr: "Eğitim Teknolojisi"
+    en: "EdTech"
+  google-gemini:
+    tr: "Google Gemini"
+    en: "Google Gemini"
 coverImage: "https://pub-880c98af22074b02b5f5237e1b3a0bad.r2.dev/ogrenciler-icin-yapay-zeka-egitim-araclari-yayginl-cover-opt-20260820111658.jpg"
 gorselFotografci: "Vitaly Gariev"
 gorselFotografciLink: "https://unsplash.com/@silverkblack?utm_source=bilisimpostasi&utm_medium=referral"

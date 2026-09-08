@@ -4,6 +4,20 @@ pubDate: 2026-08-20T15:00:08+03:00
 kategori: "AI"
 description: "Google's new Pixel 11 phones are drawing criticism for AI features that fail to deliver promised benefits to users."
 kaynak: "https://www.nytimes.com/2026/08/19/technology/personaltech/google-pixel-11-review.html"
+tags:
+  - pixel-11
+  - yapay-zeka-sorunu
+  - google-telefonlar
+tagLabels:
+  pixel-11:
+    tr: "Pixel 11"
+    en: "Pixel 11"
+  yapay-zeka-sorunu:
+    tr: "Yapay Zeka Sorunu"
+    en: "AI Issues"
+  google-telefonlar:
+    tr: "Google Telefonları"
+    en: "Google Phones"
 coverImage: "https://pub-880c98af22074b02b5f5237e1b3a0bad.r2.dev/pixel-11-serisi-google-in-yeni-telefon-hattinda-ya-cover-opt-20260820122325.jpg"
 gorselFotografci: "Denny Müller"
 gorselFotografciLink: "https://unsplash.com/@redaquamedia?utm_source=bilisimpostasi&utm_medium=referral"

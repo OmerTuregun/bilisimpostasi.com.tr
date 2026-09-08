@@ -4,6 +4,24 @@ pubDate: 2026-08-20T15:00:01+03:00
 kategori: "Teknoloji"
 description: "TerraPower'ın nükleer güç tesisinin yapay zeka veri merkezlerine özel avantajları olduğu ortaya çıkıyor."
 kaynak: "https://techcrunch.com/2026/08/19/terrapowers-nuclear-reactor-has-a-secret-weapon-for-powering-ai-data-centers/"
+tags:
+  - yapay-zeka
+  - nukleer-enerji
+  - veri-merkezleri
+  - terrapower
+tagLabels:
+  yapay-zeka:
+    tr: "Yapay Zeka"
+    en: "Artificial Intelligence"
+  nukleer-enerji:
+    tr: "Nükleer Enerji"
+    en: "Nuclear Energy"
+  veri-merkezleri:
+    tr: "Veri Merkezleri"
+    en: "Data Centers"
+  terrapower:
+    tr: "TerraPower"
+    en: "TerraPower"
 coverImage: "https://pub-880c98af22074b02b5f5237e1b3a0bad.r2.dev/yapay-zeka-veri-merkezi-gucunun-yeni-cozumu-terrap-cover-opt-20260820122734.jpg"
 gorselFotografci: "Lukáš Lehotský"
 gorselFotografciLink: "https://unsplash.com/@llehotsky?utm_source=bilisimpostasi&utm_medium=referral"

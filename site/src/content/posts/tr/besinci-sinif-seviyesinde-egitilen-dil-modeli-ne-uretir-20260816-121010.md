@@ -4,6 +4,24 @@ pubDate: 2026-08-16T12:10:10.236+03:00
 kategori: "Yapay Zeka"
 description: "Araştırmacılar, yalnızca beşinci sınıf düzeyindeki metinlerle eğitilen bir dil modelinin davranışlarını ve çıktılarını inceleyerek, eğitim verilerinin"
 kaynak: "https://littlelearner-ll.github.io/"
+tags:
+  - dil-modelleri
+  - egitim-verileri
+  - yapay-zeka-arastirmasi
+tagLabels:
+  dil-modelleri:
+    tr: "Dil Modelleri"
+    en: "Language Models"
+  egitim-verileri:
+    tr: "Eğitim Verileri"
+    en: "Training Data"
+  yapay-zeka-arastirmasi:
+    tr: "Yapay Zeka Araştırması"
+    en: "AI Research"
+coverImage: "https://images.unsplash.com/photo-1697577418970-95d99b5a55cf?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Igor Omilaev"
+gorselFotografciLink: "https://unsplash.com/@omilaev?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "artificial intelligence semiconductor"
 ---
 ## Sınırlı Eğitim Verisiyle Eğitilen Dil Modelinin Performansı
 

@@ -4,6 +4,20 @@ pubDate: 2026-08-20T15:00:03+03:00
 kategori: "AI"
 description: "Google and UK government use artificial intelligence to reduce aircraft contrails through optimized flight routing."
 kaynak: "https://www.engadget.com/2240125/google-is-trying-to-solve-contrails-with-ai/"
+tags:
+  - yapay-zeka
+  - cevre
+  - ucak
+tagLabels:
+  yapay-zeka:
+    tr: "Yapay Zeka"
+    en: "Artificial Intelligence"
+  cevre:
+    tr: "Çevre"
+    en: "Environment"
+  ucak:
+    tr: "Uçak"
+    en: "Aviation"
 coverImage: "https://pub-880c98af22074b02b5f5237e1b3a0bad.r2.dev/google-istiklal-aksiyon-plani-yapay-zeka-ile-kontr-cover-opt-20260820122308.jpg"
 gorselFotografci: "Gabriela Natiello"
 gorselFotografciLink: "https://unsplash.com/@gabrielanatielloartgallery?utm_source=bilisimpostasi&utm_medium=referral"

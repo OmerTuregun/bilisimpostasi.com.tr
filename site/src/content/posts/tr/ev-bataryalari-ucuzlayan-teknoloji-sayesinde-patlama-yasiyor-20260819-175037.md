@@ -4,9 +4,28 @@ pubDate: 2026-08-19T17:50:37.520+03:00
 kategori: "Teknoloji"
 description: "Tesla ve Base Power gibi şirketler hızla büyüyen ev enerji depolama pazarında rekabet ediyor; bir teknoloji bu düşüş fiyatlandırmasını mümkün kıldı."
 kaynak: "https://theremin.bizibah.com/"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - enerji-depolama
+  - ev-bataryasi
+  - yenilenebilir-enerji
+  - tesla
+tagLabels:
+  enerji-depolama:
+    tr: "Enerji Depolama"
+    en: "Energy Storage"
+  ev-bataryasi:
+    tr: "Ev Bataryası"
+    en: "Home Battery"
+  yenilenebilir-enerji:
+    tr: "Yenilenebilir Enerji"
+    en: "Renewable Energy"
+  tesla:
+    tr: "Tesla"
+    en: "Tesla"
+coverImage: "https://images.unsplash.com/photo-1568952433726-3896e3881c65?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Robynne O"
+gorselFotografciLink: "https://unsplash.com/@roborobs?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "technology innovation"
 ---
 Ev bataryaları pazarı ortaya çıktığından beri dramatik bir fiyat düşüşü ve hızlı büyüme yaşıyor. Önceden lüks bir ürün sayılan ev enerjisi depolama sistemleri, artık orta sınıf ev sahipleri için uygun hale geldi.
 

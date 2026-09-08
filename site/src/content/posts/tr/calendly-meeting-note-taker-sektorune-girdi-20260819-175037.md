@@ -4,9 +4,28 @@ pubDate: 2026-08-19T17:50:37.518+03:00
 kategori: "Yapay Zeka"
 description: "Calendly, toplantı notları alan Callie adlı yapay zeka asistanını piyasaya sürerek verimlilik yazılımlarındaki karanterinin ötesine geçti."
 kaynak: "https://theremin.bizibah.com/"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - yapay-zeka
+  - toplanti-notlari
+  - calendly
+  - verimlilik-yazilimi
+tagLabels:
+  yapay-zeka:
+    tr: "Yapay Zeka"
+    en: "Artificial Intelligence"
+  toplanti-notlari:
+    tr: "Toplantı Notları"
+    en: "Meeting Notes"
+  calendly:
+    tr: "Calendly"
+    en: "Calendly"
+  verimlilik-yazilimi:
+    tr: "Verimlilik Yazılımı"
+    en: "Productivity Software"
+coverImage: "https://images.unsplash.com/photo-1697577418970-95d99b5a55cf?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Igor Omilaev"
+gorselFotografciLink: "https://unsplash.com/@omilaev?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "artificial intelligence semiconductor"
 ---
 Calendly, toplantı planlama yazılımından fazlasını sunmak için kendi AI asistanını geliştirdi. Callie olarak adlandırılan bu yeni hizmet, toplantı not-tutma ve asistanı yeteneklerini ekledi.
 

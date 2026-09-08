@@ -4,9 +4,24 @@ pubDate: 2026-08-14T21:23:35.626+03:00
 kategori: "AI"
 description: "Researchers develop contract-grade verifier to ensure reliability of GPU kernel code written by AI models"
 kaynak: "https://arxiv.org/abs/2608.12700"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - gpu-dogrulama
+  - kod-guvenligi
+  - llm-yazilim
+tagLabels:
+  gpu-dogrulama:
+    tr: "GPU Doğrulaması"
+    en: "GPU Verification"
+  kod-guvenligi:
+    tr: "Kod Güvenliği"
+    en: "Code Safety"
+  llm-yazilim:
+    tr: "LLM Yazılım Geliştirme"
+    en: "LLM Software Development"
+coverImage: "https://images.unsplash.com/photo-1697577418970-95d99b5a55cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDM1MjQzfDB8MXxzZWFyY2h8MXx8YXJ0aWZpY2lhbCUyMGludGVsbGlnZW5jZSUyMHNlbWljb25kdWN0b3J8ZW58MHwwfHx8MTc4ODMzOTIyOHww&ixlib=rb-4.1.0&q=80&w=1080&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Igor Omilaev"
+gorselFotografciLink: "https://unsplash.com/@omilaev?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "artificial intelligence semiconductor"
 ---
 ## Validating LLM-Generated GPU Code
 

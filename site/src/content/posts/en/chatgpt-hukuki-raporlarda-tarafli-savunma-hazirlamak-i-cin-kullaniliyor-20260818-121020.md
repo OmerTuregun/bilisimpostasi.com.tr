@@ -4,9 +4,24 @@ pubDate: 2026-08-18T12:10:20.491+03:00
 kategori: "AI"
 description: "Expert witness used ChatGPT to draft report defending 3M in deadly explosion case, raising concerns about AI bias in legal proceedings."
 kaynak: "https://www.404media.co/show-how-3m-is-0-at-fault-expert-witness-used-chatgpt-to-write-report-defending-company-in-deadly-explosion-lawsuit/"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - yapay-zeka-hukuk
+  - etik-sorunlar
+  - chatgpt-uygulamalar
+tagLabels:
+  yapay-zeka-hukuk:
+    tr: "Yapay Zeka ve Hukuk"
+    en: "AI and Law"
+  etik-sorunlar:
+    tr: "Etik Sorunlar"
+    en: "Ethics Issues"
+  chatgpt-uygulamalar:
+    tr: "ChatGPT Uygulamaları"
+    en: "ChatGPT Applications"
+coverImage: "https://images.unsplash.com/photo-1697577418970-95d99b5a55cf?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Igor Omilaev"
+gorselFotografciLink: "https://unsplash.com/@omilaev?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "artificial intelligence semiconductor"
 ---
 As large language models like ChatGPT become increasingly widespread, important questions are emerging about how these technologies are being applied in the legal field. A recent incident has raised serious concerns about the role of artificial intelligence in court proceedings.
 

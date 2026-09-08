@@ -4,9 +4,24 @@ pubDate: 2026-08-14T18:00:15.538+03:00
 kategori: "Security"
 description: "French tax authority discloses significant data breach compromising personal and financial records of approximately 680,000 taxpayers."
 kaynak: "https://techcrunch.com/2026/08/14/us-courts-will-start-publishing-how-often-the-government-uses-spyware/"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - veri-ihlali
+  - siber-guvenlik
+  - fransa-vergi
+tagLabels:
+  veri-ihlali:
+    tr: "Veri İhlali"
+    en: "Data Breach"
+  siber-guvenlik:
+    tr: "Siber Güvenlik"
+    en: "Cybersecurity"
+  fransa-vergi:
+    tr: "Fransa Vergi Dairesi"
+    en: "French Tax Authority"
+coverImage: "https://images.unsplash.com/photo-1568952433726-3896e3881c65?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Robynne O"
+gorselFotografciLink: "https://unsplash.com/@roborobs?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "technology innovation"
 ---
 ## Cyber Attack Risk Rising: Public Institutions Under Threat
 

@@ -4,6 +4,28 @@ pubDate: 2026-08-18T09:10:45.304+03:00
 kategori: "Yapay Zeka"
 description: "AirTag takibi sonucu Amazon'un AI modellerini eğitmek için nadir ve değerli kitapları imha ettiği keşfedildi."
 kaynak: "https://arstechnica.com/tech-policy/2026/08/hidden-airtag-reveals-amazon-is-trashing-rare-books-to-train-ai/"
+tags:
+  - yapay-zeka
+  - amazon
+  - veri-etigi
+  - kitap-imha
+tagLabels:
+  yapay-zeka:
+    tr: "Yapay Zeka"
+    en: "Artificial Intelligence"
+  amazon:
+    tr: "Amazon"
+    en: "Amazon"
+  veri-etigi:
+    tr: "Veri Etiği"
+    en: "Data Ethics"
+  kitap-imha:
+    tr: "Kitap İmhası"
+    en: "Book Destruction"
+coverImage: "https://images.unsplash.com/photo-1666037801539-f30fd661657a?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Maxence Pira"
+gorselFotografciLink: "https://unsplash.com/@maxence_pira?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "artificial intelligence semiconductor"
 ---
 Yapay zeka modellerinin eğitilmesi için kullanılan veri kaynakları son dönemde oldukça tartışmalı hale geldi. Amazon'un yakın zamanda ortaya çıkan uygulamalarından biri, şirketin bu amaç doğrultusunda ne ölçüde ileri gidebildiğini gözler önüne sermiştir.
 

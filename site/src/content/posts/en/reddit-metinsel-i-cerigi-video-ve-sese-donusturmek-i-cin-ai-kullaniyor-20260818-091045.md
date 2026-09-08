@@ -4,9 +4,28 @@ pubDate: 2026-08-18T09:10:45.308+03:00
 kategori: "AI"
 description: "Reddit is experimenting with AI technology to transform text-based discussions into video and audio formats for enhanced user engagement."
 kaynak: "https://arstechnica.com/tech-policy/2026/08/hidden-airtag-reveals-amazon-is-trashing-rare-books-to-train-ai/"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - yapay-zeka
+  - video-uretimi
+  - reddit
+  - ses-donusum
+tagLabels:
+  yapay-zeka:
+    tr: "Yapay Zeka"
+    en: "Artificial Intelligence"
+  video-uretimi:
+    tr: "Video Üretimi"
+    en: "Video Generation"
+  reddit:
+    tr: "Reddit"
+    en: "Reddit"
+  ses-donusum:
+    tr: "Ses Dönüşümü"
+    en: "Audio Conversion"
+coverImage: "https://images.unsplash.com/photo-1697577418970-95d99b5a55cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDM1MjQzfDB8MXxzZWFyY2h8MXx8YXJ0aWZpY2lhbCUyMGludGVsbGlnZW5jZSUyMHNlbWljb25kdWN0b3J8ZW58MHwwfHx8MTc4ODMzOTIyOHww&ixlib=rb-4.1.0&q=80&w=1080&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Igor Omilaev"
+gorselFotografciLink: "https://unsplash.com/@omilaev?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "artificial intelligence semiconductor"
 ---
 Social media platforms are diversifying content presentation formats to improve user experience. Reddit has launched a new initiative to present text-based discussions in alternative formats.
 

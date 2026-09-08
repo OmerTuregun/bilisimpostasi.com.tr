@@ -4,9 +4,24 @@ pubDate: 2026-08-19T13:21:45.372+03:00
 kategori: "Technology"
 description: "Relativity Networks deploys hollow-core fiber technology to achieve 30% faster data transmission in data centers."
 kaynak: "https://arstechnica.com/science/2026/08/as-temperatures-get-hotter-pesticides-are-more-dangerous-to-farmworkers/"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - veri-merkezi
+  - fiber-optik
+  - ag-hizi
+tagLabels:
+  veri-merkezi:
+    tr: "Veri Merkezi"
+    en: "Data Center"
+  fiber-optik:
+    tr: "Fiber Optik"
+    en: "Fiber Optics"
+  ag-hizi:
+    tr: "Ağ Hızı"
+    en: "Network Speed"
+coverImage: "https://images.unsplash.com/photo-1568952433726-3896e3881c65?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDM1MjQzfDB8MXxzZWFyY2h8MXx8dGVjaG5vbG9neSUyMGlubm92YXRpb258ZW58MHwwfHx8MTc4ODMzOTIyM3ww&ixlib=rb-4.1.0&q=80&w=1080&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Robynne O"
+gorselFotografciLink: "https://unsplash.com/@roborobs?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "technology innovation"
 ---
 The data center infrastructure sector is experiencing a technological breakthrough. Relativity Networks, which has secured $22 million in funding, is implementing hollow-core fiber—a rarely used technology—for data center applications.
 

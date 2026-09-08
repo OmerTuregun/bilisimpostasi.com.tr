@@ -4,9 +4,28 @@ pubDate: 2026-08-16T15:10:12.627+03:00
 kategori: "AI"
 description: "While AI-generated code increases velocity, quality concerns and cost issues are pushing companies to limit LLM usage."
 kaynak: "https://arstechnica.com/science/2026/08/wildfire-smoke-now-bigger-prenatal-threat-than-human-sources-of-air-pollution/"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - yapay-zeka
+  - kod-uretimi
+  - llm
+  - yazilim-gelistirme
+tagLabels:
+  yapay-zeka:
+    tr: "Yapay Zeka"
+    en: "Artificial Intelligence"
+  kod-uretimi:
+    tr: "Kod Üretimi"
+    en: "Code Generation"
+  llm:
+    tr: "Büyük Dil Modelleri"
+    en: "Large Language Models"
+  yazilim-gelistirme:
+    tr: "Yazılım Geliştirme"
+    en: "Software Development"
+coverImage: "https://images.unsplash.com/photo-1697577418970-95d99b5a55cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDM1MjQzfDB8MXxzZWFyY2h8MXx8YXJ0aWZpY2lhbCUyMGludGVsbGlnZW5jZSUyMHNlbWljb25kdWN0b3J8ZW58MHwwfHx8MTc4ODMzOTIyOHww&ixlib=rb-4.1.0&q=80&w=1080&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Igor Omilaev"
+gorselFotografciLink: "https://unsplash.com/@omilaev?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "artificial intelligence semiconductor"
 ---
 The software development world has undergone dramatic changes over the past few years, and it now appears to be reaching a critical turning point. When large language models (LLMs) first emerged, many companies embraced the technology's seemingly unlimited potential, launching projects with an "use LLMs for everything" mentality. However, after several years of real-world experience, this initial euphoria is giving way to a more realistic assessment.
 

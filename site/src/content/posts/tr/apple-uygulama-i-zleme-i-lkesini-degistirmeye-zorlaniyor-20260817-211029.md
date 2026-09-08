@@ -4,6 +4,28 @@ pubDate: 2026-08-17T21:10:29.260+03:00
 kategori: "Teknoloji"
 description: "Almanya'nın Federal Cartel Office, Apple'ı kendi uygulamalarını tercih eden yanıltıcı veri izleme bildirimleri kullanmakla suçladı."
 kaynak: "https://arstechnica.com/cars/2026/08/the-opposite-of-a-hypercar-is-fun-meet-the-gasolini-ar1/"
+tags:
+  - apple
+  - veri-gizliligi
+  - antitrost
+  - almanya
+tagLabels:
+  apple:
+    tr: "Apple"
+    en: "Apple"
+  veri-gizliligi:
+    tr: "Veri Gizliliği"
+    en: "Data Privacy"
+  antitrost:
+    tr: "Antitröst"
+    en: "Antitrust"
+  almanya:
+    tr: "Almanya"
+    en: "Germany"
+coverImage: "https://images.unsplash.com/photo-1568952433726-3896e3881c65?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Robynne O"
+gorselFotografciLink: "https://unsplash.com/@roborobs?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "technology innovation"
 ---
 Gizlilik ve denetim konuları, teknoloji şirketleriyle düzenleyici kurumlar arasındaki çatışmanın merkezinde yer alıyor. Apple'ın App Tracking Transparency (ATT) özelliği, bu gerilimin en iyi örneklerinden biri.
 

@@ -4,9 +4,28 @@ pubDate: 2026-08-18T21:10:43.416+03:00
 kategori: "Technology"
 description: "Decentralized social network Bluesky has disclosed major DDoS attacks, revealing a troubling trend of repeated cyber targeting."
 kaynak: "https://arstechnica.com/science/2026/08/as-temperatures-get-hotter-pesticides-are-more-dangerous-to-farmworkers/"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - siber-guvenlik
+  - ddos-saldirisi
+  - bluesky
+  - sosyal-ag
+tagLabels:
+  siber-guvenlik:
+    tr: "Siber Güvenlik"
+    en: "Cybersecurity"
+  ddos-saldirisi:
+    tr: "DDoS Saldırısı"
+    en: "DDoS Attack"
+  bluesky:
+    tr: "Bluesky"
+    en: "Bluesky"
+  sosyal-ag:
+    tr: "Sosyal Ağ"
+    en: "Social Network"
+coverImage: "https://images.unsplash.com/photo-1568952433726-3896e3881c65?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Robynne O"
+gorselFotografciLink: "https://unsplash.com/@roborobs?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "technology innovation"
 ---
 Decentralized social media platform Bluesky has become an increasingly attractive target for cyberattacks. Multiple large-scale DDoS (Distributed Denial of Service) incidents throughout the year have exposed mounting threats to internet infrastructure security.
 

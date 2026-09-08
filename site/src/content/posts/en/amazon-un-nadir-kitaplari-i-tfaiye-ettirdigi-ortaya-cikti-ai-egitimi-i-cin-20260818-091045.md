@@ -4,9 +4,28 @@ pubDate: 2026-08-18T09:10:45.304+03:00
 kategori: "AI"
 description: "Amazon allegedly incinerated valuable rare books for AI training data, revealed through AirTag tracking investigation."
 kaynak: "https://arstechnica.com/tech-policy/2026/08/hidden-airtag-reveals-amazon-is-trashing-rare-books-to-train-ai/"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - yapay-zeka
+  - amazon
+  - veri-etigi
+  - kitap-imha
+tagLabels:
+  yapay-zeka:
+    tr: "Yapay Zeka"
+    en: "Artificial Intelligence"
+  amazon:
+    tr: "Amazon"
+    en: "Amazon"
+  veri-etigi:
+    tr: "Veri Etiği"
+    en: "Data Ethics"
+  kitap-imha:
+    tr: "Kitap İmhası"
+    en: "Book Destruction"
+coverImage: "https://images.unsplash.com/photo-1666037801539-f30fd661657a?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Maxence Pira"
+gorselFotografciLink: "https://unsplash.com/@maxence_pira?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "artificial intelligence semiconductor"
 ---
 The sources used to train artificial intelligence models have become increasingly controversial in recent times. A recent discovery involving Amazon's practices has shed light on just how far the company is willing to go in pursuit of this goal.
 

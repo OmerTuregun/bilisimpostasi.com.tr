@@ -4,9 +4,28 @@ pubDate: 2026-08-19T17:50:37.518+03:00
 kategori: "AI"
 description: "Calendly expands beyond scheduling with Callie, an AI assistant that automatically takes meeting notes and identifies action items."
 kaynak: "https://theremin.bizibah.com/"
-coverImage: ""
-gorselFotografci: ""
-gorselFotografciLink: ""
+tags:
+  - yapay-zeka
+  - toplanti-notlari
+  - calendly
+  - verimlilik-yazilimi
+tagLabels:
+  yapay-zeka:
+    tr: "Yapay Zeka"
+    en: "Artificial Intelligence"
+  toplanti-notlari:
+    tr: "Toplantı Notları"
+    en: "Meeting Notes"
+  calendly:
+    tr: "Calendly"
+    en: "Calendly"
+  verimlilik-yazilimi:
+    tr: "Verimlilik Yazılımı"
+    en: "Productivity Software"
+coverImage: "https://images.unsplash.com/photo-1697577418970-95d99b5a55cf?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Igor Omilaev"
+gorselFotografciLink: "https://unsplash.com/@omilaev?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "artificial intelligence semiconductor"
 ---
 Calendly has developed its own AI assistant to extend its reach beyond meeting scheduling software. The new service, called Callie, adds meeting note-taking and assistant capabilities to the platform.
 

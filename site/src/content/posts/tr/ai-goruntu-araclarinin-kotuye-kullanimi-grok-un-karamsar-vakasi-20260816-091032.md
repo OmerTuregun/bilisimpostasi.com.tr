@@ -4,6 +4,28 @@ pubDate: 2026-08-16T09:10:32.715+03:00
 kategori: "Yapay Zeka"
 description: "Bir kadın, babasının Grok AI aracını çocukluk fotoğrafını açık içeriğe dönüştürmekte kullanmasını bildirdi. Teknoloji ve etik sorunları."
 kaynak: "https://techcrunch.com/2026/08/15/anthropic-shares-more-details-about-how-claudes-new-watermarks-will-work/"
+tags:
+  - ai-guvenlik
+  - deepfake
+  - etik-teknoloji
+  - cinsel-istismar
+tagLabels:
+  ai-guvenlik:
+    tr: "AI Güvenliği"
+    en: "AI Security"
+  deepfake:
+    tr: "Deepfake"
+    en: "Deepfake"
+  etik-teknoloji:
+    tr: "Etik Teknoloji"
+    en: "Tech Ethics"
+  cinsel-istismar:
+    tr: "Cinsel İstismar"
+    en: "Sexual Abuse"
+coverImage: "https://images.unsplash.com/photo-1721066115321-eb0eec055296?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200&q=80&fm=jpg&fit=max"
+gorselFotografci: "Igor Omilaev"
+gorselFotografciLink: "https://unsplash.com/@omilaev?utm_source=bilisimpostasi&utm_medium=referral"
+gorselQuery: "artificial intelligence semiconductor"
 ---
 Yapay zeka görüntü işleme araçlarının yükselişi, yeni ve endişe verici bir suistimal riski ortaya çıkardı. Grok AI platformunun kullanılarak gerçekleştirilen bir olayda, bir kadın çocukluk fotoğrafının açık içeriğe dönüştürüldüğünü bildirdi.
 

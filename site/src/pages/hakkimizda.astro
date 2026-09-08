@@ -5,14 +5,25 @@ import Layout from '../layouts/Layout.astro';
 const LOCALE = 'tr' as const;
 ---
 <Layout locale={LOCALE} title={`${t(LOCALE).about} — Blog`} description="Teknoloji ve yapay zeka haber platformu hakkında.">
-  <main class="static-page">
-    <h1>Hakkımızda</h1>
-    <p>Bu site, teknoloji ve yapay zeka dünyasındaki gelişmeleri takip eden bir haber platformudur.</p>
-    <p>Günün öne çıkan haberlerini toplayıp özetleyerek hızlı ve anlaşılır bir bakış sunmayı hedefliyoruz.</p>
+  <main class="paper-page">
+    <div class="paper-page-inner">
+      <div class="static-page paper-sheet">
+        <h1>Bilişim Postası Hakkında</h1>
+        <p>Bilişim Postası, teknoloji ve yapay zeka dünyasındaki gelişmeleri Türkçe olarak takip edebileceğiniz bir haber platformudur.</p>
+        <p><strong>Kaynaklarımız:</strong> TechCrunch, Ars Technica, Hacker News, arXiv, The Verge, Engadget. Her yazının orijinal kaynağına link veririz.</p>
+        <p><strong>İşleten:</strong> Ömer Faruk Türegün</p>
+        <p>
+          <strong>İletişim:</strong>{' '}
+          <a href="mailto:destek@bilisimpostasi.com.tr">destek@bilisimpostasi.com.tr</a>
+          {' · '}
+          <a href="/iletisim/">İletişim sayfası</a>
+        </p>
+      </div>
+    </div>
   </main>
 </Layout>
 
 <style>
-  .static-page { max-width: 42rem; }
-  p { line-height: 1.65; }
+  p { line-height: 1.65; margin: 0 0 1rem; }
+  p:last-child { margin-bottom: 0; }
 </style>
