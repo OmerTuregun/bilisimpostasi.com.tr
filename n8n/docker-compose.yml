@@ -65,8 +65,8 @@ services:
       EXECUTIONS_DATA_MAX_AGE: '336'
       N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
       N8N_RESTRICT_FILE_ACCESS_TO: /home/node/site;/home/node/.n8n-files;/home/node/data
-      # Allow Code nodes to read posts for already_published dedupe
-      NODE_FUNCTION_ALLOW_BUILTIN: fs
+      # Allow Code nodes: fs for posts/queue; path optional (prefer string join)
+      NODE_FUNCTION_ALLOW_BUILTIN: fs,path
       DEPLOY_LISTENER_TOKEN: ${DEPLOY_LISTENER_TOKEN}
     volumes:
       - n8n_data:/home/node/.n8n

@@ -101,19 +101,14 @@ const nextUrl = pageNum < totalPages ? homePath(LOCALE, pageNum + 1) : null;
 
 {pageNum === 1 && (
   <script>
-    import { PagefindUI } from '@pagefind/default-ui';
-    import '@pagefind/default-ui/css/ui.css';
+    import { initSiteSearch } from '../lib/init-site-search';
 
-    new PagefindUI({
-      element: '#search',
-      showSubResults: false,
-      showImages: false,
-      resetStyles: false,
-      pageSize: 8,
-      excerptLength: 18,
+    initSiteSearch({
+      closeLabel: 'Aramayı kapat',
+      eraseLabel: 'Aramayı temizle',
       translations: {
         placeholder: 'Yazılarda ara…',
-        clear_search: 'Temizle',
+        clear_search: 'Kapat',
         load_more: 'Daha fazla yükle',
         search_label: 'Site içi arama',
         filters_label: 'Filtreler',
@@ -143,8 +138,55 @@ const nextUrl = pageNum < totalPages ? homePath(LOCALE, pageNum + 1) : null;
     --pagefind-ui-font: var(--font-body);
   }
   .site-search :global(.pagefind-ui) { position: relative; }
+  .site-search :global(.pagefind-ui__form) { position: relative; }
   .site-search :global(.pagefind-ui__search-input) {
     box-shadow: 0 2px 12px #0000000a;
+    padding-right: 4.5rem !important;
+  }
+  .site-search :global(.site-search-actions) {
+    position: absolute;
+    top: 50%;
+    right: 0.35rem;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 0.15rem;
+    transform: translateY(-50%);
+  }
+  .site-search :global(.site-search-actions.is-empty) {
+    display: none;
+  }
+  .site-search :global(.site-search-erase),
+  .site-search :global(.pagefind-ui__search-clear) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.85rem;
+    height: 1.85rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0.35rem;
+    background: transparent;
+    color: var(--muted);
+    font-size: 0;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .site-search :global(.pagefind-ui__search-clear::before) {
+    content: '×';
+    font-size: 1.35rem;
+    font-weight: 500;
+    line-height: 1;
+    color: currentColor;
+  }
+  .site-search :global(.site-search-erase:hover),
+  .site-search :global(.pagefind-ui__search-clear:hover) {
+    color: var(--ink);
+    background: var(--bg);
+  }
+  .site-search :global(.pagefind-ui__search-clear.pagefind-ui__suppressed) {
+    display: none;
   }
   .site-search :global(.pagefind-ui__drawer) {
     position: absolute;
@@ -153,7 +195,7 @@ const nextUrl = pageNum < totalPages ? homePath(LOCALE, pageNum + 1) : null;
     right: 0;
     z-index: 41;
     display: block;
-    max-height: min(22rem, 60vh);
+    max-height: min(28rem, 70vh);
     overflow: auto;
     background: var(--surface);
     border: 1px solid var(--rule);
@@ -220,14 +262,31 @@ const nextUrl = pageNum < totalPages ? homePath(LOCALE, pageNum + 1) : null;
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  .site-search :global(.pagefind-ui__button) {
+    display: block;
+    width: calc(100% - 1.2rem);
+    margin: 0.35rem 0.6rem 0.65rem;
+    padding: 0.45rem 0.75rem;
+    border: 1px solid var(--rule);
+    border-radius: 0.4rem;
+    background: var(--bg);
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .site-search :global(.pagefind-ui__button:hover) {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
   .site-search :global(.pagefind-ui__result-nested),
-  .site-search :global(.pagefind-ui__button),
   .site-search :global(.pagefind-ui__result-thumb) {
     display: none;
   }
   @media (max-width: 899px) {
     .site-search :global(.pagefind-ui__drawer) {
-      max-height: min(16rem, 50vh);
+      max-height: min(22rem, 60vh);
     }
     .site-search :global(.pagefind-ui__result-title) { font-size: 0.88rem; }
     .site-search :global(.pagefind-ui__result-inner) { padding: 0.45rem 0.7rem; }
