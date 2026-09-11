@@ -19,6 +19,7 @@ import {
 import Layout from '../../layouts/Layout.astro';
 import PostCard from '../../components/PostCard.astro';
 import PostTags from '../../components/PostTags.astro';
+import { publicCoverUrl } from '../../lib/covers';
 
 const LOCALE = 'tr' as const;
 
@@ -42,10 +43,11 @@ const badgeColor = categoryBadgeColor(rawKategori, LOCALE);
 
 const siteBase = Astro.site ?? new URL(Astro.url.origin);
 const postUrl = new URL(postPath(LOCALE, slug), siteBase).href;
-const ogImage = post.data.coverImage
-  ? (post.data.coverImage.startsWith('http://') || post.data.coverImage.startsWith('https://')
-      ? post.data.coverImage
-      : new URL(post.data.coverImage, siteBase).href)
+const coverSrc = publicCoverUrl(post.data.coverImage);
+const ogImage = coverSrc
+  ? (coverSrc.startsWith('http://') || coverSrc.startsWith('https://')
+      ? coverSrc
+      : new URL(coverSrc, siteBase).href)
   : new URL('/og-default.png', siteBase).href;
 const datePublished = post.data.pubDate.toISOString();
 const dateModified = (post.data.updatedDate ?? post.data.pubDate).toISOString();
@@ -100,9 +102,9 @@ const jsonLd = {
           {' · '}
           <a href={post.data.kaynak} rel="noopener noreferrer" target="_blank">{strings.source}</a>
         </p>
-        {post.data.coverImage && (
+        {coverSrc && (
           <figure class="cover-figure">
-            <img class="cover-img" src={post.data.coverImage} alt={post.data.title} loading="eager" />
+            <img class="cover-img" src={coverSrc} alt={post.data.title} loading="eager" />
             {post.data.gorselFotografci && (
               <figcaption class="cover-credit">
                 {strings.photoCredit}{' '}

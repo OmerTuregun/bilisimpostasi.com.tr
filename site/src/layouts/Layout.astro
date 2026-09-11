@@ -101,8 +101,6 @@ const isCategory = path.includes('/kategori/');
     <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://pub-880c98af22074b02b5f5237e1b3a0bad.r2.dev" crossorigin />
-    <link rel="dns-prefetch" href="https://pub-880c98af22074b02b5f5237e1b3a0bad.r2.dev" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap"
       rel="stylesheet"
@@ -673,6 +671,11 @@ const isCategory = path.includes('/kategori/');
       0 1px 2px var(--paper-shadow),
       0 8px 24px var(--paper-shadow);
     padding: 1.75rem 1.5rem 2.25rem;
+  }
+  /* About / contact: align sheet with header container width */
+  .static-page.paper-sheet {
+    max-width: none;
+    width: 100%;
   }
   @media (max-width: 768px) {
     .paper-page-inner { padding: 0 1rem; }

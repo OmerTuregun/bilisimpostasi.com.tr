@@ -10,6 +10,7 @@ import {
   DEFAULT_CATEGORY,
   DEFAULT_CATEGORY_EN,
 } from '../lib/categories';
+import { publicCoverUrl } from '../lib/covers';
 
 interface Props {
   post: CollectionEntry<'posts'>;
@@ -25,7 +26,7 @@ const slug = postSlug(post.id);
 const rawKategori = post.data.kategori ?? (locale === 'en' ? DEFAULT_CATEGORY_EN : DEFAULT_CATEGORY);
 const badgeColor = categoryBadgeColor(rawKategori, locale);
 const kategori = getCategoryDisplayName(rawKategori, locale);
-const coverImage = post.data.coverImage || '';
+const coverImage = publicCoverUrl(post.data.coverImage);
 ---
 <article class="post-card">
   {typeof rank === 'number' && (
