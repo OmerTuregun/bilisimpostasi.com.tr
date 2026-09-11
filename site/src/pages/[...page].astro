@@ -9,6 +9,7 @@ import Layout from '../layouts/Layout.astro';
 import PostCard from '../components/PostCard.astro';
 import PopularPosts from '../components/PopularPosts.astro';
 import CategoryCounts from '../components/CategoryCounts.astro';
+import { publicCoverUrl } from '../lib/covers';
 
 const LOCALE = 'tr' as const;
 const strings = t(LOCALE);
@@ -55,7 +56,7 @@ const nextUrl = pageNum < totalPages ? homePath(LOCALE, pageNum + 1) : null;
   title={pageNum === 1 ? strings.homeTitle : `${strings.homeTitle} — ${pageNum}`}
   description={pageNum === 1 ? strings.homeDesc : strings.homeDescPage(pageNum)}
   preloadImages={pageNum === 1
-    ? gridPosts.slice(0, 6).map((p) => p.data.coverImage).filter(Boolean) as string[]
+    ? gridPosts.slice(0, 6).map((p) => publicCoverUrl(p.data.coverImage)).filter(Boolean) as string[]
     : []}
 >
   <main>
