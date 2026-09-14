@@ -58,6 +58,10 @@ const ui = {
     homeDescPage: (n: number) =>
       `Teknoloji ve yapay zekâ haber özetleri — sayfa ${n}. Güncel gelişmeleri kısa Türkçe yazılarla keşfedin.`,
     photoCredit: 'Fotoğraf:',
+    share: 'Paylaş',
+    copyLink: 'Bağlantıyı kopyala',
+    linkCopied: 'Kopyalandı',
+    shareWhatsApp: 'WhatsApp',
     notFoundTitle: 'Sayfa bulunamadı',
     notFoundHeading: 'Aradığınız sayfa bulunamadı',
     notFoundBody:
@@ -140,6 +144,10 @@ const ui = {
     homeDescPage: (n: number) =>
       `Technology and AI news summaries — page ${n}. Discover curated updates in short English articles.`,
     photoCredit: 'Photo:',
+    share: 'Share',
+    copyLink: 'Copy link',
+    linkCopied: 'Copied',
+    shareWhatsApp: 'WhatsApp',
     notFoundTitle: 'Page not found',
     notFoundHeading: 'We couldn’t find that page',
     notFoundBody:

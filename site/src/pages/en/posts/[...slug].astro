@@ -19,6 +19,7 @@ import {
 import Layout from '../../../layouts/Layout.astro';
 import PostCard from '../../../components/PostCard.astro';
 import PostTags from '../../../components/PostTags.astro';
+import ShareMenu from '../../../components/ShareMenu.astro';
 import { publicCoverUrl } from '../../../lib/covers';
 
 const LOCALE = 'en' as const;
@@ -117,6 +118,7 @@ const jsonLd = {
         )}
         <div class="content"><Content /></div>
         <PostTags tags={post.data.tags} tagLabels={post.data.tagLabels} locale={LOCALE} />
+        <ShareMenu url={postUrl} title={post.data.title} locale={LOCALE} variant="bar" />
       </article>
 
       {relatedPosts.length > 0 && (
