@@ -18,6 +18,9 @@ import {
 } from '../../../lib/categories';
 import Layout from '../../../layouts/Layout.astro';
 import PostCard from '../../../components/PostCard.astro';
+import PostTags from '../../../components/PostTags.astro';
+import ShareMenu from '../../../components/ShareMenu.astro';
+import { publicCoverUrl } from '../../../lib/covers';
 
 const LOCALE = 'en' as const;
 
@@ -41,10 +44,11 @@ const badgeColor = categoryBadgeColor(rawKategori, LOCALE);
 
 const siteBase = Astro.site ?? new URL(Astro.url.origin);
 const postUrl = new URL(postPath(LOCALE, slug), siteBase).href;
-const ogImage = post.data.coverImage
-  ? (post.data.coverImage.startsWith('http://') || post.data.coverImage.startsWith('https://')
-      ? post.data.coverImage
-      : new URL(post.data.coverImage, siteBase).href)
+const coverSrc = publicCoverUrl(post.data.coverImage);
+const ogImage = coverSrc
+  ? (coverSrc.startsWith('http://') || coverSrc.startsWith('https://')
+      ? coverSrc
+      : new URL(coverSrc, siteBase).href)
   : new URL('/og-default.png', siteBase).href;
 const datePublished = post.data.pubDate.toISOString();
 const dateModified = (post.data.updatedDate ?? post.data.pubDate).toISOString();
@@ -86,9 +90,9 @@ const jsonLd = {
   hreflangTr={hreflangTr}
   hreflangEn={hreflangEn}
 >
-  <main>
-    <div class="post-layout">
-      <article class="post-detail" data-pagefind-body>
+  <main class="paper-page">
+    <div class="post-layout paper-page-inner">
+      <article class="post-detail paper-sheet" data-pagefind-body>
         <a class="back" href={homePath(LOCALE)}>{strings.backHome}</a>
         <a class="badge" href={categoryPath(LOCALE, kategoriSlug)} style={`--badge-color: ${badgeColor}`}>
           {kategori}
@@ -99,9 +103,9 @@ const jsonLd = {
           {' · '}
           <a href={post.data.kaynak} rel="noopener noreferrer" target="_blank">{strings.source}</a>
         </p>
-        {post.data.coverImage && (
+        {coverSrc && (
           <figure class="cover-figure">
-            <img class="cover-img" src={post.data.coverImage} alt={post.data.title} loading="eager" />
+            <img class="cover-img" src={coverSrc} alt={post.data.title} loading="eager" />
             {post.data.gorselFotografci && (
               <figcaption class="cover-credit">
                 {strings.photoCredit}{' '}
@@ -113,6 +117,8 @@ const jsonLd = {
           </figure>
         )}
         <div class="content"><Content /></div>
+        <PostTags tags={post.data.tags} tagLabels={post.data.tagLabels} locale={LOCALE} />
+        <ShareMenu url={postUrl} title={post.data.title} locale={LOCALE} variant="bar" />
       </article>
 
       {relatedPosts.length > 0 && (
@@ -134,7 +140,7 @@ const jsonLd = {
     gap: 1.25rem;
     align-items: start;
   }
-  .post-detail { max-width: 42rem; min-width: 0; }
+  .post-detail { max-width: 42rem; }
   .back { display: block; margin-bottom: 1.25rem; color: var(--muted); text-decoration: none; }
   .badge {
     display: inline-block;
@@ -143,7 +149,7 @@ const jsonLd = {
     text-transform: uppercase;
     padding: 0.25rem 0.65rem;
     border-radius: 999px;
-    background: color-mix(in srgb, var(--badge-color) 15%, white);
+    background: color-mix(in srgb, var(--badge-color) 15%, var(--badge-blend));
     color: var(--badge-color);
     text-decoration: none;
   }
@@ -156,9 +162,27 @@ const jsonLd = {
   }
   .cover-figure { margin: 0 0 1.5rem; }
   .cover-img { width: 100%; height: auto; border-radius: 8px; display: block; }
-  .cover-credit { font-size: 0.75rem; color: var(--muted); margin-top: 0.4rem; }
-  .cover-credit a { color: var(--muted); text-decoration: underline; }
+  .cover-credit {
+    font-size: 0.68rem;
+    color: var(--muted);
+    margin-top: 0.35rem;
+    opacity: 0.75;
+    letter-spacing: 0.01em;
+  }
+  .cover-credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
   .content :global(p) { margin: 0 0 1rem; }
+  .content :global(ul),
+  .content :global(ol) {
+    margin: 0 0 1.15rem;
+    padding-left: 1.35rem;
+  }
+  .content :global(li) {
+    margin: 0 0 0.4rem;
+    line-height: 1.65;
+  }
+  .content :global(li::marker) {
+    color: var(--muted);
+  }
   .related {
     min-width: 0;
     padding-top: 1rem;

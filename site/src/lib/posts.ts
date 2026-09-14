@@ -1,5 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
-import type { Locale } from '../i18n/config';
+import { CATEGORY_KEYS, CATEGORY_SLUG, type CategoryKey, type Locale } from '../i18n/config';
 
 export function postLocale(id: string): Locale {
   if (id.startsWith('en/')) return 'en';
@@ -37,6 +37,14 @@ export function categoriesIndexPath(locale: Locale): string {
   return `${localePrefix(locale)}/kategoriler/`;
 }
 
+function categoryKeyFromSlug(slug: string): CategoryKey | null {
+  const needle = slug.trim().toLowerCase().replace(/\/$/, '');
+  for (const key of CATEGORY_KEYS) {
+    if (CATEGORY_SLUG.tr[key] === needle || CATEGORY_SLUG.en[key] === needle) return key;
+  }
+  return null;
+}
+
 export async function hasPostInLocale(slug: string, locale: Locale): Promise<boolean> {
   const all = await getCollection('posts');
   return all.some((p) => postSlug(p.id) === slug && postLocale(p.id) === locale);
@@ -59,6 +67,14 @@ export function switchLocalePath(currentPath: string, to: Locale, alternatePost?
     const slug = pathWithoutEn.replace(/^\/posts\//, '').replace(/\/$/, '');
     if (alternatePost) return postPath(to, slug);
     return homePath(to);
+  }
+
+  // Category pages use different TR/EN slugs (e.g. buyuk-dil-modelleri ↔ large-language-models)
+  const categoryMatch = pathWithoutEn.match(/^\/kategori\/([^/]+)\/?$/);
+  if (categoryMatch) {
+    const key = categoryKeyFromSlug(categoryMatch[1]);
+    if (key) return categoryPath(to, CATEGORY_SLUG[to][key]);
+    return categoriesIndexPath(to);
   }
 
   if (to === 'en') {

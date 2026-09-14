@@ -1,0 +1,154 @@
+---
+interface Props {
+  locale?: 'tr' | 'en';
+}
+const { locale = 'tr' } = Astro.props;
+const n8nBaseUrl = 'https://n8n.omerfarukturegun.com.tr';
+const webhookUrl = `${n8nBaseUrl}/webhook/contact-form`;
+const copy =
+  locale === 'en'
+    ? {
+        name: 'Name',
+        email: 'Email',
+        message: 'Message',
+        submit: 'Send',
+        sending: 'Sending…',
+        ok: 'Your message was sent. Thank you.',
+        err: 'Could not send. Please try again.',
+        invalid: 'Please fill in all fields correctly.',
+      }
+    : {
+        name: 'Adınız',
+        email: 'E-posta',
+        message: 'Mesajınız',
+        submit: 'Gönder',
+        sending: 'Gönderiliyor…',
+        ok: 'Mesajınız iletildi. Teşekkürler.',
+        err: 'Gönderilemedi. Lütfen tekrar deneyin.',
+        invalid: 'Lütfen tüm alanları doğru doldurun.',
+      };
+---
+
+<form id="iletisim-form" class="iletisim-form" novalidate>
+  <label class="field">
+    <span>{copy.name}</span>
+    <input type="text" name="name" required autocomplete="name" maxlength="120" />
+  </label>
+  <label class="field">
+    <span>{copy.email}</span>
+    <input type="email" name="email" required autocomplete="email" maxlength="200" />
+  </label>
+  <label class="field">
+    <span>{copy.message}</span>
+    <textarea name="message" required rows="6" maxlength="5000"></textarea>
+  </label>
+  <!-- honeypot -->
+  <label class="hp" aria-hidden="true">
+    <span>Website</span>
+    <input type="text" name="website" tabindex="-1" autocomplete="off" />
+  </label>
+  <button type="submit" class="btn">{copy.submit}</button>
+  <p id="iletisim-status" class="status" role="status" aria-live="polite"></p>
+</form>
+
+<script is:inline define:vars={{ webhookUrl, copy }}>
+  const form = document.getElementById('iletisim-form');
+  const statusEl = document.getElementById('iletisim-status');
+  let lastSubmit = 0;
+
+  function setStatus(text, kind) {
+    statusEl.textContent = text || '';
+    statusEl.dataset.kind = kind || '';
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const now = Date.now();
+    if (now - lastSubmit < 8000) {
+      setStatus(copy.err, 'error');
+      return;
+    }
+    const fd = new FormData(form);
+    const name = String(fd.get('name') || '').trim();
+    const email = String(fd.get('email') || '').trim();
+    const message = String(fd.get('message') || '').trim();
+    const website = String(fd.get('website') || '').trim();
+    if (!name || !email || message.length < 10) {
+      setStatus(copy.invalid, 'error');
+      return;
+    }
+    lastSubmit = now;
+    setStatus(copy.sending, 'loading');
+    try {
+      const res = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, message, website }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data && data.ok) {
+        setStatus(copy.ok, 'ok');
+        form.reset();
+      } else {
+        setStatus(copy.err, 'error');
+      }
+    } catch {
+      setStatus(copy.err, 'error');
+    }
+  });
+</script>
+
+<style>
+  .iletisim-form {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 0.6rem;
+    padding: 1.25rem;
+    max-width: none;
+    width: 100%;
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 0.95rem;
+    color: var(--ink);
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+  .field input,
+  .field textarea {
+    border-radius: 0.5rem;
+    border: 1px solid var(--rule);
+    padding: 0.7rem 0.9rem;
+    font: inherit;
+    background: var(--surface);
+    color: var(--ink);
+  }
+  .field textarea { resize: vertical; min-height: 8rem; }
+  .hp {
+    position: absolute;
+    left: -9999px;
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+  }
+  .btn {
+    width: 100%;
+    height: 46px;
+    border-radius: 0.6rem;
+    border: 0;
+    background: var(--accent);
+    color: var(--on-accent);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+  }
+  .status {
+    margin-top: 0.9rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+  }
+  .status[data-kind='error'] { color: #b42318; }
+  .status[data-kind='ok'] { color: #067d3e; }
+</style>

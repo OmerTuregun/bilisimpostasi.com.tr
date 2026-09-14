@@ -9,6 +9,7 @@ import Layout from '../layouts/Layout.astro';
 import PostCard from '../components/PostCard.astro';
 import PopularPosts from '../components/PopularPosts.astro';
 import CategoryCounts from '../components/CategoryCounts.astro';
+import { publicCoverUrl } from '../lib/covers';
 
 const LOCALE = 'tr' as const;
 const strings = t(LOCALE);
@@ -25,15 +26,13 @@ export async function getStaticPaths() {
   const breakingPosts = allPosts.filter((post) => post.data.pubDate.valueOf() >= cutoff);
   const totalPages = Math.max(1, Math.ceil(allPosts.length / PAGE_SIZE));
   const popularPosts = await getPopularPosts(20, locale);
-  const countByKey = new Map<CategoryKey, number>();
+  const categoryKeys = new Set<CategoryKey>();
   for (const post of allPosts) {
-    const key = getCategoryKey(post.data.kategori ?? DEFAULT_CATEGORY, locale);
-    countByKey.set(key, (countByKey.get(key) ?? 0) + 1);
+    categoryKeys.add(getCategoryKey(post.data.kategori ?? DEFAULT_CATEGORY, locale));
   }
-  const categoryCounts = CATEGORY_ORDER.filter((k) => countByKey.has(k)).map((key) => ({
-    name: categoryLabel(key, locale),
-    count: countByKey.get(key)!,
-  }));
+  const sidebarCategories = CATEGORY_ORDER.filter((k) => categoryKeys.has(k)).map((key) =>
+    categoryLabel(key, locale),
+  );
 
   return Array.from({ length: totalPages }, (_, index) => ({
     params: index === 0 ? { page: undefined } : { page: String(index + 1) },
@@ -42,13 +41,13 @@ export async function getStaticPaths() {
       totalPages,
       breakingPosts: index === 0 ? breakingPosts : [],
       popularPosts: index === 0 ? popularPosts : [],
-      categoryCounts: index === 0 ? categoryCounts : [],
+      sidebarCategories: index === 0 ? sidebarCategories : [],
       gridPosts: allPosts.slice(index * PAGE_SIZE, (index + 1) * PAGE_SIZE),
     },
   }));
 }
 
-const { pageNum, totalPages, gridPosts, popularPosts, categoryCounts } = Astro.props;
+const { pageNum, totalPages, gridPosts, popularPosts, sidebarCategories } = Astro.props;
 const prevUrl = pageNum > 1 ? homePath(LOCALE, pageNum - 1) : null;
 const nextUrl = pageNum < totalPages ? homePath(LOCALE, pageNum + 1) : null;
 ---
@@ -57,7 +56,7 @@ const nextUrl = pageNum < totalPages ? homePath(LOCALE, pageNum + 1) : null;
   title={pageNum === 1 ? strings.homeTitle : `${strings.homeTitle} — ${pageNum}`}
   description={pageNum === 1 ? strings.homeDesc : strings.homeDescPage(pageNum)}
   preloadImages={pageNum === 1
-    ? gridPosts.slice(0, 6).map((p) => p.data.coverImage).filter(Boolean) as string[]
+    ? gridPosts.slice(0, 6).map((p) => publicCoverUrl(p.data.coverImage)).filter(Boolean) as string[]
     : []}
 >
   <main>
@@ -78,7 +77,7 @@ const nextUrl = pageNum < totalPages ? homePath(LOCALE, pageNum + 1) : null;
         </section>
         <aside class="home-sidebar">
           <PopularPosts posts={popularPosts} locale={LOCALE} />
-          <CategoryCounts counts={categoryCounts} locale={LOCALE} />
+          <CategoryCounts categories={sidebarCategories} locale={LOCALE} />
         </aside>
       </div>
     ) : (
@@ -103,19 +102,14 @@ const nextUrl = pageNum < totalPages ? homePath(LOCALE, pageNum + 1) : null;
 
 {pageNum === 1 && (
   <script>
-    import { PagefindUI } from '@pagefind/default-ui';
-    import '@pagefind/default-ui/css/ui.css';
+    import { initSiteSearch } from '../lib/init-site-search';
 
-    new PagefindUI({
-      element: '#search',
-      showSubResults: false,
-      showImages: false,
-      resetStyles: false,
-      pageSize: 8,
-      excerptLength: 18,
+    initSiteSearch({
+      closeLabel: 'Aramayı kapat',
+      eraseLabel: 'Aramayı temizle',
       translations: {
         placeholder: 'Yazılarda ara…',
-        clear_search: 'Temizle',
+        clear_search: 'Kapat',
         load_more: 'Daha fazla yükle',
         search_label: 'Site içi arama',
         filters_label: 'Filtreler',
@@ -138,15 +132,62 @@ const nextUrl = pageNum < totalPages ? homePath(LOCALE, pageNum + 1) : null;
     --pagefind-ui-scale: 0.82;
     --pagefind-ui-primary: var(--accent);
     --pagefind-ui-text: var(--ink);
-    --pagefind-ui-background: #fff;
+    --pagefind-ui-background: var(--surface);
     --pagefind-ui-border: var(--rule);
     --pagefind-ui-border-width: 1px;
     --pagefind-ui-border-radius: 0.5rem;
     --pagefind-ui-font: var(--font-body);
   }
   .site-search :global(.pagefind-ui) { position: relative; }
+  .site-search :global(.pagefind-ui__form) { position: relative; }
   .site-search :global(.pagefind-ui__search-input) {
     box-shadow: 0 2px 12px #0000000a;
+    padding-right: 4.5rem !important;
+  }
+  .site-search :global(.site-search-actions) {
+    position: absolute;
+    top: 50%;
+    right: 0.35rem;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 0.15rem;
+    transform: translateY(-50%);
+  }
+  .site-search :global(.site-search-actions.is-empty) {
+    display: none;
+  }
+  .site-search :global(.site-search-erase),
+  .site-search :global(.pagefind-ui__search-clear) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.85rem;
+    height: 1.85rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0.35rem;
+    background: transparent;
+    color: var(--muted);
+    font-size: 0;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .site-search :global(.pagefind-ui__search-clear::before) {
+    content: '×';
+    font-size: 1.35rem;
+    font-weight: 500;
+    line-height: 1;
+    color: currentColor;
+  }
+  .site-search :global(.site-search-erase:hover),
+  .site-search :global(.pagefind-ui__search-clear:hover) {
+    color: var(--ink);
+    background: var(--bg);
+  }
+  .site-search :global(.pagefind-ui__search-clear.pagefind-ui__suppressed) {
+    display: none;
   }
   .site-search :global(.pagefind-ui__drawer) {
     position: absolute;
@@ -155,9 +196,9 @@ const nextUrl = pageNum < totalPages ? homePath(LOCALE, pageNum + 1) : null;
     right: 0;
     z-index: 41;
     display: block;
-    max-height: min(22rem, 60vh);
+    max-height: min(28rem, 70vh);
     overflow: auto;
-    background: #fff;
+    background: var(--surface);
     border: 1px solid var(--rule);
     border-radius: 0.5rem;
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
@@ -197,7 +238,7 @@ const nextUrl = pageNum < totalPages ? homePath(LOCALE, pageNum + 1) : null;
   }
   .site-search :global(.pagefind-ui__result:hover),
   .site-search :global(.pagefind-ui__result:focus-within) {
-    background: #f6f4ef;
+    background: var(--bg);
   }
   .site-search :global(.pagefind-ui__result-title) {
     font-family: var(--font-heading);
@@ -222,14 +263,31 @@ const nextUrl = pageNum < totalPages ? homePath(LOCALE, pageNum + 1) : null;
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  .site-search :global(.pagefind-ui__button) {
+    display: block;
+    width: calc(100% - 1.2rem);
+    margin: 0.35rem 0.6rem 0.65rem;
+    padding: 0.45rem 0.75rem;
+    border: 1px solid var(--rule);
+    border-radius: 0.4rem;
+    background: var(--bg);
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .site-search :global(.pagefind-ui__button:hover) {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
   .site-search :global(.pagefind-ui__result-nested),
-  .site-search :global(.pagefind-ui__button),
   .site-search :global(.pagefind-ui__result-thumb) {
     display: none;
   }
   @media (max-width: 899px) {
     .site-search :global(.pagefind-ui__drawer) {
-      max-height: min(16rem, 50vh);
+      max-height: min(22rem, 60vh);
     }
     .site-search :global(.pagefind-ui__result-title) { font-size: 0.88rem; }
     .site-search :global(.pagefind-ui__result-inner) { padding: 0.45rem 0.7rem; }

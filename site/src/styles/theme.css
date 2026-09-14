@@ -1,0 +1,84 @@
+/* Theme tokens — light defaults; dark overrides via [data-theme="dark"] on <html> */
+
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+  --bg: #f6f4ef;
+  --ink: #1a1a1a;
+  --muted: #5c5c5c;
+  --accent: #0b5fff;
+  --accent-hover: #093fcc;
+  --rule: #d9d4c8;
+  --breaking: #c0392b;
+  --surface: #ffffff;
+  --surface-muted: #f0eeea;
+  --paper: #fffcf7;
+  --paper-page-bg: color-mix(in srgb, var(--bg) 88%, #c8c4bc);
+  --badge-blend: #ffffff;
+  --cover-placeholder: #e8eef5;
+  --cover-shimmer-mid: #f4f7fb;
+  --on-accent: #ffffff;
+  --shadow-sm: rgba(0, 0, 0, 0.06);
+  --shadow-md: rgba(0, 0, 0, 0.1);
+  --shadow-lg: rgba(0, 0, 0, 0.12);
+  --footer-shadow: rgba(40, 35, 25, 0.04);
+  --paper-shadow: rgba(40, 35, 25, 0.06);
+  --modal-overlay: rgba(0, 0, 0, 0.45);
+  --hover-surface: #f0f0f0;
+  --success-bg: #e8f5e9;
+  --success-text: #2e7d32;
+  --error-bg: #fbe9e7;
+  --error-text: #c62828;
+  --theme-color: #0b5fff;
+  --brand-text: #0d1b3d;
+  --brand-sub: #6b7280;
+  --tag-bg: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  --tag-bg-hover: color-mix(in srgb, var(--accent) 16%, var(--surface));
+  --tag-text: var(--accent);
+  --tag-text-hover: var(--accent-hover);
+  --tag-border: color-mix(in srgb, var(--accent) 22%, var(--rule));
+  --tag-border-hover: color-mix(in srgb, var(--accent) 40%, var(--rule));
+  --container: min(72rem, 100% - 2.5rem);
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --footer-height: 4.75rem;
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0f1115;
+  --ink: #e4e6eb;
+  --muted: #9ca3af;
+  --accent: #5b9aff;
+  --accent-hover: #7ab0ff;
+  --rule: #2a2f38;
+  --breaking: #e85d4f;
+  --surface: #181b22;
+  --surface-muted: #1e222b;
+  --paper: #1a1e26;
+  --paper-page-bg: #12151a;
+  --badge-blend: #181b22;
+  --cover-placeholder: #252a33;
+  --cover-shimmer-mid: #2e3440;
+  --on-accent: #ffffff;
+  --shadow-sm: rgba(0, 0, 0, 0.28);
+  --shadow-md: rgba(0, 0, 0, 0.4);
+  --shadow-lg: rgba(0, 0, 0, 0.5);
+  --footer-shadow: rgba(0, 0, 0, 0.35);
+  --paper-shadow: rgba(0, 0, 0, 0.35);
+  --modal-overlay: rgba(0, 0, 0, 0.65);
+  --hover-surface: #252a33;
+  --success-bg: #1a2e1f;
+  --success-text: #81c784;
+  --error-bg: #3a1f1f;
+  --error-text: #ef9a9a;
+  --theme-color: #0f1115;
+  --brand-text: #e4e6eb;
+  --brand-sub: #9ca3af;
+  --tag-bg: color-mix(in srgb, var(--accent) 14%, var(--surface));
+  --tag-bg-hover: color-mix(in srgb, var(--accent) 22%, var(--surface));
+  --tag-text: #7ab0ff;
+  --tag-text-hover: #9ec5ff;
+  --tag-border: color-mix(in srgb, var(--accent) 28%, var(--rule));
+  --tag-border-hover: color-mix(in srgb, var(--accent) 45%, var(--rule));
+}

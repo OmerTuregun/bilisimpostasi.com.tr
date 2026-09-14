@@ -1,0 +1,44 @@
+---
+import type { Locale } from '../i18n/config';
+import { tagLabel, tagPath, normalizeTags } from '../lib/tags';
+
+interface Props {
+  tags?: string[];
+  tagLabels?: import('../lib/tags').TagLabels;
+  locale?: Locale;
+}
+
+const { tags = [], tagLabels, locale = 'tr' } = Astro.props;
+const items = normalizeTags(tags);
+---
+{items.length > 0 && (
+  <p class="post-tags" role="list">
+    {items.map((tag, i) => (
+      <>
+        {i > 0 && ' '}
+        <a class="post-tag" href={tagPath(locale, tag)} role="listitem">
+          #{tagLabel(tag, locale, undefined, tagLabels)}
+        </a>
+      </>
+    ))}
+  </p>
+)}
+
+<style>
+  .post-tags {
+    margin: 1.5rem 0 0;
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+  .post-tag {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .post-tag:hover {
+    text-decoration: underline;
+  }
+</style>

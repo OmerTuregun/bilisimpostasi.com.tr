@@ -2,8 +2,11 @@
 import type { Locale } from '../i18n/config';
 import { t } from '../i18n/ui';
 import { getPosts, homePath, localePrefix, postPath, postSlug, alternatePostPath, switchLocalePath } from '../lib/posts';
+import { rssFeedPath } from '../lib/rss';
+import { pwaInfo } from 'virtual:pwa-info';
 import { navCategoriesFromPosts } from '../lib/categories';
 import BreakingTicker from '../components/BreakingTicker.astro';
+import '../styles/theme.css';
 
 interface Props {
   title: string;
@@ -70,9 +73,26 @@ const isHome = locale === 'tr'
   : path === '/en/' || path === '/en' || /^\/en\/\d+\/?$/.test(path);
 const isCategory = path.includes('/kategori/');
 ---
-<html lang={locale}>
+<html lang={locale} data-theme="light">
   <head>
     <meta charset="utf-8" />
+    <script is:inline>
+      (function () {
+        try {
+          var key = 'theme';
+          var stored = localStorage.getItem(key);
+          var theme =
+            stored === 'light' || stored === 'dark'
+              ? stored
+              : window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light';
+          document.documentElement.setAttribute('data-theme', theme);
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute('content', theme === 'dark' ? '#0f1115' : '#0b5fff');
+        } catch (_) {}
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
@@ -81,8 +101,6 @@ const isCategory = path.includes('/kategori/');
     <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://pub-880c98af22074b02b5f5237e1b3a0bad.r2.dev" crossorigin />
-    <link rel="dns-prefetch" href="https://pub-880c98af22074b02b5f5237e1b3a0bad.r2.dev" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap"
       rel="stylesheet"
@@ -103,9 +121,11 @@ const isCategory = path.includes('/kategori/');
     <link
       rel="alternate"
       type="application/rss+xml"
-      title="Blog — RSS"
-      href={new URL('/rss.xml', siteBase).href}
+      title={locale === 'tr' ? 'Bilişim Postası — Teknoloji ve Yapay Zeka Haberleri' : 'Bilisim Postasi — Technology and AI News'}
+      href={new URL(rssFeedPath(locale), siteBase).href}
     />
+    <meta name="theme-color" content="#0b5fff" id="theme-color-meta" />
+    {pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content={ogType} />
@@ -130,46 +150,32 @@ const isCategory = path.includes('/kategori/');
     <header class="site-header">
       <div class="header-inner">
         <div class="header-brand-row">
-          <a class="brand" href={homePath(locale)}>
-            <img src="/navbar-logo.png" alt={strings.siteName} />
-          </a>
-          <a
-            class:list={['lang-toggle', { 'is-en': locale === 'en' }]}
-            href={langSwitchUrl}
-            hreflang={otherLocale}
-            lang={otherLocale}
-            aria-label={strings.langSwitchTo}
-            title={strings.langSwitchTo}
-          >
-            <span class="lang-toggle-track" aria-hidden="true">
-              <span class="lang-toggle-thumb"></span>
-              <span class="lang-side lang-tr">
-                {/* SVG flags: Windows renders 🇹🇷/🇬🇧 as "TR"/"GB" letters, not flag images */}
-                <span class="lang-flag" title="TR">
-                  <svg viewBox="0 0 36 24" width="16" height="11" focusable="false" aria-hidden="true">
-                    <rect width="36" height="24" fill="#E30A17"/>
-                    <circle cx="12.5" cy="12" r="7" fill="#fff"/>
-                    <circle cx="14.2" cy="12" r="5.5" fill="#E30A17"/>
-                    <polygon fill="#fff" points="20.2,12 23.8,13.3 22.1,10.1 23.8,6.9 20.2,8.2 17.5,6.2 18.1,10.1 15.5,12 18.1,13.9 17.5,17.8"/>
-                  </svg>
-                </span>
-                <span class="lang-code">TR</span>
-              </span>
-              <span class="lang-side lang-en">
-                <span class="lang-flag" title="EN">
-                  <svg viewBox="0 0 60 30" width="16" height="11" focusable="false" aria-hidden="true">
-                    <rect width="60" height="30" fill="#012169"/>
-                    <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/>
-                    <path d="M0,0 L60,30 M60,0 L0,30" stroke="#C8102E" stroke-width="4"/>
-                    <path d="M30,0 V30 M0,15 H60" stroke="#fff" stroke-width="10"/>
-                    <path d="M30,0 V30 M0,15 H60" stroke="#C8102E" stroke-width="6"/>
-                  </svg>
-                </span>
-                <span class="lang-code">EN</span>
-              </span>
+          <a class="brand" href={homePath(locale)} aria-label={strings.siteName}>
+            <img class="brand-mark" src="/brand-mark.png" alt="" width="66" height="48" decoding="async" />
+            <span class="brand-text">
+              <span class="brand-name">{strings.siteName}</span>
+              <span class="brand-sub">BLOG</span>
             </span>
           </a>
         </div>
+        <div class="header-toolbar">
+          <button
+            type="button"
+            class="theme-toggle"
+            id="theme-toggle"
+            data-label-light={strings.themeToggleDark}
+            data-label-dark={strings.themeToggle}
+            aria-label={strings.themeToggle}
+            title={strings.themeToggle}
+          >
+            <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+            </svg>
+            <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+              <path fill="currentColor" d="M21 14.5A8.5 8.5 0 0 1 9.5 3a7 7 0 1 0 11.5 11.5z"/>
+            </svg>
+          </button>
         <button
           class="nav-hamburger"
           type="button"
@@ -194,8 +200,44 @@ const isCategory = path.includes('/kategori/');
           <a href={`${homePath(locale)}#search`}>{strings.search}</a>
           <a href={`${prefix}/hakkimizda/`} class:list={[{ active: path.endsWith('/hakkimizda/') }]}>{strings.about}</a>
           <a href={`${prefix}/iletisim/`} class:list={[{ active: path.endsWith('/iletisim/') }]}>{strings.contact}</a>
+          <a
+            class:list={['lang-toggle', 'lang-toggle--nav', { 'is-en': locale === 'en' }]}
+            href={langSwitchUrl}
+            hreflang={otherLocale}
+            lang={otherLocale}
+            aria-label={strings.langSwitchTo}
+            title={strings.langSwitchTo}
+          >
+            <span class="lang-toggle-track" aria-hidden="true">
+              <span class="lang-toggle-thumb"></span>
+              <span class="lang-side lang-tr">
+                <span class="lang-flag" title="TR">
+                  <svg viewBox="0 0 36 24" width="16" height="11" focusable="false" aria-hidden="true">
+                    <rect width="36" height="24" fill="#E30A17"/>
+                    <circle cx="12.5" cy="12" r="7" fill="#fff"/>
+                    <circle cx="14.2" cy="12" r="5.5" fill="#E30A17"/>
+                    <polygon fill="#fff" points="20.2,12 23.8,13.3 22.1,10.1 23.8,6.9 20.2,8.2 17.5,6.2 18.1,10.1 15.5,12 18.1,13.9 17.5,17.8"/>
+                  </svg>
+                </span>
+                <span class="lang-code">TR</span>
+              </span>
+              <span class="lang-side lang-en">
+                <span class="lang-flag" title="EN">
+                  <svg viewBox="0 0 60 30" width="16" height="11" focusable="false" aria-hidden="true">
+                    <rect width="60" height="30" fill="#012169"/>
+                    <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/>
+                    <path d="M0,0 L60,30 M60,0 L0,30" stroke="#C8102E" stroke-width="4"/>
+                    <path d="M30,0 V30 M0,15 H60" stroke="#fff" stroke-width="10"/>
+                    <path d="M30,0 V30 M0,15 H60" stroke="#C8102E" stroke-width="6"/>
+                  </svg>
+                </span>
+                <span class="lang-code">EN</span>
+              </span>
+            </span>
+          </a>
           <button class="nav-subscribe-btn" type="button" id="open-subscribe-modal">{strings.subscribe}</button>
         </nav>
+        </div>
 
         <div
           id="nav-mobile-drawer"
@@ -212,6 +254,41 @@ const isCategory = path.includes('/kategori/');
           <a href={`${homePath(locale)}#search`} data-close-drawer>{strings.search}</a>
           <a href={`${prefix}/hakkimizda/`} class:list={[{ active: path.endsWith('/hakkimizda/') }]} data-close-drawer>{strings.about}</a>
           <a href={`${prefix}/iletisim/`} class:list={[{ active: path.endsWith('/iletisim/') }]} data-close-drawer>{strings.contact}</a>
+          <a
+            class:list={['lang-toggle', 'lang-toggle--nav', 'lang-toggle--drawer', { 'is-en': locale === 'en' }]}
+            href={langSwitchUrl}
+            hreflang={otherLocale}
+            lang={otherLocale}
+            aria-label={strings.langSwitchTo}
+            title={strings.langSwitchTo}
+          >
+            <span class="lang-toggle-track" aria-hidden="true">
+              <span class="lang-toggle-thumb"></span>
+              <span class="lang-side lang-tr">
+                <span class="lang-flag" title="TR">
+                  <svg viewBox="0 0 36 24" width="16" height="11" focusable="false" aria-hidden="true">
+                    <rect width="36" height="24" fill="#E30A17"/>
+                    <circle cx="12.5" cy="12" r="7" fill="#fff"/>
+                    <circle cx="14.2" cy="12" r="5.5" fill="#E30A17"/>
+                    <polygon fill="#fff" points="20.2,12 23.8,13.3 22.1,10.1 23.8,6.9 20.2,8.2 17.5,6.2 18.1,10.1 15.5,12 18.1,13.9 17.5,17.8"/>
+                  </svg>
+                </span>
+                <span class="lang-code">TR</span>
+              </span>
+              <span class="lang-side lang-en">
+                <span class="lang-flag" title="EN">
+                  <svg viewBox="0 0 60 30" width="16" height="11" focusable="false" aria-hidden="true">
+                    <rect width="60" height="30" fill="#012169"/>
+                    <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/>
+                    <path d="M0,0 L60,30 M60,0 L0,30" stroke="#C8102E" stroke-width="4"/>
+                    <path d="M30,0 V30 M0,15 H60" stroke="#fff" stroke-width="10"/>
+                    <path d="M30,0 V30 M0,15 H60" stroke="#C8102E" stroke-width="6"/>
+                  </svg>
+                </span>
+                <span class="lang-code">EN</span>
+              </span>
+            </span>
+          </a>
           <button class="nav-subscribe-btn" type="button" id="open-subscribe-modal-mobile" data-close-drawer>{strings.subscribe}</button>
         </div>
       </div>
@@ -224,10 +301,24 @@ const isCategory = path.includes('/kategori/');
     </header>
     <slot />
     <footer class="site-footer">
-      <p>© {new Date().getFullYear()} {strings.footerTagline}</p>
+      <div class="footer-top">
+        <p>© {new Date().getFullYear()} {strings.footerTagline}</p>
+        <a
+          class="footer-x"
+          href="https://x.com/bilisimpostasi"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={locale === 'tr' ? "X'te Bilişim Postası" : 'Bilişim Postası on X'}
+        >
+          <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false">
+            <path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.717-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
+          </svg>
+        </a>
+      </div>
       <nav class="footer-links" aria-label={strings.legalNav}>
         <a href={`${prefix}/gizlilik-politikasi/`}>{strings.privacy}</a>
         <a href={`${prefix}/kullanim-sartlari/`}>{strings.terms}</a>
+        <button type="button" class="footer-subscribe-btn" id="open-subscribe-modal-footer">{strings.subscribe}</button>
       </nav>
     </footer>
     <div id="subscribe-modal" class="subscribe-modal" aria-hidden="true" hidden
@@ -319,7 +410,7 @@ const isCategory = path.includes('/kategori/');
       const modal = document.getElementById('subscribe-modal');
       const modalOverlay = modal?.querySelector('.subscribe-modal-overlay');
       const modalClose = modal?.querySelector('.subscribe-modal-close');
-      const openBtns = document.querySelectorAll('#open-subscribe-modal, #open-subscribe-modal-mobile');
+      const openBtns = document.querySelectorAll('#open-subscribe-modal, #open-subscribe-modal-mobile, #open-subscribe-modal-footer');
 
       function setModalOpen(open) {
         if (!modal) return;
@@ -402,22 +493,12 @@ const isCategory = path.includes('/kategori/');
         true,
       );
     </script>
+    <script src="../theme.ts"></script>
+    <script src="../pwa.ts"></script>
   </body>
 </html>
 
 <style is:global>
-  :root {
-    color-scheme: light;
-    --bg: #f6f4ef;
-    --ink: #1a1a1a;
-    --muted: #5c5c5c;
-    --accent: #0b5fff;
-    --rule: #d9d4c8;
-    --breaking: #c0392b;
-    --container: min(72rem, 100% - 2.5rem);
-    --font-heading: 'Playfair Display', Georgia, serif;
-    --font-body: 'Inter', system-ui, sans-serif;
-  }
   * { box-sizing: border-box; }
   h1, h2, h3, .name { font-family: var(--font-heading); }
   body {
@@ -429,10 +510,11 @@ const isCategory = path.includes('/kategori/');
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    padding-bottom: var(--footer-height);
   }
   a { color: var(--accent); }
   .site-header {
-    background: #fff;
+    background: var(--surface);
     border-bottom: 1px solid var(--rule);
     position: sticky;
     top: 0;
@@ -450,29 +532,62 @@ const isCategory = path.includes('/kategori/');
     gap: 0.5rem 1rem;
   }
   .brand {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.6rem;
     text-decoration: none;
     color: inherit;
+    min-width: 0;
+  }
+  .brand-mark {
+    display: block;
+    height: 52px;
+    width: auto;
+    flex-shrink: 0;
+  }
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.12rem;
+    line-height: 1.05;
+    min-width: 0;
+  }
+  .brand-name {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: clamp(1.02rem, 2.8vw, 1.32rem);
+    letter-spacing: -0.015em;
+    color: var(--brand-text);
+    white-space: nowrap;
+  }
+  .brand-sub {
+    font-family: var(--font-body);
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--brand-sub);
   }
   .header-brand-row {
     display: flex;
     align-items: center;
     gap: 0.55rem;
     min-width: 0;
+    flex: 1;
   }
-  .brand img {
-    display: block;
-    height: 58px;
-    width: auto;
+  .header-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    margin-left: auto;
+    flex-shrink: 0;
   }
   .nav {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.15rem;
-    margin-left: auto;
   }
   .nav > a, .nav-dropdown-trigger {
     text-decoration: none;
@@ -503,10 +618,10 @@ const isCategory = path.includes('/kategori/');
     margin: 0;
     padding: 0.35rem 0;
     list-style: none;
-    background: #fff;
+    background: var(--surface);
     border: 1px solid var(--rule);
     border-radius: 0.5rem;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 24px var(--shadow-md);
   }
   .nav-dropdown:hover .nav-dropdown-menu,
   .nav-dropdown.open .nav-dropdown-menu { display: block; }
@@ -531,38 +646,138 @@ const isCategory = path.includes('/kategori/');
   @media (max-width: 1099px), (hover: none) and (pointer: coarse) {
     main { padding-left: 1rem; padding-right: 1rem; }
   }
+  /* Shared paper reading surface (posts, about, contact) */
+  main.paper-page {
+    background: var(--paper-page-bg);
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    padding: 1.5rem 0 3rem;
+  }
+  .paper-page-inner {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 0 1.25rem;
+  }
+  .paper-sheet {
+    max-width: 42rem;
+    min-width: 0;
+    background-color: var(--paper);
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+    border: 1px solid color-mix(in srgb, var(--rule) 80%, transparent);
+    border-radius: 2px;
+    box-shadow:
+      0 1px 2px var(--paper-shadow),
+      0 8px 24px var(--paper-shadow);
+    padding: 1.75rem 1.5rem 2.25rem;
+  }
+  /* About / contact: align sheet with header container width */
+  .static-page.paper-sheet {
+    max-width: none;
+    width: 100%;
+  }
+  @media (max-width: 768px) {
+    .paper-page-inner { padding: 0 1rem; }
+    .paper-sheet { padding: 1.35rem 1rem 1.85rem; }
+  }
   .site-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 300;
     border-top: 1px solid var(--rule);
-    background: #fff;
-    padding: 1.25rem;
+    background: var(--surface);
+    padding: 0.65rem 1.25rem 0.75rem;
     text-align: center;
     color: var(--muted);
     font-size: 0.85rem;
+    box-shadow: 0 -1px 8px var(--footer-shadow);
   }
   .site-footer p { margin: 0; }
+  .footer-top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.45rem 0.6rem;
+  }
   .footer-links {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    align-items: center;
     gap: 0.75rem 1.25rem;
-    margin-top: 0.65rem;
+    margin-top: 0.35rem;
   }
   .footer-links a {
     color: var(--muted);
     text-decoration: none;
   }
   .footer-links a:hover { color: var(--ink); text-decoration: underline; }
+  .footer-subscribe-btn {
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.12rem 0.55rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--rule));
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+    color: var(--accent);
+    cursor: pointer;
+    line-height: 1.3;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .footer-subscribe-btn:hover {
+    background: var(--accent);
+    color: var(--on-accent);
+    border-color: var(--accent);
+    text-decoration: none;
+  }
+  .footer-x {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    padding: 0.15rem;
+    border-radius: 4px;
+  }
+  .footer-x:hover {
+    color: var(--ink);
+    text-decoration: none;
+    background: color-mix(in srgb, var(--ink) 6%, transparent);
+  }
+  .footer-x svg { display: block; }
+  @media (max-width: 768px) {
+    body { padding-bottom: 4.1rem; }
+    .footer-top {
+      flex-wrap: nowrap;
+      gap: 0.5rem;
+    }
+    .footer-top p {
+      font-size: 0.8rem;
+      line-height: 1.25;
+    }
+    .footer-links {
+      margin-top: 0.3rem;
+      gap: 0.55rem 0.85rem;
+    }
+  }
   @media (max-width: 1099px), (hover: none) and (pointer: coarse) {
     .header-inner {
       padding: 0.65rem 0.9rem;
       flex-wrap: nowrap;
       gap: 0.4rem;
     }
-    .brand img { height: 54px; }
+    .brand-mark { height: 48px; }
+    .brand-name { font-size: clamp(0.95rem, 2.6vw, 1.15rem); }
+    .header-toolbar {
+      margin-left: auto;
+      flex-shrink: 0;
+    }
     .nav {
       width: auto;
-      margin-left: auto;
-      justify-content: flex-end;
       flex-wrap: nowrap;
       gap: 0.05rem;
     }
@@ -575,22 +790,18 @@ const isCategory = path.includes('/kategori/');
 
   /* Mobile: show hamburger drawer instead of squeezed inline links */
   @media (max-width: 768px) {
-    .brand img { height: 52px; }
+    .brand-mark { height: 42px; }
+    .brand-name { font-size: 0.92rem; }
+    .brand-sub { font-size: 0.56rem; letter-spacing: 0.22em; }
     .nav { display: none !important; }
-    .header-inner { position: relative; padding-right: 3.4rem; }
+    .header-inner { position: relative; padding-right: 0.9rem; }
     .header-brand-row {
-      gap: 0.4rem;
-      max-width: calc(100% - 0.25rem);
+      gap: 0;
+      max-width: calc(100% - 5.5rem);
     }
-    .lang-toggle-track {
-      width: 4.55rem;
-      height: 1.65rem;
+    .header-toolbar {
+      gap: 0.15rem;
     }
-    .lang-flag svg {
-      width: 14px;
-      height: 10px;
-    }
-    .lang-code { font-size: 0.62rem; }
     .nav-hamburger {
       display: inline-flex !important;
       align-items: center;
@@ -600,10 +811,8 @@ const isCategory = path.includes('/kategori/');
       padding: 0;
       width: 44px;
       height: 44px;
-      position: absolute;
-      right: 0.65rem;
-      top: 50%;
-      transform: translateY(-50%);
+      position: static;
+      transform: none;
       border: 0;
       background: none;
       color: var(--muted);
@@ -613,15 +822,17 @@ const isCategory = path.includes('/kategori/');
     .nav-hamburger:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--accent); }
 
     .nav-mobile-drawer {
+      flex-basis: 100%;
+      width: 100%;
       position: absolute;
       top: calc(100% - 1px);
       left: 0;
       right: 0;
-      background: #fff;
+      background: var(--surface);
       border-bottom: 1px solid var(--rule);
       padding: 0.55rem 1.05rem 1rem;
       z-index: 200;
-      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 18px 48px var(--shadow-md);
     }
     .nav-mobile-drawer.open { display: block; }
 
@@ -657,12 +868,43 @@ const isCategory = path.includes('/kategori/');
     border: 0;
     border-radius: 2rem;
     background: var(--accent);
-    color: #fff;
+    color: var(--on-accent);
     cursor: pointer;
     white-space: nowrap;
     transition: background 0.15s;
   }
-  .nav-subscribe-btn:hover { background: #093fcc; }
+  .nav-subscribe-btn:hover { background: var(--accent-hover); }
+
+  /* Theme toggle (sun/moon) */
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--rule) 55%, var(--surface));
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+  }
+  .theme-toggle:hover {
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 40%, var(--rule));
+    background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  }
+  .theme-toggle:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .theme-icon { display: block; }
+  [data-theme='light'] .theme-icon-sun { display: none; }
+  [data-theme='light'] .theme-icon-moon { display: block; }
+  [data-theme='dark'] .theme-icon-sun { display: block; }
+  [data-theme='dark'] .theme-icon-moon { display: none; }
 
   /* Language toggle switch (TR ↔ EN) */
   .lang-toggle {
@@ -685,7 +927,7 @@ const isCategory = path.includes('/kategori/');
     height: 1.85rem;
     padding: 2px;
     border-radius: 999px;
-    background: color-mix(in srgb, var(--rule) 70%, #fff);
+    background: color-mix(in srgb, var(--rule) 70%, var(--surface));
     border: 1px solid var(--rule);
     overflow: hidden;
     transition: border-color 0.25s ease, box-shadow 0.25s ease;
@@ -742,12 +984,33 @@ const isCategory = path.includes('/kategori/');
   }
   .lang-toggle:not(.is-en) .lang-tr,
   .lang-toggle.is-en .lang-en {
-    color: #fff;
+    color: var(--on-accent);
     opacity: 1;
   }
   .lang-toggle:not(.is-en) .lang-tr .lang-flag svg,
   .lang-toggle.is-en .lang-en .lang-flag svg {
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35);
+  }
+  .nav .lang-toggle--nav {
+    margin: 0 0.15rem;
+    align-self: center;
+  }
+  .nav .lang-toggle--nav .lang-toggle-track {
+    width: 4.55rem;
+    height: 1.65rem;
+  }
+  .nav .lang-toggle--nav .lang-code { font-size: 0.62rem; }
+  .nav .lang-toggle--nav .lang-flag svg {
+    width: 14px;
+    height: 10px;
+  }
+  .nav-mobile-drawer .lang-toggle--drawer {
+    display: inline-flex;
+    margin: 0.35rem 0 0.15rem;
+  }
+  .nav-mobile-drawer .lang-toggle--drawer .lang-toggle-track {
+    width: 5rem;
+    height: 1.75rem;
   }
 
   /* Mobile drawer subscribe button */
@@ -765,24 +1028,24 @@ const isCategory = path.includes('/kategori/');
   /* Subscribe modal */
   .subscribe-modal { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; }
   .subscribe-modal[hidden] { display: none; }
-  .subscribe-modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); }
+  .subscribe-modal-overlay { position: absolute; inset: 0; background: var(--modal-overlay); }
   .subscribe-modal-content {
     position: relative;
-    background: #fff;
+    background: var(--surface);
     border-radius: 1rem;
     padding: 2rem 2rem 1.75rem;
     max-width: 520px;
     width: calc(100% - 2rem);
     max-height: calc(100vh - 2rem);
     overflow-y: auto;
-    box-shadow: 0 24px 64px rgba(0,0,0,0.18);
+    box-shadow: 0 24px 64px var(--shadow-lg);
   }
   .subscribe-modal-close {
     position: absolute; top: 0.75rem; right: 0.75rem;
     font-size: 1.75rem; line-height: 1; border: 0; background: none;
     cursor: pointer; color: var(--muted); padding: 0.25rem 0.5rem; border-radius: 0.5rem;
   }
-  .subscribe-modal-close:hover { background: #f0f0f0; color: var(--ink); }
+  .subscribe-modal-close:hover { background: var(--hover-surface); color: var(--ink); }
   #subscribe-modal-title { font-size: 1.35rem; margin: 0 0 0.25rem; }
   .subscribe-modal-desc { color: var(--muted); margin: 0 0 1.25rem; font-size: 0.92rem; }
   .subscribe-modal-options { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
@@ -797,15 +1060,16 @@ const isCategory = path.includes('/kategori/');
     font-size: 0.88rem; font-weight: 600; text-decoration: none; border: 0; cursor: pointer;
     transition: background 0.15s;
   }
-  .subscribe-btn-telegram { background: #2AABEE; color: #fff; }
-  .subscribe-btn-telegram:hover { background: #1a95d4; color: #fff; }
-  .subscribe-btn-email { background: var(--accent); color: #fff; width: 100%; }
-  .subscribe-btn-email:hover { background: #093fcc; }
+  .subscribe-btn-telegram { background: #2AABEE; color: var(--on-accent); }
+  .subscribe-btn-telegram:hover { background: #1a95d4; color: var(--on-accent); }
+  .subscribe-btn-email { background: var(--accent); color: var(--on-accent); width: 100%; }
+  .subscribe-btn-email:hover { background: var(--accent-hover); }
 
   .subscribe-email-form { text-align: left; }
   .subscribe-email-form input[type="email"] {
     width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--rule);
     border-radius: 0.4rem; font: inherit; font-size: 0.9rem; margin-bottom: 0.5rem;
+    background: var(--surface); color: var(--ink);
   }
   .subscribe-consent {
     display: flex; align-items: flex-start; gap: 0.4rem;
@@ -813,8 +1077,8 @@ const isCategory = path.includes('/kategori/');
   }
   .subscribe-consent input { margin-top: 0.15rem; flex-shrink: 0; }
   .subscribe-email-result { font-size: 0.88rem; margin-top: 0.5rem; padding: 0.5rem; border-radius: 0.4rem; }
-  .subscribe-email-result.success { background: #e8f5e9; color: #2e7d32; }
-  .subscribe-email-result.error { background: #fbe9e7; color: #c62828; }
+  .subscribe-email-result.success { background: var(--success-bg); color: var(--success-text); }
+  .subscribe-email-result.error { background: var(--error-bg); color: var(--error-text); }
 
   @media (max-width: 520px) {
     .subscribe-modal-options { grid-template-columns: 1fr; }
@@ -823,7 +1087,7 @@ const isCategory = path.includes('/kategori/');
 
   .breaking-divider {
     border-bottom: 1px solid var(--rule);
-    background: #fff;
+    background: var(--surface);
     position: relative;
     z-index: 1;
   }

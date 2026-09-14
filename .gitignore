@@ -18,14 +18,33 @@ n8n/translate-batch.log
 site/src/content/_queue/*.jsonl
 site/src/content/_queue/*.bak*
 site/src/content/_queue/pending.jsonl.bak*
+site/src/content/_queue/scheduled/
+site/src/content/_queue/**
+
+# Generated blog content lives on the VDS only (keeps GitHub lean)
+site/src/content/posts/
+
 
 # dependencies and build
 node_modules/
 dist/
 .astro/
+site/dist/
+site/.astro/
 
-# logs / OS / IDE
+# Python junk
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+
+# logs / OS / IDE / temp
 *.log
+*.out
+*.tmp
+*.swp
 .DS_Store
 .idea/
 .vscode/
@@ -36,3 +55,5 @@ dist/
 !site/public/**/*.png
 site/screenshots/
 home_*.png
+i18n-*.png
+kategoriler-*.png

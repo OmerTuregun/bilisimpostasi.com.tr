@@ -1,5 +1,4 @@
 ---
-import type { CategoryKey } from '../../../i18n/config';
 import { CATEGORY_ORDER, CATEGORY_SLUG, categoryLabel, categoryKeyFromName } from '../../../i18n/config';
 import { t } from '../../../i18n/ui';
 import { getPosts, categoriesIndexPath } from '../../../lib/posts';
@@ -12,12 +11,8 @@ const LOCALE = 'en' as const;
 export async function getStaticPaths() {
   const locale = 'en' as const;
   const posts = await getPosts(locale);
-  const keys = new Set<CategoryKey>();
-  for (const post of posts) {
-    keys.add(categoryKeyFromName(post.data.kategori ?? DEFAULT_CATEGORY_EN, locale));
-  }
 
-  return CATEGORY_ORDER.filter((key) => keys.has(key)).map((key) => {
+  return CATEGORY_ORDER.map((key) => {
     const label = categoryLabel(key, locale);
     const categoryPosts = posts
       .filter((post) => categoryKeyFromName(post.data.kategori ?? DEFAULT_CATEGORY_EN, locale) === key)

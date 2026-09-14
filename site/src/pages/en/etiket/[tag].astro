@@ -1,0 +1,59 @@
+---
+import { t } from '../../../i18n/ui';
+import { getPosts, homePath } from '../../../lib/posts';
+import { collectTagSlugs, postsWithTag, tagLabel, buildTagRegistry } from '../../../lib/tags';
+import Layout from '../../../layouts/Layout.astro';
+import PostCard from '../../../components/PostCard.astro';
+
+const LOCALE = 'en' as const;
+
+export async function getStaticPaths() {
+  const locale = 'en' as const;
+  const posts = await getPosts(locale);
+  const registry = buildTagRegistry(posts);
+  const slugs = collectTagSlugs(posts);
+  return slugs.map((tag) => ({
+    params: { tag },
+    props: {
+      tag,
+      label: tagLabel(tag, locale, registry),
+      posts: postsWithTag(posts, tag),
+    },
+  }));
+}
+
+const { tag, label, posts } = Astro.props;
+const strings = t(LOCALE);
+const description = `Technology and AI articles tagged with ${label}.`;
+---
+<Layout locale={LOCALE} title={`#${label} — Tag`} description={description}>
+  <main>
+    <h1>#{label}</h1>
+    <p class="count">{posts.length} {strings.posts} · {strings.taggedPosts}</p>
+    <div class="card-grid">{posts.map((post) => <PostCard post={post} locale={LOCALE} />)}</div>
+    <p class="back"><a href={homePath(LOCALE)}>← {strings.backHome}</a></p>
+  </main>
+</Layout>
+
+<style>
+  h1 { margin: 0; }
+  .count { color: var(--muted); margin: 0.25rem 0 1.5rem; }
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  @media (min-width: 769px) {
+    .card-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px 10px;
+    }
+  }
+  @media (min-width: 1100px) and (hover: hover) and (pointer: fine) {
+    .card-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+  }
+  .back { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); }
+</style>

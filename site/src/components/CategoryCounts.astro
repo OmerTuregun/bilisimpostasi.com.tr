@@ -5,23 +5,22 @@ import { categoryBadgeColor, getCategoryUrlSlug } from '../lib/categories';
 import { categoryPath } from '../lib/posts';
 
 interface Props {
-  counts: { name: string; count: number }[];
+  categories: string[];
   locale?: Locale;
 }
 
-const { counts, locale = 'tr' } = Astro.props;
+const { categories, locale = 'tr' } = Astro.props;
 const strings = t(locale);
 ---
-{counts.length > 0 && (
+{categories.length > 0 && (
   <section class="cats" aria-label={strings.categories}>
     <h2>{strings.categories}</h2>
     <ul>
-      {counts.map(({ name, count }) => (
+      {categories.map((name) => (
         <li>
           <a href={categoryPath(locale, getCategoryUrlSlug(name, locale))}>
             <span class="dot" style={`--badge-color: ${categoryBadgeColor(name, locale)}`}></span>
             <span class="name">{name}</span>
-            <span class="n">{count}</span>
           </a>
         </li>
       ))}
@@ -33,7 +32,7 @@ const strings = t(locale);
   .cats {
     margin-top: 0.85rem;
     padding: 1rem 1.1rem 0.7rem;
-    background: #fff;
+    background: var(--surface);
     border: 1px solid var(--rule);
     border-radius: 0.5rem;
   }
@@ -65,5 +64,4 @@ const strings = t(locale);
     flex: 0 0 auto;
   }
   .name { flex: 1; min-width: 0; }
-  .n { color: var(--muted); font-variant-numeric: tabular-nums; }
 </style>

@@ -21,6 +21,22 @@ services:
       com.omer.env: prod
       com.omer.role: db
 
+  libretranslate:
+    image: libretranslate/libretranslate:latest
+    container_name: agent-libretranslate
+    restart: unless-stopped
+    environment:
+      LT_LOAD_ONLY: tr,en
+    ports:
+      - '127.0.0.1:5000:5000'
+    networks:
+      - agent_internal
+    # Internal only — n8n reaches via http://libretranslate:5000
+    labels:
+      com.omer.project: agent-icerik
+      com.omer.env: prod
+      com.omer.role: translate
+
   n8n:
     image: n8nio/n8n:latest
     container_name: agent-n8n
@@ -49,6 +65,8 @@ services:
       EXECUTIONS_DATA_MAX_AGE: '336'
       N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
       N8N_RESTRICT_FILE_ACCESS_TO: /home/node/site;/home/node/.n8n-files;/home/node/data
+      # Allow Code nodes: fs for posts/queue; path optional (prefer string join)
+      NODE_FUNCTION_ALLOW_BUILTIN: fs,path
       DEPLOY_LISTENER_TOKEN: ${DEPLOY_LISTENER_TOKEN}
     volumes:
       - n8n_data:/home/node/.n8n
