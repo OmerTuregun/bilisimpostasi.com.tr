@@ -27,7 +27,7 @@ Tarihler: `git log --follow` ile dosyanın **ilk görüldüğü** commit tarihi 
 | Dosya | Tip | Ne işe yarıyor | Hâlâ kullanımda mı |
 |-------|-----|----------------|--------------------|
 | `build-and-deploy-site.sh` | Sürekli/aktif | Astro `npm run build` + `rsync` → `/var/www/blog`; perms script’ini de çağırır. | **Evet** — cron `*/30`; `deploy-listener` da tetikler (2026-08-17) |
-| `deploy-listener.py` | Sürekli/aktif | Docker bridge üzerinden HTTP dinler; n8n yayın sonrası build/deploy (ve R2) tetikler. | **Evet** — canlı süreç: systemd → `/usr/local/lib/agent-icerik/deploy-listener.py` (repo kopyası `scripts/` ile md5 aynı; 2026-08-20) |
+| `deploy-listener.py` | Sürekli/aktif | Docker bridge üzerinden HTTP dinler; n8n yayın sonrası build/deploy (ve R2) tetikler. | **Evet** — `scripts/deploy-listener.py` **symlink** → `/usr/local/lib/agent-icerik/deploy-listener.py` (systemd canonical; 2026-08-20) |
 | `ensure-n8n-content-perms.sh` | Sürekli/aktif | `posts/` + `_queue/` sahipliğini n8n uid 1000 yapar; pending dosyasını garantiler. | **Evet** — cron `*/15` + build script içinden (2026-09-08) |
 | `weekly-digest.sh` | Sürekli/aktif | Son 7 gün TR yazılarından `weekly-digest.txt` üretir (Medium taslağı için). | **Evet** — cron Perşembe 09:55; n8n “Haftalık Medium Taslağı” dosyayı okur (2026-08-17) |
 | `telegram-subscribers.js` | Sürekli/aktif | n8n Execute Command ile `telegram-subscribers.jsonl` subscribe/unsubscribe. | **Evet** — “Telegram Abonelik Yakala” workflow (2026-08-20) |
@@ -125,6 +125,6 @@ Yeniden çalıştırmadan önce workflow/DB durumunu kontrol et.
 | cron `*/30` | `scripts/build-and-deploy-site.sh` |
 | cron `*/15` | `scripts/ensure-n8n-content-perms.sh` |
 | cron Perşembe 09:55 | `scripts/weekly-digest.sh` |
-| systemd `agent-icerik-deploy-listener` | **`/usr/local/lib/agent-icerik/deploy-listener.py`** (HTTP `:9876`) |
+| systemd `agent-icerik-deploy-listener` | **`/usr/local/lib/agent-icerik/deploy-listener.py`** (canonical; `scripts/deploy-listener.py` buna symlink) |
 | n8n Haber Yayınlama / Twitter Kuyruk | HTTP `http://172.18.0.1:9876/deploy` (script path değil) |
 | n8n “Telegram Abonelik Yakala” | `telegram-subscribers.js` (`/home/node/scripts/` mount) |

@@ -53,6 +53,8 @@ host nginx → site dosyaları / n8n(Caddy) / analytics
 
 n8n host mount: `n8n/data`, `site/` (rw), `scripts/` (ro). Network: `n8n_agent_internal` + external `ops_net`.
 
+Deploy listener: `scripts/deploy-listener.py` bir **symlink**; gerçek dosya `/usr/local/lib/agent-icerik/deploy-listener.py`. Systemd `agent-icerik-deploy-listener.service` canonical path’i çalıştırır; n8n HTTP ile `http://172.18.0.1:9876/deploy` çağırır (script path değil).
+
 ## Klasörler
 
 ```
@@ -126,7 +128,7 @@ Not: Gerçek haber markdown'ları `site/src/content/posts/` altında gitignore'l
 
 İçerik: TR + EN post'lar, `_queue/` (pending/scheduled). Sayfalar: abonelik, iletişim, kategoriler, etiket, en çok okunanlar, gizlilik/şartlar.
 
-Deploy listener: `scripts/deploy-listener.py` (n8n yayın sonrası build tetikler).
+Deploy listener: `scripts/deploy-listener.py` → symlink → `/usr/local/lib/agent-icerik/deploy-listener.py` (systemd `agent-icerik-deploy-listener.service`; n8n yayın sonrası HTTP `:9876/deploy`).
 
 ## Yönetim
 
