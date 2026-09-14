@@ -35,6 +35,38 @@ jobs:
       - name: Unit tests
         run: npm run test
 
+      # Generated posts live only on the VDS (gitignored). Seed one TR/EN fixture
+      # so `astro build && pagefind` can succeed in CI without real content.
+      - name: Seed fixture posts for CI build
+        run: |
+          mkdir -p src/content/posts/tr src/content/posts/en
+          cat > src/content/posts/tr/ci-fixture-20260101-000000.md <<'EOF'
+          ---
+          title: CI Fixture
+          pubDate: 2026-01-01T00:00:00.000Z
+          description: Fixture post so CI can build while real posts stay off git.
+          kaynak: https://example.com/ci-fixture
+          kategori: Donanım & Çipler
+          tags: [ci]
+          tagLabels:
+            ci: { tr: CI, en: CI }
+          ---
+          CI fixture body.
+          EOF
+          cat > src/content/posts/en/ci-fixture-20260101-000000.md <<'EOF'
+          ---
+          title: CI Fixture
+          pubDate: 2026-01-01T00:00:00.000Z
+          description: Fixture post so CI can build while real posts stay off git.
+          kaynak: https://example.com/ci-fixture
+          kategori: Hardware & Chips
+          tags: [ci]
+          tagLabels:
+            ci: { tr: CI, en: CI }
+          ---
+          CI fixture body.
+          EOF
+
       - name: Production build
         run: npm run build
         env:

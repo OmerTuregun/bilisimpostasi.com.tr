@@ -120,7 +120,9 @@ npm run build        # dist + Pagefind
 
 ### CI (doğrulama — deploy yok)
 
-GitHub Actions (`.github/workflows/ci.yml`, iş adı **Site CI** / `build-and-test`) `main` push ve her PR'da `site/` altında `npm ci` → `check` → `test` → `build` çalıştırır. Amaç sadece kodun kırılmadığını doğrulamak; **CI sunucuya deploy etmez**. Canlı yayın hâlâ `scripts/build-and-deploy-site.sh` (ve n8n deploy-listener) ile yapılır.
+GitHub Actions (`.github/workflows/ci.yml`, iş adı **Site CI** / `build-and-test`) `main` push ve her PR'da `site/` altında `npm ci` → `check` → `test` → fixture post seed → `build` çalıştırır. Amaç sadece kodun kırılmadığını doğrulamak; **CI sunucuya deploy etmez**. Canlı yayın hâlâ `scripts/build-and-deploy-site.sh` (ve n8n deploy-listener) ile yapılır.
+
+Not: Gerçek haber markdown'ları `site/src/content/posts/` altında gitignore'lıdır (yalnızca VDS'te). CI bu yüzden build için minimal TR/EN fixture post üretir; Pagefind boş indekste patlamasın diye.
 
 İçerik: TR + EN post'lar, `_queue/` (pending/scheduled). Sayfalar: abonelik, iletişim, kategoriler, etiket, en çok okunanlar, gizlilik/şartlar.
 
