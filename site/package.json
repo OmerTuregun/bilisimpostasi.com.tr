@@ -11,7 +11,10 @@
     "dev": "astro dev",
     "build": "astro build && pagefind --site dist --glob \"**/posts/**/*.html\"",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "astro check"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
@@ -20,8 +23,11 @@
     "astro": "^7.2.1"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.10",
     "@vite-pwa/astro": "^1.2.0",
     "pagefind": "^1.5.2",
-    "sharp": "^0.35.4"
+    "sharp": "^0.35.4",
+    "typescript": "~5.9.0",
+    "vitest": "^5.0.0"
   }
 }
