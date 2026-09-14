@@ -11,6 +11,7 @@ import {
   DEFAULT_CATEGORY_EN,
 } from '../lib/categories';
 import { publicCoverUrl } from '../lib/covers';
+import ShareMenu from './ShareMenu.astro';
 
 interface Props {
   post: CollectionEntry<'posts'>;
@@ -27,6 +28,8 @@ const rawKategori = post.data.kategori ?? (locale === 'en' ? DEFAULT_CATEGORY_EN
 const badgeColor = categoryBadgeColor(rawKategori, locale);
 const kategori = getCategoryDisplayName(rawKategori, locale);
 const coverImage = publicCoverUrl(post.data.coverImage);
+const siteBase = Astro.site ?? new URL(Astro.url.origin);
+const postUrl = new URL(postPath(locale, slug), siteBase).href;
 ---
 <article class="post-card">
   {typeof rank === 'number' && (
@@ -53,7 +56,10 @@ const coverImage = publicCoverUrl(post.data.coverImage);
   </a>
   <div class="card-footer">
     <time datetime={post.data.pubDate.toISOString()}>{formatDateTime(post.data.pubDate, locale)}</time>
-    <a class="more" href={postPath(locale, slug)}>{strings.readMore}</a>
+    <div class="footer-actions">
+      <ShareMenu url={postUrl} title={post.data.title} locale={locale} variant="icon" />
+      <a class="more" href={postPath(locale, slug)}>{strings.readMore}</a>
+    </div>
   </div>
 </article>
 
@@ -165,6 +171,12 @@ const coverImage = publicCoverUrl(post.data.coverImage);
     padding: 0.8rem 1.15rem 1rem;
     border-top: 1px solid var(--rule);
     margin-top: auto;
+  }
+  .footer-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-left: auto;
   }
   time { font-size: 0.8rem; color: var(--muted); }
   .more {
