@@ -379,7 +379,7 @@ const isCategory = path.includes('/kategori/');
       const hamburger = document.querySelector('.nav-hamburger');
       const drawer = document.getElementById('nav-mobile-drawer');
 
-      function setDrawerOpen(open) {
+      function setDrawerOpen(open: boolean) {
         if (!drawer || !hamburger) return;
         drawer.classList.toggle('open', open);
         drawer.setAttribute('aria-hidden', String(!open));
@@ -394,12 +394,14 @@ const isCategory = path.includes('/kategori/');
 
       drawer?.addEventListener('click', (event) => {
         const t = event.target;
-        if (t?.matches?.('[data-close-drawer]')) setDrawerOpen(false);
+        if (t instanceof Element && t.matches('[data-close-drawer]')) setDrawerOpen(false);
       });
 
       document.addEventListener('click', (event) => {
         const target = event.target;
-        const clickedInside = drawer?.contains?.(target) || hamburger?.contains?.(target);
+        const node = target instanceof Node ? target : null;
+        const clickedInside = (drawer && node ? drawer.contains(node) : false)
+          || (hamburger && node ? hamburger.contains(node) : false);
         if (!clickedInside) setDrawerOpen(false);
       });
 
@@ -412,7 +414,7 @@ const isCategory = path.includes('/kategori/');
       const modalClose = modal?.querySelector('.subscribe-modal-close');
       const openBtns = document.querySelectorAll('#open-subscribe-modal, #open-subscribe-modal-mobile, #open-subscribe-modal-footer');
 
-      function setModalOpen(open) {
+      function setModalOpen(open: boolean) {
         if (!modal) return;
         modal.hidden = !open;
         modal.setAttribute('aria-hidden', String(!open));
@@ -426,7 +428,7 @@ const isCategory = path.includes('/kategori/');
       document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setModalOpen(false); });
 
       // Email form submit
-      const emailForm = document.getElementById('subscribe-email-form');
+      const emailForm = document.getElementById('subscribe-email-form') as HTMLFormElement | null;
       const emailResult = document.getElementById('subscribe-email-result');
       const modalEl = document.getElementById('subscribe-modal');
       const msgSending = modalEl?.dataset.msgSending ?? 'Sending...';
@@ -437,10 +439,14 @@ const isCategory = path.includes('/kategori/');
       emailForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const form = e.target;
-        const email = form.email.value.trim();
-        const consent = form.consent.checked;
+        if (!(form instanceof HTMLFormElement)) return;
+        const emailInput = form.elements.namedItem('email');
+        const consentInput = form.elements.namedItem('consent');
+        const email = emailInput instanceof HTMLInputElement ? emailInput.value.trim() : '';
+        const consent = consentInput instanceof HTMLInputElement ? consentInput.checked : false;
         if (!email || !consent) return;
         const btn = form.querySelector('button[type="submit"]');
+        if (!(btn instanceof HTMLButtonElement)) return;
         btn.disabled = true;
         btn.textContent = msgSending;
         try {
@@ -451,18 +457,22 @@ const isCategory = path.includes('/kategori/');
           });
           if (res.ok) {
             form.hidden = true;
-            emailResult.hidden = false;
-            emailResult.textContent = msgSuccess;
-            emailResult.classList.add('success');
-          } else {
+            if (emailResult) {
+              emailResult.hidden = false;
+              emailResult.textContent = msgSuccess;
+              emailResult.classList.add('success');
+            }
+          } else if (emailResult) {
             emailResult.hidden = false;
             emailResult.textContent = msgError;
             emailResult.classList.add('error');
           }
         } catch {
-          emailResult.hidden = false;
-          emailResult.textContent = msgConnError;
-          emailResult.classList.add('error');
+          if (emailResult) {
+            emailResult.hidden = false;
+            emailResult.textContent = msgConnError;
+            emailResult.classList.add('error');
+          }
         }
         btn.disabled = false;
         btn.textContent = btnLabel;

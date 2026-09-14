@@ -111,10 +111,16 @@ Statik site; Docker'da çalışmaz. Node >= 22.12.
 ```bash
 cd /root/agent-icerik-sistemi/site
 npm install
+npm run check        # Astro type check
+npm run test         # Vitest unit tests
 npm run dev          # localhost:4321
 npm run build        # dist + Pagefind
 # prod: scripts/build-and-deploy-site.sh → rsync /var/www/blog
 ```
+
+### CI (doğrulama — deploy yok)
+
+GitHub Actions (`.github/workflows/ci.yml`, iş adı **Site CI** / `build-and-test`) `main` push ve her PR'da `site/` altında `npm ci` → `check` → `test` → `build` çalıştırır. Amaç sadece kodun kırılmadığını doğrulamak; **CI sunucuya deploy etmez**. Canlı yayın hâlâ `scripts/build-and-deploy-site.sh` (ve n8n deploy-listener) ile yapılır.
 
 İçerik: TR + EN post'lar, `_queue/` (pending/scheduled). Sayfalar: abonelik, iletişim, kategoriler, etiket, en çok okunanlar, gizlilik/şartlar.
 

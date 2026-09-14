@@ -29,7 +29,8 @@ export function mergeTagLabels(...sources: (TagLabels | undefined)[]): TagLabels
 
 /** Build a site-wide tag label registry from posts (newer posts win). */
 export function buildTagRegistry(posts: CollectionEntry<'posts'>[]): TagLabels {
-  const sorted = [...posts].sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  // Oldest → newest so Object.assign lets later (newer) labels override.
+  const sorted = [...posts].sort((a, b) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf());
   const registry: TagLabels = {};
   for (const post of sorted) {
     Object.assign(registry, mergeTagLabels(post.data.tagLabels));
