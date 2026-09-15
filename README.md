@@ -364,3 +364,7 @@ docker compose -f n8n/docker-compose.yml start n8n
 - **Umami:** `website` 1, `session` 137, `website_event` 1030, `user` 1 — canlı ile aynı.
 - **n8n_n8n_data:** `config`, `storage/workflows/…/binary_data`, event log’lar mevcut.
 - **Sorun yok:** Postgres 16 / 15 uyumu, encoding sorunu yok. Tek uyarı: `uuid-ossp` / `pgcrypto` extension ownership (`pg_restore` exit 1, veri kaybı yok).
+
+## Lisans
+
+Bu proje [MIT](LICENSE) lisansı altındadır.
