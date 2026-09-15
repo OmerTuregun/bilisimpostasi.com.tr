@@ -10,6 +10,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import time
 import uuid
@@ -19,6 +20,7 @@ from pathlib import Path
 
 ROOT = Path('/root/agent-icerik-sistemi')
 BACKUP = ROOT / 'n8n/backups'
+ENV_PATH = ROOT / 'n8n/.env'
 PUB_ID = 'zVyc6gzToDe5mhc2'
 TW_ID = 'twKuyrukIsleyici01'
 
@@ -27,7 +29,19 @@ SCHEDULED_EN = '/home/node/site/src/content/_queue/scheduled/en'
 HOST_SCHED_TR = ROOT / 'site/src/content/_queue/scheduled/tr'
 HOST_SCHED_EN = ROOT / 'site/src/content/_queue/scheduled/en'
 
-DEPLOY_TOKEN = '***REMOVED***'
+
+def _load_deploy_token() -> str:
+    token = os.environ.get('DEPLOY_LISTENER_TOKEN', '').strip()
+    if token:
+        return token
+    if ENV_PATH.is_file():
+        for line in ENV_PATH.read_text().splitlines():
+            if line.startswith('DEPLOY_LISTENER_TOKEN='):
+                return line.split('=', 1)[1].strip().strip('"').strip("'")
+    raise SystemExit('DEPLOY_LISTENER_TOKEN missing (env or n8n/.env)')
+
+
+DEPLOY_TOKEN = _load_deploy_token()
 
 YENI_FILTER_CODE = r'''const fs = require('fs');
 const postsDir = '/home/node/site/src/content/posts/tr';

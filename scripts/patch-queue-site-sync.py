@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import time
 import uuid
@@ -16,8 +17,23 @@ from pathlib import Path
 
 ROOT = Path('/root/agent-icerik-sistemi')
 BACKUP = ROOT / 'n8n/backups'
+ENV_PATH = ROOT / 'n8n/.env'
 TW_ID = 'twKuyrukIsleyici01'
 NF_ID = 'notifyKuyrukIsleyici01'
+
+
+def _load_deploy_token() -> str:
+    token = os.environ.get('DEPLOY_LISTENER_TOKEN', '').strip()
+    if token:
+        return token
+    if ENV_PATH.is_file():
+        for line in ENV_PATH.read_text().splitlines():
+            if line.startswith('DEPLOY_LISTENER_TOKEN='):
+                return line.split('=', 1)[1].strip().strip('"').strip("'")
+    raise SystemExit('DEPLOY_LISTENER_TOKEN missing (env or n8n/.env)')
+
+
+DEPLOY_TOKEN = _load_deploy_token()
 
 PROMOTE_CORE = r'''
 const fs = require('fs');
@@ -364,7 +380,7 @@ def patch_notify(wf: dict) -> None:
                         'parameters': [
                             {
                                 'name': 'Authorization',
-                                'value': 'Bearer ***REMOVED***',
+                                'value': f'Bearer {DEPLOY_TOKEN}',
                             }
                         ]
                     },
